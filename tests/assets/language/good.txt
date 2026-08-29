@@ -1,0 +1,3 @@
+//! This is a doc comment.  It has two spaces after the full stop.
+//! It normalises things and mentions colour and behaviour.
+//! A colon:  two spaces.  A question?  Two spaces.

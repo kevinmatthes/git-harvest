@@ -1,0 +1,113 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "assignees": [
+    "kevinmatthes"
+  ],
+  "automerge": false,
+  "commitMessageLowerCase": "never",
+  "commitMessagePrefix": "[Renovate]",
+  "customManagers": [
+    {
+      "customType": "regex",
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "actionlint",
+      "managerFilePatterns": [
+        "/^\\.github/workflows/ci\\.yml$/"
+      ],
+      "matchStrings": [
+        "rhysd/actionlint:(?<currentValue>\\d+\\.\\d+\\.\\d+)"
+      ],
+      "packageNameTemplate": "rhysd/actionlint"
+    },
+    {
+      "customType": "regex",
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "cffconvert",
+      "managerFilePatterns": [
+        "/^\\.github/workflows/ci\\.yml$/"
+      ],
+      "matchStrings": [
+        "citationcff/cffconvert:(?<currentValue>\\d+\\.\\d+\\.\\d+)"
+      ],
+      "packageNameTemplate": "citation-file-format/cffconvert"
+    },
+    {
+      "customType": "regex",
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "rust",
+      "managerFilePatterns": [
+        "/^\\.clippy\\.toml$/",
+        "/^Cargo\\.toml$/"
+      ],
+      "matchStrings": [
+        "msrv = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\"",
+        "rust-version = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
+      ],
+      "packageNameTemplate": "rust-lang/rust"
+    }
+  ],
+  "dependencyDashboard": true,
+  "dependencyDashboardAutoclose": true,
+  "dependencyDashboardLabels": [
+    "dependencies"
+  ],
+  "dependencyDashboardTitle": "[Renovate] Dependency Dashboard",
+  "extends": [
+    "config:recommended"
+  ],
+  "labels": [
+    "dependencies"
+  ],
+  "lockFileMaintenance": {
+    "enabled": true
+  },
+  "packageRules": [
+    {
+      "addLabels": [
+        "github_actions"
+      ],
+      "matchDepNames": [
+        "actionlint",
+        "cffconvert"
+      ],
+      "matchManagers": [
+        "custom.regex"
+      ]
+    },
+    {
+      "addLabels": [
+        "rust"
+      ],
+      "matchManagers": [
+        "cargo"
+      ],
+      "rangeStrategy": "bump"
+    },
+    {
+      "addLabels": [
+        "github_actions"
+      ],
+      "matchManagers": [
+        "github-actions"
+      ]
+    },
+    {
+      "addLabels": [
+        "documentation"
+      ],
+      "matchDepNames": [
+        "rust"
+      ],
+      "matchManagers": [
+        "custom.regex"
+      ]
+    },
+    {
+      "extractVersion": "^v(?<version>.*)$",
+      "matchDepNames": [
+        "actionlint"
+      ]
+    }
+  ],
+  "prHourlyLimit": 0
+}

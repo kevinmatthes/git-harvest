@@ -1,0 +1,62 @@
+######################## GNU General Public License 3.0 ########################
+##                                                                            ##
+## Copyright (C) 2026 Kevin Matthes                                           ##
+##                                                                            ##
+## This program is free software: you can redistribute it and/or modify       ##
+## it under the terms of the GNU General Public License as published by       ##
+## the Free Software Foundation, either version 3 of the License, or          ##
+## (at your option) any later version.                                        ##
+##                                                                            ##
+## This program is distributed in the hope that it will be useful,            ##
+## but WITHOUT ANY WARRANTY; without even the implied warranty of             ##
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              ##
+## GNU General Public License for more details.                               ##
+##                                                                            ##
+## You should have received a copy of the GNU General Public License          ##
+## along with this program.  If not, see <https://www.gnu.org/licenses/>.     ##
+##                                                                            ##
+################################################################################
+
+[package]
+name = "git-harvest"
+version = "0.0.0"
+edition = "2024"
+rust-version = "1.98.0"
+description = "Harvest a CHANGELOG from your Git history."
+repository = "https://github.com/kevinmatthes/git-harvest"
+license = "GPL-3.0-or-later"
+authors = ["Kevin Matthes <aeruginous.rs@gmail.com>"]
+keywords = ["changelog", "git", "keep-a-changelog", "release", "ron"]
+categories = ["command-line-utilities", "development-tools"]
+readme = "README.md"
+include = ["src/**", "README.md", "LICENCE"]
+
+[lints.clippy]
+all = { level = "deny", priority = -1 }
+cargo = { level = "deny", priority = -1 }
+complexity = { level = "deny", priority = -1 }
+correctness = { level = "deny", priority = -1 }
+multiple_crate_versions = "allow"
+nursery = { level = "deny", priority = -1 }
+pedantic = { level = "deny", priority = -1 }
+perf = { level = "deny", priority = -1 }
+style = { level = "deny", priority = -1 }
+suspicious = { level = "deny", priority = -1 }
+
+[lints.rust]
+dead_code = "deny"
+deprecated = "deny"
+missing_docs = "deny"
+unreachable_code = "deny"
+unused_assignments = "deny"
+unused_imports = "deny"
+unused_macros = "deny"
+unused_must_use = "deny"
+unused_mut = "deny"
+unused_parens = "deny"
+unused_variables = "deny"
+
+[lints.rustdoc]
+broken_intra_doc_links = "deny"
+
+################################################################################

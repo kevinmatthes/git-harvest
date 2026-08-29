@@ -26,7 +26,7 @@
 //! 2026-08-23; a Rust repository should hold Rust, so they are a test harness
 //! now.
 //!
-//! Two of these tests check the checker rather than the repository.  A
+//! Three of these tests check the checker rather than the repository.  A
 //! checker which reports nothing is worthless until it has been shown to
 //! report something, and the Python original earned that lesson twice.
 //!
@@ -263,14 +263,14 @@ fn findings(path: &Path, text: &str, semicolons: bool) -> Vec<String> {
 
     for (number, line) in text.lines().enumerate() {
         for fragment in prose(path, line, &mut fenced, &mut heading) {
-            if CODE_LITERAL.iter().any(|form| fragment.contains(form)) {
-                continue;
-            }
-
             let stripped = strip(&fragment);
             let trimmed = stripped.trim();
 
             if trimmed.is_empty() {
+                continue;
+            }
+
+            if CODE_LITERAL.iter().any(|form| trimmed.contains(form)) {
                 continue;
             }
 
@@ -884,6 +884,27 @@ fn the_language_check_accepts_a_known_good_fixture() {
     let found = findings(Path::new("good.rs"), &good, false);
 
     assert!(found.is_empty(), "expected nothing, got:\n{found:#?}");
+}
+
+#[test]
+fn the_semicolon_check_reports_a_doubled_space_only_when_asked() {
+    let fixture = fixture("semicolons.txt");
+    let asked = findings(Path::new("semicolons.rs"), &fixture, true);
+    let silent = findings(Path::new("semicolons.rs"), &fixture, false);
+
+    assert_eq!(
+        asked.len(),
+        1,
+        "one doubled space after a semicolon, got:\n{asked:#?}"
+    );
+    assert!(
+        asked[0].contains("[SEMICOLON]"),
+        "the finding names the semicolon rule, got:\n{asked:#?}"
+    );
+    assert!(
+        silent.is_empty(),
+        "the rule stays off where it is not asked for, got:\n{silent:#?}"
+    );
 }
 
 /// The commit subjects since the most recent tag, or nothing where there is

@@ -17,15 +17,45 @@
 |                                                                              |
 \******************************************************************************/
 
-//! Harvest a CHANGELOG from your Git history.
+//! Everything `git-harvest` can fail with.
 
-/// Parse the command line, run the task, and map the outcome to an exit code.
-fn main() -> std::process::ExitCode {
-    match git_harvest::run(<git_harvest::Cli as clap::Parser>::parse()) {
-        Ok(()) => std::process::ExitCode::SUCCESS,
-        Err(error) => {
-            eprintln!("git-harvest:  {error}");
-            std::process::ExitCode::FAILURE
+/// A `git-harvest` failure, ready to print and to exit on.
+#[derive(Debug)]
+pub enum Error {
+    /// The target path exists already and `--force` was not given.
+    TargetExists(std::path::PathBuf),
+
+    /// The CHANGELOG could not be serialised to RON.
+    Serialise(ron::Error),
+
+    /// The CHANGELOG file could not be written.
+    Write(std::io::Error),
+}
+
+impl std::fmt::Display for Error {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::TargetExists(path) => write!(
+                f,
+                "{} exists already; pass --force to overwrite it",
+                path.display()
+            ),
+            Self::Serialise(reason) => {
+                write!(f, "cannot serialise the CHANGELOG:  {reason}")
+            }
+            Self::Write(reason) => {
+                write!(f, "cannot write the CHANGELOG:  {reason}")
+            }
+        }
+    }
+}
+
+impl std::error::Error for Error {
+    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
+        match self {
+            Self::TargetExists(_) => None,
+            Self::Serialise(reason) => Some(reason),
+            Self::Write(reason) => Some(reason),
         }
     }
 }

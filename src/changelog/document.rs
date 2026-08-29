@@ -17,16 +17,43 @@
 |                                                                              |
 \******************************************************************************/
 
-//! Harvest a CHANGELOG from your Git history.
+//! The CHANGELOG document:  the root of the RON source of truth.
 
-/// Parse the command line, run the task, and map the outcome to an exit code.
-fn main() -> std::process::ExitCode {
-    match git_harvest::run(<git_harvest::Cli as clap::Parser>::parse()) {
-        Ok(()) => std::process::ExitCode::SUCCESS,
-        Err(error) => {
-            eprintln!("git-harvest:  {error}");
-            std::process::ExitCode::FAILURE
-        }
+/// The whole CHANGELOG, as read from and written to `CHANGELOG.ron`.
+///
+/// The document carries its own [`crate::Configuration`], so a repository
+/// needs no configuration file beside it.  `sections` is newest first.
+#[derive(
+    Clone, Debug, Default, Eq, PartialEq, serde::Deserialize, serde::Serialize,
+)]
+pub struct Changelog {
+    /// The harvest settings for this repository.
+    pub configuration: crate::Configuration,
+
+    /// An optional prose lead for the whole document.
+    pub introduction: Option<String>,
+
+    /// Link labels shared across sections, mapped to their targets.
+    pub references: std::collections::BTreeMap<String, String>,
+
+    /// The version sections, newest first.
+    pub sections: Vec<crate::Section>,
+}
+
+impl Changelog {
+    /// Serialise the document to pretty RON, indented two spaces.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`crate::Error::Serialise`] if the document cannot be
+    /// represented as RON, which should not happen for a value built by this
+    /// crate.
+    pub fn to_ron(&self) -> Result<String, crate::Error> {
+        let pretty = ron::ser::PrettyConfig::new().indentor("  ".to_owned());
+
+        ron::ser::to_string_pretty(self, pretty)
+            .map(|body| format!("{body}\n"))
+            .map_err(crate::Error::Serialise)
     }
 }
 

@@ -17,17 +17,34 @@
 |                                                                              |
 \******************************************************************************/
 
-//! Harvest a CHANGELOG from your Git history.
+//! The command line surface of `git-harvest`.
 
-/// Parse the command line, run the task, and map the outcome to an exit code.
-fn main() -> std::process::ExitCode {
-    match git_harvest::run(<git_harvest::Cli as clap::Parser>::parse()) {
-        Ok(()) => std::process::ExitCode::SUCCESS,
-        Err(error) => {
-            eprintln!("git-harvest:  {error}");
-            std::process::ExitCode::FAILURE
-        }
-    }
+/// Harvest a CHANGELOG from a repository's Git history.
+#[derive(clap::Parser, Debug)]
+#[command(about, version)]
+pub struct Cli {
+    /// The task to run.
+    #[command(subcommand)]
+    pub command: Command,
+}
+
+/// The tasks `git-harvest` can perform.
+#[derive(clap::Subcommand, Debug)]
+pub enum Command {
+    /// Write a fresh CHANGELOG carrying the default configuration.
+    Init(InitArguments),
+}
+
+/// The arguments of `git-harvest init`.
+#[derive(clap::Args, Debug)]
+pub struct InitArguments {
+    /// The path to write the CHANGELOG to.
+    #[arg(default_value = "CHANGELOG.ron", long, short)]
+    pub output: std::path::PathBuf,
+
+    /// Overwrite the target when it exists already.
+    #[arg(long, short)]
+    pub force: bool,
 }
 
 /******************************************************************************/

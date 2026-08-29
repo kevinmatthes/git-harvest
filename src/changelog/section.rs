@@ -17,17 +17,30 @@
 |                                                                              |
 \******************************************************************************/
 
-//! Harvest a CHANGELOG from your Git history.
+//! One released, or pending, version of the CHANGELOG.
 
-/// Parse the command line, run the task, and map the outcome to an exit code.
-fn main() -> std::process::ExitCode {
-    match git_harvest::run(<git_harvest::Cli as clap::Parser>::parse()) {
-        Ok(()) => std::process::ExitCode::SUCCESS,
-        Err(error) => {
-            eprintln!("git-harvest:  {error}");
-            std::process::ExitCode::FAILURE
-        }
-    }
+/// One section of the CHANGELOG:  the changes of a single version.
+///
+/// A section with no `released` date is the pending, not-yet-published one.
+/// `changes` maps a bucket name to its entries, in the order they render.
+#[derive(
+    Clone, Debug, Default, Eq, PartialEq, serde::Deserialize, serde::Serialize,
+)]
+pub struct Section {
+    /// The version this section documents, as written in the manifest.
+    pub version: String,
+
+    /// The publication date in `YYYY-MM-DD` form, or `None` while pending.
+    pub released: Option<String>,
+
+    /// An optional prose lead for this version.
+    pub introduction: Option<String>,
+
+    /// Link labels used by this section, mapped to their targets.
+    pub references: std::collections::BTreeMap<String, String>,
+
+    /// The entries of this section, keyed by bucket.
+    pub changes: std::collections::BTreeMap<String, Vec<String>>,
 }
 
 /******************************************************************************/

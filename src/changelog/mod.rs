@@ -17,17 +17,16 @@
 |                                                                              |
 \******************************************************************************/
 
-//! Harvest a CHANGELOG from your Git history.
+//! The CHANGELOG data model:  configuration, sections and the document.
 
-/// Parse the command line, run the task, and map the outcome to an exit code.
-fn main() -> std::process::ExitCode {
-    match git_harvest::run(<git_harvest::Cli as clap::Parser>::parse()) {
-        Ok(()) => std::process::ExitCode::SUCCESS,
-        Err(error) => {
-            eprintln!("git-harvest:  {error}");
-            std::process::ExitCode::FAILURE
-        }
-    }
-}
+mod configuration;
+mod document;
+mod section;
+
+pub use crate::changelog::{
+    configuration::{Configuration, Grammar, Renderer},
+    document::Changelog,
+    section::Section,
+};
 
 /******************************************************************************/

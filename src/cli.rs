@@ -31,11 +31,33 @@ pub struct Cli {
 /// The tasks `git-harvest` can perform.
 #[derive(clap::Subcommand, Debug)]
 pub enum Command {
+    /// Merge the harvested fragments into a new CHANGELOG section.
+    Assemble(AssembleArguments),
+
     /// Write a fresh CHANGELOG carrying the default configuration.
     Init(InitArguments),
 
     /// Harvest this branch's structured commits into a fragment.
     Scan(ScanArguments),
+}
+
+/// The arguments of `git-harvest assemble`.
+#[derive(clap::Args, Debug)]
+pub struct AssembleArguments {
+    /// The CHANGELOG to merge the fragments into.
+    #[arg(default_value = "CHANGELOG.ron", long, short)]
+    pub changelog: std::path::PathBuf,
+
+    /// The directory the fragments are read from and then cleared.
+    #[arg(default_value = "changelog.d", long, short)]
+    pub input: std::path::PathBuf,
+
+    /// The publish moment, RFC 3339; defaults to now, in UTC.
+    #[arg(long, short)]
+    pub released: Option<String>,
+
+    /// The version the new section documents, as `major.minor.patch`.
+    pub version: String,
 }
 
 /// The arguments of `git-harvest init`.

@@ -82,6 +82,39 @@ pub struct Configuration {
     pub renderer: Renderer,
 }
 
+impl Configuration {
+    /// Parse a commit subject into a `(bucket, entry text)` pair.
+    ///
+    /// Returns `None` when the subject names no known bucket and no
+    /// `fallback_bucket` is set, or when the entry text is empty.  Under
+    /// [`Grammar::Delimited`] the bucket is what precedes `delimiter`; under
+    /// [`Grammar::Bracketed`] it is what a leading `[..]` encloses.
+    pub fn parse(&self, subject: &str) -> Option<(String, String)> {
+        let named = match self.grammar {
+            Grammar::Delimited => subject.split_once(self.delimiter.as_str()),
+            Grammar::Bracketed => subject
+                .trim_start()
+                .strip_prefix('[')
+                .and_then(|rest| rest.split_once(']')),
+        };
+
+        let (named, text) = named.map_or_else(
+            || (None, subject.trim()),
+            |(a, b)| (Some(a.trim()), b.trim()),
+        );
+
+        if text.is_empty() {
+            return None;
+        }
+
+        named
+            .filter(|bucket| self.buckets.iter().any(|known| known == bucket))
+            .map(str::to_owned)
+            .or_else(|| self.fallback_bucket.clone())
+            .map(|bucket| (bucket, text.to_owned()))
+    }
+}
+
 impl Default for Configuration {
     /// The defaults `git-harvest init` writes:  the `::=` delimiter, the
     /// delimited grammar, the six *Keep a Changelog* buckets, no fallback,

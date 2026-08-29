@@ -22,7 +22,7 @@
 //! Two passes:  `git-harvest scan` harvests a branch's structured commits
 //! into a RON fragment, and `git-harvest assemble` merges the fragments into
 //! a new section of the RON CHANGELOG.  `git-harvest init` writes a fresh
-//! CHANGELOG to start from.
+//! CHANGELOG to start from, and `git-harvest render` exports it as Markdown.
 
 mod changelog;
 mod cli;
@@ -32,7 +32,10 @@ pub use crate::{
     changelog::{
         Changelog, Configuration, Entry, Fragment, Grammar, Renderer, Section,
     },
-    cli::{AssembleArguments, Cli, Command, InitArguments, ScanArguments},
+    cli::{
+        AssembleArguments, Cli, Command, InitArguments, RenderArguments,
+        ScanArguments,
+    },
 };
 
 /// Run `git-harvest` with its arguments already parsed.
@@ -45,6 +48,7 @@ pub fn run(cli: Cli) -> sysexits::Result<()> {
     match cli.command {
         Command::Assemble(arguments) => assemble(&arguments),
         Command::Init(arguments) => init(&arguments),
+        Command::Render(arguments) => render(&arguments),
         Command::Scan(arguments) => scan(&arguments),
     }
 }
@@ -148,6 +152,33 @@ fn scan(arguments: &ScanArguments) -> sysexits::Result<()> {
     })?;
 
     eprintln!("git-harvest:  {count} {noun} -> {}", path.display());
+    Ok(())
+}
+
+/// Render the CHANGELOG as a *Keep a Changelog* Markdown file.
+fn render(arguments: &RenderArguments) -> sysexits::Result<()> {
+    let changelog = read_changelog(&arguments.changelog)?;
+    let released = changelog
+        .sections
+        .iter()
+        .filter(|section| section.released.is_some())
+        .count();
+
+    std::fs::write(&arguments.output, changelog.to_markdown()).map_err(
+        |reason| {
+            eprintln!(
+                "git-harvest:  cannot write {}:  {reason}",
+                arguments.output.display()
+            );
+            sysexits::ExitCode::IoErr
+        },
+    )?;
+
+    let noun = if released == 1 { "section" } else { "sections" };
+    eprintln!(
+        "git-harvest:  {released} {noun} -> {}",
+        arguments.output.display()
+    );
     Ok(())
 }
 

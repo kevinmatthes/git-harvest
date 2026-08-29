@@ -37,6 +37,9 @@ pub enum Command {
     /// Write a fresh CHANGELOG carrying the default configuration.
     Init(InitArguments),
 
+    /// Render the CHANGELOG as a Keep a Changelog Markdown file.
+    Render(RenderArguments),
+
     /// Harvest this branch's structured commits into a fragment.
     Scan(ScanArguments),
 }
@@ -70,6 +73,18 @@ pub struct InitArguments {
     /// Overwrite the target when it exists already.
     #[arg(long, short)]
     pub force: bool,
+}
+
+/// The arguments of `git-harvest render`.
+#[derive(clap::Args, Debug)]
+pub struct RenderArguments {
+    /// The CHANGELOG to read.
+    #[arg(default_value = "CHANGELOG.ron", long, short)]
+    pub changelog: std::path::PathBuf,
+
+    /// The Markdown file to write; it is always overwritten.
+    #[arg(default_value = "CHANGELOG.md", long, short)]
+    pub output: std::path::PathBuf,
 }
 
 /// The arguments of `git-harvest scan`.

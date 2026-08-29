@@ -19,15 +19,9 @@
 
 //! Harvest a CHANGELOG from your Git history.
 
-/// Parse the command line, run the task, and map the outcome to an exit code.
-fn main() -> std::process::ExitCode {
-    match git_harvest::run(<git_harvest::Cli as clap::Parser>::parse()) {
-        Ok(()) => std::process::ExitCode::SUCCESS,
-        Err(error) => {
-            eprintln!("git-harvest:  {error}");
-            std::process::ExitCode::FAILURE
-        }
-    }
+/// Parse the command line, run the task, and forward its `sysexits` code.
+fn main() -> sysexits::ExitCode {
+    git_harvest::run(<git_harvest::Cli as clap::Parser>::parse()).into()
 }
 
 /******************************************************************************/

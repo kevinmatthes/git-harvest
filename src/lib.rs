@@ -26,34 +26,43 @@
 
 mod changelog;
 mod cli;
-mod error;
 
 pub use crate::{
     changelog::{Changelog, Configuration, Grammar, Renderer, Section},
     cli::{Cli, Command, InitArguments},
-    error::Error,
 };
 
 /// Run `git-harvest` with its arguments already parsed.
 ///
 /// # Errors
 ///
-/// Returns [`Error`] when the task fails:  for `init`, when the target exists
-/// without `--force`, or cannot be serialised or written.
-pub fn run(cli: Cli) -> Result<(), Error> {
+/// Returns the [`sysexits::ExitCode`] to terminate with;  the human-readable
+/// reason is printed to standard error at the point of failure.
+pub fn run(cli: Cli) -> sysexits::Result<()> {
     match cli.command {
         Command::Init(arguments) => init(&arguments),
     }
 }
 
 /// Write a fresh CHANGELOG holding [`Changelog::default`].
-fn init(arguments: &InitArguments) -> Result<(), Error> {
+fn init(arguments: &InitArguments) -> sysexits::Result<()> {
     if arguments.output.exists() && !arguments.force {
-        return Err(Error::TargetExists(arguments.output.clone()));
+        eprintln!(
+            "git-harvest:  {} exists already; pass --force to overwrite it",
+            arguments.output.display()
+        );
+        return Err(sysexits::ExitCode::CantCreat);
     }
 
-    std::fs::write(&arguments.output, Changelog::default().to_ron()?)
-        .map_err(Error::Write)
+    let document = Changelog::default().to_ron()?;
+
+    std::fs::write(&arguments.output, document).map_err(|reason| {
+        eprintln!(
+            "git-harvest:  cannot write {}:  {reason}",
+            arguments.output.display()
+        );
+        sysexits::ExitCode::IoErr
+    })
 }
 
 /******************************************************************************/

@@ -19,12 +19,9 @@
 
 //! `git-harvest init` writes a usable default CHANGELOG.
 
-use git_harvest::{Changelog, Cli, Command, InitArguments};
+use git_harvest::{Changelog, Cli, Command, InitArguments, Section};
 
-fn init(
-    path: std::path::PathBuf,
-    force: bool,
-) -> Result<(), git_harvest::Error> {
+fn init(path: std::path::PathBuf, force: bool) -> sysexits::Result<()> {
     git_harvest::run(Cli {
         command: Command::Init(InitArguments {
             output: path,
@@ -75,6 +72,27 @@ fn the_default_configuration_is_keep_a_changelog() {
             "Security"
         ]
     );
+}
+
+#[test]
+fn a_section_with_a_release_moment_survives_a_ron_round_trip() {
+    let mut document = Changelog::default();
+
+    document.sections.push(Section {
+        version: "1.0.0".to_owned(),
+        released: "2026-08-29T12:47:30Z"
+            .parse::<chrono::DateTime<chrono::Utc>>()
+            .ok(),
+        introduction: None,
+        references: std::collections::BTreeMap::new(),
+        changes: std::collections::BTreeMap::new(),
+    });
+
+    let ron = document.to_ron().unwrap();
+    let parsed: Changelog = ron::from_str(&ron).unwrap();
+
+    assert!(parsed.sections[0].released.is_some());
+    assert_eq!(parsed, document);
 }
 
 /******************************************************************************/

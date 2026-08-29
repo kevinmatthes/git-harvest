@@ -45,15 +45,21 @@ impl Changelog {
     ///
     /// # Errors
     ///
-    /// Returns [`crate::Error::Serialise`] if the document cannot be
-    /// represented as RON, which should not happen for a value built by this
-    /// crate.
-    pub fn to_ron(&self) -> Result<String, crate::Error> {
+    /// Returns [`sysexits::ExitCode::Software`] if the document cannot be
+    /// represented as RON — which should not happen for a value built by this
+    /// crate — after printing the reason to standard error.
+    pub fn to_ron(&self) -> sysexits::Result<String> {
         let pretty = ron::ser::PrettyConfig::new().indentor("  ".to_owned());
 
-        ron::ser::to_string_pretty(self, pretty)
-            .map(|body| format!("{body}\n"))
-            .map_err(crate::Error::Serialise)
+        match ron::ser::to_string_pretty(self, pretty) {
+            Ok(body) => Ok(format!("{body}\n")),
+            Err(reason) => {
+                eprintln!(
+                    "git-harvest:  cannot serialise the CHANGELOG:  {reason}"
+                );
+                Err(sysexits::ExitCode::Software)
+            }
+        }
     }
 }
 

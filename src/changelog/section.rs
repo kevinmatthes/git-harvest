@@ -21,7 +21,7 @@
 
 /// One section of the CHANGELOG:  the changes of a single version.
 ///
-/// A section with no `released` date is the pending, not-yet-published one.
+/// A section with no `released` moment is the pending, not-yet-published one.
 /// `changes` maps a bucket name to its entries, in the order they render.
 #[derive(
     Clone, Debug, Default, Eq, PartialEq, serde::Deserialize, serde::Serialize,
@@ -30,8 +30,8 @@ pub struct Section {
     /// The version this section documents, as written in the manifest.
     pub version: String,
 
-    /// The publication date in `YYYY-MM-DD` form, or `None` while pending.
-    pub released: Option<String>,
+    /// The moment this version was published, or `None` while pending.
+    pub released: Option<chrono::DateTime<chrono::Utc>>,
 
     /// An optional prose lead for this version.
     pub introduction: Option<String>,

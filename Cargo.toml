@@ -32,11 +32,15 @@ readme = "README.md"
 include = ["src/**", "README.md", "LICENCE"]
 
 [dependencies]
+chrono = { version = "0.4.45", features = ["serde"] }
 clap = { version = "4.6.6", features = ["derive"] }
 ron = "0.12.2"
 serde = { version = "1.0.229", features = ["derive"] }
+sysexits = "0.13.0"
 
 [dev-dependencies]
+chrono = { version = "0.4.45", features = ["serde"] }
+sysexits = "0.13.0"
 tempfile = "3.27.0"
 
 [lints.clippy]

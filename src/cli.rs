@@ -33,6 +33,9 @@ pub struct Cli {
 pub enum Command {
     /// Write a fresh CHANGELOG carrying the default configuration.
     Init(InitArguments),
+
+    /// Harvest this branch's structured commits into a fragment.
+    Scan(ScanArguments),
 }
 
 /// The arguments of `git-harvest init`.
@@ -45,6 +48,26 @@ pub struct InitArguments {
     /// Overwrite the target when it exists already.
     #[arg(long, short)]
     pub force: bool,
+}
+
+/// The arguments of `git-harvest scan`.
+#[derive(clap::Args, Debug)]
+pub struct ScanArguments {
+    /// The ref the branch diverged from; its merge base bounds the walk.
+    #[arg(default_value = "main", long, short)]
+    pub base: String,
+
+    /// The CHANGELOG to read the harvest configuration from, if it exists.
+    #[arg(default_value = "CHANGELOG.ron", long, short)]
+    pub changelog: std::path::PathBuf,
+
+    /// Overwrite the fragment when one of the same name exists already.
+    #[arg(long, short)]
+    pub force: bool,
+
+    /// The directory to write the fragment into.
+    #[arg(default_value = "changelog.d", long, short)]
+    pub output: std::path::PathBuf,
 }
 
 /******************************************************************************/

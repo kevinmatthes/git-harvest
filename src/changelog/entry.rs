@@ -17,20 +17,45 @@
 |                                                                              |
 \******************************************************************************/
 
-//! The CHANGELOG data model:  configuration, fragments, sections, document.
+//! One change entry:  its prose, and where it came from.
 
-mod configuration;
-mod document;
-mod entry;
-mod fragment;
-mod section;
+/// One line of a CHANGELOG:  the change described, and the commit it was
+/// harvested from.
+///
+/// Field `0` is the human-readable text.  Field `1` is the abbreviated hash
+/// of the commit the harvest read it off, or `None` for an entry written by
+/// hand into a fragment.  The tuple shape keeps a hand-authored entry terse
+/// in RON:  `("a new option", None)`.
+#[derive(
+    Clone,
+    Debug,
+    Eq,
+    Ord,
+    PartialEq,
+    PartialOrd,
+    serde::Deserialize,
+    serde::Serialize,
+)]
+pub struct Entry(pub String, pub Option<String>);
 
-pub use crate::changelog::{
-    configuration::{Configuration, Grammar, Renderer},
-    document::Changelog,
-    entry::Entry,
-    fragment::Fragment,
-    section::Section,
-};
+impl Entry {
+    /// The abbreviated commit hash this entry was harvested from, if any.
+    #[must_use]
+    pub fn commit(&self) -> Option<&str> {
+        self.1.as_deref()
+    }
+
+    /// An entry harvested from a commit, carrying its abbreviated hash.
+    #[must_use]
+    pub fn harvested(text: &str, commit: &str) -> Self {
+        Self(text.to_owned(), Some(commit.to_owned()))
+    }
+
+    /// The prose describing the change.
+    #[must_use]
+    pub fn text(&self) -> &str {
+        &self.0
+    }
+}
 
 /******************************************************************************/

@@ -23,12 +23,12 @@
 ///
 /// A section with no `released` moment is the pending, not-yet-published one.
 /// `changes` maps a bucket name to its entries, in the order they render.
-#[derive(
-    Clone, Debug, Default, Eq, PartialEq, serde::Deserialize, serde::Serialize,
-)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct Section {
-    /// The version this section documents, as written in the manifest.
-    pub version: String,
+    /// The version this section documents, as a `(major, minor, patch)`
+    /// triple in the RON.
+    #[serde(with = "super::version")]
+    pub version: semver::Version,
 
     /// The moment this version was published, or `None` while pending.
     pub released: Option<chrono::DateTime<chrono::Utc>>,
@@ -40,7 +40,7 @@ pub struct Section {
     pub references: std::collections::BTreeMap<String, String>,
 
     /// The entries of this section, keyed by bucket.
-    pub changes: std::collections::BTreeMap<String, Vec<String>>,
+    pub changes: std::collections::BTreeMap<String, Vec<crate::Entry>>,
 }
 
 /******************************************************************************/

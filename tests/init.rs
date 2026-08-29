@@ -79,7 +79,7 @@ fn a_section_with_a_release_moment_survives_a_ron_round_trip() {
     let mut document = Changelog::default();
 
     document.sections.push(Section {
-        version: "1.0.0".to_owned(),
+        version: semver::Version::new(1, 0, 0),
         released: "2026-08-29T12:47:30Z"
             .parse::<chrono::DateTime<chrono::Utc>>()
             .ok(),

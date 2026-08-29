@@ -19,11 +19,10 @@
 
 //! Harvest a CHANGELOG from a repository's Git history.
 //!
-//! Two passes:  structured commit subjects are harvested into RON fragments,
-//! then a second pass assembles them into a RON CHANGELOG with a rendered
-//! Markdown sibling.  So far the crate implements `git-harvest init`, which
-//! writes a fresh CHANGELOG, and `git-harvest scan`, which harvests a
-//! branch's fragment.
+//! Two passes:  `git-harvest scan` harvests a branch's structured commits
+//! into a RON fragment, and `git-harvest assemble` merges the fragments into
+//! a new section of the RON CHANGELOG.  `git-harvest init` writes a fresh
+//! CHANGELOG to start from.
 
 mod changelog;
 mod cli;
@@ -33,7 +32,7 @@ pub use crate::{
     changelog::{
         Changelog, Configuration, Entry, Fragment, Grammar, Renderer, Section,
     },
-    cli::{Cli, Command, InitArguments, ScanArguments},
+    cli::{AssembleArguments, Cli, Command, InitArguments, ScanArguments},
 };
 
 /// Run `git-harvest` with its arguments already parsed.
@@ -44,6 +43,7 @@ pub use crate::{
 /// reason is printed to standard error at the point of failure.
 pub fn run(cli: Cli) -> sysexits::Result<()> {
     match cli.command {
+        Command::Assemble(arguments) => assemble(&arguments),
         Command::Init(arguments) => init(&arguments),
         Command::Scan(arguments) => scan(&arguments),
     }
@@ -148,6 +148,180 @@ fn scan(arguments: &ScanArguments) -> sysexits::Result<()> {
     })?;
 
     eprintln!("git-harvest:  {count} {noun} -> {}", path.display());
+    Ok(())
+}
+
+/// Read and parse a whole CHANGELOG document.
+fn read_changelog(path: &std::path::Path) -> sysexits::Result<Changelog> {
+    let source = std::fs::read_to_string(path).map_err(|reason| {
+        eprintln!(
+            "git-harvest:  cannot read {}:  {reason}; run `git-harvest init` \
+             first",
+            path.display()
+        );
+        sysexits::ExitCode::NoInput
+    })?;
+
+    ron::from_str(&source).map_err(|reason| {
+        eprintln!("git-harvest:  cannot parse {}:  {reason}", path.display());
+        sysexits::ExitCode::DataErr
+    })
+}
+
+/// Every `*.ron` fragment in `directory`, sorted by name.
+fn fragment_paths(directory: &std::path::Path) -> Vec<std::path::PathBuf> {
+    let Ok(entries) = std::fs::read_dir(directory) else {
+        return Vec::new();
+    };
+
+    let mut paths: Vec<_> = entries
+        .filter_map(Result::ok)
+        .map(|entry| entry.path())
+        .filter(|path| path.extension().is_some_and(|end| end == "ron"))
+        .collect();
+
+    paths.sort();
+    paths
+}
+
+/// Sort and deduplicate every bucket's entries.
+fn tidy(changes: &mut std::collections::BTreeMap<String, Vec<Entry>>) {
+    for entries in changes.values_mut() {
+        entries.sort();
+        entries.dedup();
+    }
+}
+
+/// Read the `paths` fragments into one section for `version` at `released`.
+fn harvested_section(
+    version: semver::Version,
+    released: chrono::DateTime<chrono::Utc>,
+    paths: &[std::path::PathBuf],
+) -> sysexits::Result<Section> {
+    let mut section = Section {
+        version,
+        released: Some(released),
+        introduction: None,
+        references: std::collections::BTreeMap::new(),
+        changes: std::collections::BTreeMap::new(),
+    };
+
+    for path in paths {
+        let source = std::fs::read_to_string(path).map_err(|reason| {
+            eprintln!(
+                "git-harvest:  cannot read {}:  {reason}",
+                path.display()
+            );
+            sysexits::ExitCode::NoInput
+        })?;
+        let fragment: Fragment = ron::from_str(&source).map_err(|reason| {
+            eprintln!(
+                "git-harvest:  cannot parse {}:  {reason}",
+                path.display()
+            );
+            sysexits::ExitCode::DataErr
+        })?;
+
+        section.references.extend(fragment.references);
+        for (bucket, entries) in fragment.changes {
+            section.changes.entry(bucket).or_default().extend(entries);
+        }
+    }
+
+    tidy(&mut section.changes);
+    Ok(section)
+}
+
+/// Merge `section` into the CHANGELOG, joining a same-version section or
+/// inserting a new one in descending version order.
+fn splice(changelog: &mut Changelog, section: Section) {
+    if let Some(existing) = changelog
+        .sections
+        .iter_mut()
+        .find(|existing| existing.version == section.version)
+    {
+        existing.references.extend(section.references);
+        for (bucket, entries) in section.changes {
+            existing.changes.entry(bucket).or_default().extend(entries);
+        }
+        existing.released = existing.released.max(section.released);
+        tidy(&mut existing.changes);
+    } else {
+        let at = changelog
+            .sections
+            .iter()
+            .position(|existing| existing.version < section.version)
+            .unwrap_or(changelog.sections.len());
+        changelog.sections.insert(at, section);
+    }
+}
+
+/// Merge the harvested fragments into a new CHANGELOG section.
+fn assemble(arguments: &AssembleArguments) -> sysexits::Result<()> {
+    let version =
+        arguments
+            .version
+            .parse::<semver::Version>()
+            .map_err(|reason| {
+                eprintln!(
+                    "git-harvest:  {:?} is not a version:  {reason}",
+                    arguments.version
+                );
+                sysexits::ExitCode::Usage
+            })?;
+
+    let released = match &arguments.released {
+        None => chrono::Utc::now(),
+        Some(text) => {
+            text.parse::<chrono::DateTime<chrono::Utc>>()
+                .map_err(|reason| {
+                    eprintln!(
+                        "git-harvest:  {text:?} is not a moment:  {reason}"
+                    );
+                    sysexits::ExitCode::Usage
+                })?
+        }
+    };
+
+    let mut changelog = read_changelog(&arguments.changelog)?;
+    let fragments = fragment_paths(&arguments.input);
+
+    if fragments.is_empty() {
+        eprintln!(
+            "git-harvest:  no fragments in {}; nothing to assemble",
+            arguments.input.display()
+        );
+        return Ok(());
+    }
+
+    let section = harvested_section(version.clone(), released, &fragments)?;
+    splice(&mut changelog, section);
+
+    std::fs::write(&arguments.changelog, changelog.to_ron()?).map_err(
+        |reason| {
+            eprintln!(
+                "git-harvest:  cannot write {}:  {reason}",
+                arguments.changelog.display()
+            );
+            sysexits::ExitCode::IoErr
+        },
+    )?;
+
+    for path in &fragments {
+        std::fs::remove_file(path).map_err(|reason| {
+            eprintln!(
+                "git-harvest:  cannot delete {}:  {reason}",
+                path.display()
+            );
+            sysexits::ExitCode::IoErr
+        })?;
+    }
+
+    eprintln!(
+        "git-harvest:  {} fragments -> section {version} of {}",
+        fragments.len(),
+        arguments.changelog.display()
+    );
     Ok(())
 }
 

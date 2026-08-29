@@ -17,17 +17,43 @@
 |                                                                              |
 \******************************************************************************/
 
-//! Harvest a CHANGELOG from your Git history.
+//! Harvest a CHANGELOG from a repository's Git history.
+//!
+//! Two passes:  structured commit subjects are harvested into RON fragments,
+//! then a second pass assembles them into a RON CHANGELOG with a rendered
+//! Markdown sibling.  So far the crate implements `git-harvest init`, which
+//! writes a fresh CHANGELOG carrying the default configuration.
 
-/// Parse the command line, run the task, and map the outcome to an exit code.
-fn main() -> std::process::ExitCode {
-    match git_harvest::run(<git_harvest::Cli as clap::Parser>::parse()) {
-        Ok(()) => std::process::ExitCode::SUCCESS,
-        Err(error) => {
-            eprintln!("git-harvest:  {error}");
-            std::process::ExitCode::FAILURE
-        }
+mod changelog;
+mod cli;
+mod error;
+
+pub use crate::{
+    changelog::{Changelog, Configuration, Grammar, Renderer, Section},
+    cli::{Cli, Command, InitArguments},
+    error::Error,
+};
+
+/// Run `git-harvest` with its arguments already parsed.
+///
+/// # Errors
+///
+/// Returns [`Error`] when the task fails:  for `init`, when the target exists
+/// without `--force`, or cannot be serialised or written.
+pub fn run(cli: Cli) -> Result<(), Error> {
+    match cli.command {
+        Command::Init(arguments) => init(&arguments),
     }
+}
+
+/// Write a fresh CHANGELOG holding [`Changelog::default`].
+fn init(arguments: &InitArguments) -> Result<(), Error> {
+    if arguments.output.exists() && !arguments.force {
+        return Err(Error::TargetExists(arguments.output.clone()));
+    }
+
+    std::fs::write(&arguments.output, Changelog::default().to_ron()?)
+        .map_err(Error::Write)
 }
 
 /******************************************************************************/

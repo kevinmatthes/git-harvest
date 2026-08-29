@@ -36,7 +36,7 @@ pub use crate::{
 ///
 /// # Errors
 ///
-/// Returns the [`sysexits::ExitCode`] to terminate with;  the human-readable
+/// Returns the [`sysexits::ExitCode`] to terminate with; the human-readable
 /// reason is printed to standard error at the point of failure.
 pub fn run(cli: Cli) -> sysexits::Result<()> {
     match cli.command {

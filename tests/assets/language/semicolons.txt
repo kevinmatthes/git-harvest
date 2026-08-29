@@ -1,0 +1,2 @@
+//! One clause;  two spaces follow the semicolon here.
+//! Another clause; one space follows this one.

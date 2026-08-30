@@ -1,0 +1,19 @@
+(
+  configuration: (
+    delimiter: "::=",
+    grammar: delimited,
+    buckets: [
+      "Added",
+      "Changed",
+      "Deprecated",
+      "Fixed",
+      "Removed",
+      "Security",
+    ],
+    fallback_bucket: None,
+    renderer: markdown,
+  ),
+  introduction: None,
+  references: {},
+  sections: [],
+)

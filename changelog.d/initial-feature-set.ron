@@ -1,0 +1,11 @@
+(
+  references: {},
+  changes: {
+    "Added": [
+      ("`git-harvest init` writes a starter CHANGELOG carrying the default configuration", None),
+      ("`git-harvest scan` harvests a branch's structured commit subjects into a RON fragment", None),
+      ("`git-harvest assemble` folds the fragments into a new CHANGELOG section", None),
+      ("`git-harvest render` exports the CHANGELOG as Keep a Changelog Markdown", None),
+    ],
+  },
+)

@@ -26,9 +26,10 @@
 //! 2026-08-23; a Rust repository should hold Rust, so they are a test harness
 //! now.
 //!
-//! Three of these tests check the checker rather than the repository.  A
+//! Four of these tests check the checker rather than the repository.  A
 //! checker which reports nothing is worthless until it has been shown to
-//! report something, and the Python original earned that lesson twice.
+//! report something, and the Python original earned that lesson twice; a
+//! fourth confirms the checker leaves the changelog RON files alone.
 //!
 //! Prose living outside the repository — the session reports — is held to the
 //! same conventions by naming it in `CONVENTIONS_EXTRA_PROSE`, colon
@@ -85,6 +86,16 @@ const HASH_COMMENTED: [&str; 7] = [
 /// The licence is a verbatim quotation of somebody else's words, and the
 /// lock file is generated.
 const UNCHECKED: [&str; 2] = ["Cargo.lock", "LICENCE"];
+
+/// Whether the file is a changelog RON document rather than prose.
+///
+/// `CHANGELOG.ron` and the `changelog.d/` fragments hold entries and RON
+/// syntax `git-harvest` writes — one item to a line, `key: value` with a
+/// single space — not text a person wrapped and spaced by hand.  The width
+/// and language rules step over them the way they step over `Cargo.lock`.
+fn changelog_ron(name: &str) -> bool {
+    Path::new(name).extension().is_some_and(|end| end == "ron")
+}
 
 /// Where the language fixtures live.
 ///
@@ -720,7 +731,10 @@ fn language_findings() -> Vec<String> {
         let name = show(&path);
         let base = name.rsplit('/').next().unwrap_or(&name).to_owned();
 
-        if UNCHECKED.contains(&base.as_str()) || name.starts_with(FIXTURES) {
+        if UNCHECKED.contains(&base.as_str())
+            || name.starts_with(FIXTURES)
+            || changelog_ron(&name)
+        {
             continue;
         }
 
@@ -790,7 +804,7 @@ fn every_file_holds_its_lines_within_eighty_characters() {
         let name = show(&path);
         let base = name.rsplit('/').next().unwrap_or(&name).to_owned();
 
-        if UNCHECKED.contains(&base.as_str()) {
+        if UNCHECKED.contains(&base.as_str()) || changelog_ron(&name) {
             continue;
         }
 
@@ -918,6 +932,14 @@ fn the_semicolon_check_reports_a_doubled_space_only_when_asked() {
         silent.is_empty(),
         "the rule stays off where it is not asked for, got:\n{silent:#?}"
     );
+}
+
+#[test]
+fn the_width_and_language_rules_skip_changelog_ron() {
+    assert!(changelog_ron("CHANGELOG.ron"));
+    assert!(changelog_ron("changelog.d/2026-01-02T03-04-05Z_branch.ron"));
+    assert!(!changelog_ron("src/changelog/document.rs"));
+    assert!(!changelog_ron("Cargo.toml"));
 }
 
 /// The commit subjects since the most recent tag, or nothing where there is

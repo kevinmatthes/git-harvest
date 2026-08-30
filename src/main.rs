@@ -17,7 +17,7 @@
 |                                                                              |
 \******************************************************************************/
 
-//! Harvest a CHANGELOG from your Git history.
+//! Harvest a CHANGELOG from a repository's Git history.
 
 /// Parse the command line, run the task, and forward its `sysexits` code.
 fn main() -> sysexits::ExitCode {

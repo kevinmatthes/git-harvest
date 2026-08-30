@@ -6,21 +6,38 @@ Harvest a CHANGELOG from your Git history.
 
 ## Status
 
-Early.  `git-harvest init` writes a starter CHANGELOG carrying the default
-configuration; the harvest and assembly passes are next.  The repository holds
-the full project scaffold — manifest, licence, continuous integration and the
+Early, but working end to end.  Four subcommands cover both passes:  `init`,
+`scan`, `assemble` and `render`.  RON is the only fragment and CHANGELOG
+format so far, the release version and date are supplied on the command
+line, and there is no forge integration yet.  The repository holds the full
+project scaffold — manifest, licence, continuous integration and the
 conventions harness.
 
-## How it will work
+## How it works
 
-Two passes:
+Two passes, four subcommands.
 
-1. **Harvest.**  Each structured commit subject — by default `Bucket ::= entry`,
-   for example `Added ::= a new option` — becomes a RON fragment under
-   `changelog.d/`, one file per branch.  The grammar is configurable.
-2. **Assemble.**  A second pass merges the fragments into a machine-owned RON
-   CHANGELOG, stamps it with the release version and date, and renders a Keep
-   a Changelog Markdown file beside it.
+`git-harvest init` writes a starter `CHANGELOG.ron` carrying the default
+configuration:  the commit-subject delimiter, the grammar, the bucket
+vocabulary and the renderer.  It refuses to overwrite an existing file
+without `--force`.
+
+`git-harvest scan`, run on a feature branch, reads that branch's structured
+commit subjects — by default `Bucket ::= entry`, for example
+`Added ::= a new option` — and writes them to a RON fragment under
+`changelog.d/`, one file per branch.  Only commits absent from `main` are
+read, and merges are skipped.  The grammar is configurable.
+
+`git-harvest assemble <version>` folds every fragment into a new section of
+`CHANGELOG.ron`, stamps it with that version and the release date, inserts
+it in descending version order, and deletes the fragments it consumed.
+
+`git-harvest render` writes a Keep a Changelog Markdown file from the
+released sections of `CHANGELOG.ron`.
+
+Because the binary is named `git-harvest`, Git runs it as a subcommand:
+`git harvest init`, `git harvest scan` and the rest work with no further
+setup.
 
 Assembling release notes is the tool's job; version bumping stays with each
 repository's own release workflow.

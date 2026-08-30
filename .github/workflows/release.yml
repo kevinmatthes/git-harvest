@@ -140,7 +140,7 @@ jobs:
 
           next=$(echo "$VERSION" |
                  awk -F. '{ printf "%s.%s.%d", $1, $2, $3 + 1 }')
-          branch="release/post-v$VERSION"
+          branch="github-actions/post-v$VERSION"
           subject="[GitHub Actions] Release:  bump to $next"
 
           cargo run --locked -- assemble "$VERSION"

@@ -159,6 +159,8 @@ jobs:
                { print }' Cargo.lock > Cargo.lock.next
           mv Cargo.lock.next Cargo.lock
 
+          env -u CI cargo check --locked
+
           today=$(date -u +%F)
           sed -i -E "s/^version: .+/version: $VERSION/" CITATION.cff
           sed -i -E "s/^date-released: .+/date-released: $today/" CITATION.cff
@@ -169,10 +171,10 @@ jobs:
           git push -u origin "$branch"
 
           body="v$VERSION is published, so the manifest moves on to $next."
-          body="$body  The assembled CHANGELOG.ron section and the consumed"
-          body="$body  changelog.d/ fragments ride along.  Raise the version"
-          body="$body  further before merging if a larger change has already"
-          body="$body  landed; the release-level check says so."
+          body="$body  The assembled CHANGELOG.ron section, the consumed"
+          body="$body  changelog.d/ fragments and the refreshed THIRDPARTY.md"
+          body="$body  ride along.  Raise the version further before merging if"
+          body="$body  a larger change has already landed; release-level says."
 
           gh pr create --base main --head "$branch" \
              --title "$subject" --body "$body"

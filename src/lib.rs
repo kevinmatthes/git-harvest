@@ -22,7 +22,8 @@
 //! Two passes:  `git-harvest scan` harvests a branch's structured commits
 //! into a RON fragment, and `git-harvest assemble` merges the fragments into
 //! a new section of the RON CHANGELOG.  `git-harvest init` writes a fresh
-//! CHANGELOG to start from, and `git-harvest render` exports it as Markdown.
+//! CHANGELOG to start from, `git-harvest render` exports it as Markdown, and
+//! `git-harvest licences` reproduces the dependency licence notices.
 
 mod changelog;
 mod cli;
@@ -48,9 +49,24 @@ pub fn run(cli: Cli) -> sysexits::Result<()> {
     match cli.command {
         Command::Assemble(arguments) => assemble(&arguments),
         Command::Init(arguments) => init(&arguments),
+        Command::Licences(command) => {
+            licences(&command);
+            Ok(())
+        }
         Command::Render(arguments) => render(&arguments),
         Command::Scan(arguments) => scan(&arguments),
     }
+}
+
+/// The embedded licences of `git-harvest` and its dependencies.
+///
+/// Written to `OUT_DIR` by the build script and checked against the
+/// committed `THIRDPARTY.md` on every continuous-integration build.
+static LICENCES: list_my_licence::Attribution = list_my_licence::embed!();
+
+/// Reproduce the licence notices the `licences` subcommand asks for.
+fn licences(command: &list_my_licence::cli::LicenceCommand) {
+    print!("{}", command.render(&LICENCES));
 }
 
 /// Write a fresh CHANGELOG holding [`Changelog::default`].

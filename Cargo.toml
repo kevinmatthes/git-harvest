@@ -19,7 +19,7 @@
 
 [package]
 name = "git-harvest"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2024"
 rust-version = "1.98.0"
 description = "Harvest a CHANGELOG from your Git history."
@@ -29,16 +29,20 @@ authors = ["Kevin Matthes <aeruginous.rs@gmail.com>"]
 keywords = ["changelog", "git", "keep-a-changelog", "release", "ron"]
 categories = ["command-line-utilities", "development-tools"]
 readme = "README.md"
-include = ["src/**", "README.md", "LICENCE"]
+include = ["build.rs", "src/**", "README.md", "LICENCE", "THIRDPARTY.md"]
 
 [dependencies]
 chrono = { version = "0.4.45", features = ["serde"] }
 clap = { version = "4.6.6", features = ["derive"] }
 gix = "0.87.1"
+list-my-licence = { version = "0.1.2", features = ["clap"] }
 ron = "0.12.2"
 semver = "1.0.28"
 serde = { version = "1.0.229", features = ["derive"] }
 sysexits = "0.13.0"
+
+[build-dependencies]
+list-my-licence = { version = "0.1.2", features = ["build"] }
 
 [dev-dependencies]
 chrono = { version = "0.4.45", features = ["serde"] }

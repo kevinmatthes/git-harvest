@@ -35,6 +35,10 @@ it in descending version order, and deletes the fragments it consumed.
 `git-harvest render` writes a Keep a Changelog Markdown file from the
 released sections of `CHANGELOG.ron`.
 
+`git-harvest licences` reproduces the verbatim licence notices of
+`git-harvest` and every dependency it ships, harvested at build time by
+`list-my-licence`.  Pass a crate name to narrow the report to one package.
+
 Because the binary is named `git-harvest`, Git runs it as a subcommand:
 `git harvest init`, `git harvest scan` and the rest work with no further
 setup.

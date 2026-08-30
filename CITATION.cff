@@ -26,7 +26,7 @@ authors:
     family-names: Matthes
     given-names: Kevin
 cff-version: 1.2.0
-date-released: 2026-08-29
+date-released: 2026-08-30
 keywords:
   - Rust
   - changelog
@@ -39,6 +39,6 @@ message: Please cite this software using these information.
 repository-code: https://github.com/kevinmatthes/git-harvest
 title: git-harvest
 url: https://github.com/kevinmatthes/git-harvest
-version: 0.0.0
+version: 0.1.0
 
 ################################################################################

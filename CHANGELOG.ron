@@ -15,5 +15,20 @@
   ),
   introduction: None,
   references: {},
-  sections: [],
+  sections: [
+    (
+      version: (0, 1, 0),
+      released: Some("2026-08-30T00:00:00Z"),
+      introduction: None,
+      references: {},
+      changes: {
+        "Added": [
+          ("`git-harvest assemble` folds the fragments into a new CHANGELOG section", None),
+          ("`git-harvest init` writes a starter CHANGELOG carrying the default configuration", None),
+          ("`git-harvest render` exports the CHANGELOG as Keep a Changelog Markdown", None),
+          ("`git-harvest scan` harvests a branch\'s structured commit subjects into a RON fragment", None),
+        ],
+      },
+    ),
+  ],
 )

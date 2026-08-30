@@ -1,0 +1,180 @@
+######################## GNU General Public License 3.0 ########################
+##                                                                            ##
+## Copyright (C) 2026 Kevin Matthes                                           ##
+##                                                                            ##
+## This program is free software: you can redistribute it and/or modify       ##
+## it under the terms of the GNU General Public License as published by       ##
+## the Free Software Foundation, either version 3 of the License, or          ##
+## (at your option) any later version.                                        ##
+##                                                                            ##
+## This program is distributed in the hope that it will be useful,            ##
+## but WITHOUT ANY WARRANTY; without even the implied warranty of             ##
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              ##
+## GNU General Public License for more details.                               ##
+##                                                                            ##
+## You should have received a copy of the GNU General Public License          ##
+## along with this program.  If not, see <https://www.gnu.org/licenses/>.     ##
+##                                                                            ##
+################################################################################
+
+name: release
+
+on:
+  schedule:
+    - cron: "0 0 * * 1"
+  workflow_dispatch:
+
+jobs:
+  decide:
+    if: github.repository == 'kevinmatthes/git-harvest'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      release: ${{ steps.check.outputs.release }}
+      version: ${{ steps.check.outputs.version }}
+    steps:
+      - name: checkout w/ tags
+        uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: anything shipped since the last tag?
+        id: check
+        run: |
+          set -euo pipefail
+
+          blank_version() {
+            case "$1" in
+              Cargo.toml)
+                awk '/^\[/ { s = $0 }
+                     s == "[package]" && /^version = / { print "V"; next }
+                     { print }'
+                ;;
+              Cargo.lock)
+                awk '/^name = "git-harvest"$/ { seen = 1 }
+                     seen && /^version = / { print "V"; seen = 0; next }
+                     { print }'
+                ;;
+              *) cat ;;
+            esac
+          }
+
+          last=$(git describe --tags --abbrev=0)
+          version=$(cargo metadata --format-version 1 --no-deps |
+                    jq -r '.packages[0].version')
+
+          shipped=no
+          for f in $(git diff --name-only "$last"..HEAD); do
+            case "$f" in
+              src/*|README.md|LICENCE|Cargo.toml|Cargo.lock) ;;
+              *) continue ;;
+            esac
+            a=$(git show "$last:$f" 2>/dev/null | blank_version "$f" || true)
+            b=$(git show "HEAD:$f" 2>/dev/null | blank_version "$f" || true)
+            [ "$a" = "$b" ] || { shipped=yes; break; }
+          done
+
+          release=no
+          if [ "$shipped" = yes ] &&
+             [ -z "$(git ls-remote --tags origin "refs/tags/v$version")" ]
+          then
+            release=yes
+          fi
+
+          echo "last=$last version=$version shipped=$shipped -> $release"
+          {
+            echo "release=$release"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+
+  release:
+    needs: decide
+    if: needs.decide.outputs.release == 'yes'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - run: rustup update
+
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: softprops/action-gh-release@v3.0.2
+        with:
+          generate_release_notes: true
+          tag_name: v${{ needs.decide.outputs.version }}
+
+      - id: auth
+        uses: rust-lang/crates-io-auth-action@v1.0.5
+
+      - env:
+          CARGO_REGISTRY_TOKEN: ${{ steps.auth.outputs.token }}
+        run: cargo publish --locked
+
+  bookkeep:
+    needs: [decide, release]
+    if: needs.decide.outputs.release == 'yes'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      VERSION: ${{ needs.decide.outputs.version }}
+    steps:
+      - run: rustup update
+
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: main
+
+      - uses: fregante/setup-git-user@v2.0.2
+
+      - name: open the next-patch pull request
+        run: |
+          set -euo pipefail
+
+          next=$(echo "$VERSION" |
+                 awk -F. '{ printf "%s.%s.%d", $1, $2, $3 + 1 }')
+          branch="github-actions/post-v$VERSION"
+          subject="[GitHub Actions] Release:  bump to $next"
+
+          cargo run --locked -- assemble "$VERSION"
+
+          awk -v v="$next" '/^\[/ { s = $0 }
+               s == "[package]" && /^version = / {
+                 print "version = \"" v "\""; next
+               }
+               { print }' Cargo.toml > Cargo.toml.next
+          mv Cargo.toml.next Cargo.toml
+
+          awk -v v="$next" '/^name = "git-harvest"$/ { seen = 1 }
+               seen && /^version = / {
+                 print "version = \"" v "\""; seen = 0; next
+               }
+               { print }' Cargo.lock > Cargo.lock.next
+          mv Cargo.lock.next Cargo.lock
+
+          today=$(date -u +%F)
+          sed -i -E "s/^version: .+/version: $VERSION/" CITATION.cff
+          sed -i -E "s/^date-released: .+/date-released: $today/" CITATION.cff
+
+          git switch -c "$branch"
+          git add -A
+          git commit -m "$subject"
+          git push -u origin "$branch"
+
+          body="v$VERSION is published, so the manifest moves on to $next."
+          body="$body  The assembled CHANGELOG.ron section and the consumed"
+          body="$body  changelog.d/ fragments ride along.  Raise the version"
+          body="$body  further before merging if a larger change has already"
+          body="$body  landed; the release-level check says so."
+
+          gh pr create --base main --head "$branch" \
+             --title "$subject" --body "$body"
+
+################################################################################

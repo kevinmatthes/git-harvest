@@ -92,12 +92,118 @@ jobs:
 
       - run: cargo fmt --check
 
+  release-level:
+    runs-on: ubuntu-latest
+    steps:
+      - run: rustup update
+
+      - name: checkout w/ tags
+        uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: taiki-e/install-action@v2.87.2
+        with:
+          tool: cargo-semver-checks@0.50.0
+
+      - run: |
+          set -euo pipefail
+
+          LAST="$(git describe --tags --abbrev=0 2>/dev/null || true)"
+          if [ -z "$LAST" ]; then
+            echo "no baseline tag yet; nothing to measure against"
+            exit 0
+          fi
+          BASE="${LAST#v}"
+          echo "the baseline is $LAST"
+
+          level='patch'
+          raise() {
+            case "$1" in
+              major) level='major' ;;
+              minor) [ "$level" = major ] || level='minor' ;;
+            esac
+          }
+
+          echo "::group::cargo-semver-checks"
+          report="$(cargo semver-checks --baseline-rev "$LAST" 2>&1 \
+                    || true)"
+          echo "$report"
+          echo "::endgroup::"
+
+          case "$report" in
+            *'requires new major version'*) raise major ;;
+            *'requires new minor version'*) raise minor ;;
+            *'no semver update required'*) ;;
+            *) echo 'no verdict from cargo-semver-checks'; exit 1 ;;
+          esac
+
+          OLD_MSRV="$(git show "$LAST:Cargo.toml" |
+                      awk -F'"' '/^rust-version = / { print $2; exit }')"
+          NEW_MSRV="$(awk -F'"' '/^rust-version = / { print $2; exit }' \
+                      Cargo.toml)"
+          if [ "$OLD_MSRV" != "$NEW_MSRV" ] &&
+             [ "$(printf '%s\n%s\n' "$OLD_MSRV" "$NEW_MSRV" |
+                  sort -V | tail -1)" = "$NEW_MSRV" ]
+          then
+            echo "the minimum toolchain rose $OLD_MSRV -> $NEW_MSRV"
+            raise minor
+          fi
+
+          depmajor() {
+            grep -E "^$1 = " | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' |
+              head -1 | cut -d. -f1
+          }
+
+          for dep in chrono clap semver sysexits; do
+            old="$(git show "$LAST:Cargo.toml" | depmajor "$dep")"
+            new="$(depmajor "$dep" < Cargo.toml)"
+            if [ -n "$old" ] && [ -n "$new" ] && [ "$new" -gt "$old" ]
+            then
+              echo "$dep is required at $new, was $old"
+              raise major
+            fi
+          done
+
+          IFS=. read -r MAJ MIN PAT <<< "$BASE"
+          if [ "$MAJ" -eq 0 ]; then
+            case "$level" in
+              major) EXPECTED="0.$((MIN + 1)).0" ;;
+              *) EXPECTED="0.$MIN.$((PAT + 1))" ;;
+            esac
+          else
+            case "$level" in
+              major) EXPECTED="$((MAJ + 1)).0.0" ;;
+              minor) EXPECTED="$MAJ.$((MIN + 1)).0" ;;
+              *) EXPECTED="$MAJ.$MIN.$((PAT + 1))" ;;
+            esac
+          fi
+
+          ACTUAL="$(awk -F'"' '/^\[/ { s = $0 }
+                    s == "[package]" && /^version = / {
+                      print $2; exit
+                    }' Cargo.toml)"
+          echo "$LAST plus a $level step is $EXPECTED;"
+          echo "the manifest says $ACTUAL"
+
+          if [ "$ACTUAL" = "$EXPECTED" ] || [ "$ACTUAL" = 1.0.0 ]; then
+            exit 0
+          fi
+
+          echo "this change asks for a $level release over $BASE, so the"
+          echo "manifest must read $EXPECTED, not $ACTUAL:  set the"
+          echo "package version in Cargo.toml, the git-harvest entry in"
+          echo "Cargo.lock and the version of CITATION.cff to $EXPECTED"
+          exit 1
+
   gate:
     needs:
       - actionlint
       - cargo
       - cffconvert
       - formatting
+      - release-level
       - renovate-linter
     runs-on: ubuntu-latest
     steps:

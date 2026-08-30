@@ -17,6 +17,20 @@
   references: {},
   sections: [
     (
+      version: (0, 2, 0),
+      released: Some("2026-08-30T00:00:00Z"),
+      introduction: None,
+      references: {},
+      changes: {
+        "Added": [
+          ("`git harvest licences` reproduces the verbatim licence notices of git-harvest and every dependency it ships", None),
+        ],
+        "Changed": [
+          ("the `Command` enum is `#[non_exhaustive]`, so a new subcommand is a minor release rather than a breaking one", None),
+        ],
+      },
+    ),
+    (
       version: (0, 1, 0),
       released: Some("2026-08-30T00:00:00Z"),
       introduction: None,

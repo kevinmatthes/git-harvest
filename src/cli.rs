@@ -29,13 +29,22 @@ pub struct Cli {
 }
 
 /// The tasks `git-harvest` can perform.
+///
+/// `#[non_exhaustive]`:  a new subcommand is a minor release, not a major
+/// one — downstream code that matches on this enum must carry a wildcard
+/// arm.
 #[derive(clap::Subcommand, Debug)]
+#[non_exhaustive]
 pub enum Command {
     /// Merge the harvested fragments into a new CHANGELOG section.
     Assemble(AssembleArguments),
 
     /// Write a fresh CHANGELOG carrying the default configuration.
     Init(InitArguments),
+
+    /// Reproduce the licences of `git-harvest` and its dependencies.
+    #[command(flatten)]
+    Licences(list_my_licence::cli::LicenceCommand),
 
     /// Render the CHANGELOG as a Keep a Changelog Markdown file.
     Render(RenderArguments),

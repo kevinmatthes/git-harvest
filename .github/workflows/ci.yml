@@ -127,8 +127,8 @@ jobs:
           }
 
           echo "::group::cargo-semver-checks"
-          report="$(cargo semver-checks --baseline-rev "$LAST" 2>&1 \
-                    || true)"
+          report="$(cargo semver-checks --baseline-rev "$LAST" \
+                    --release-type patch 2>&1 || true)"
           echo "$report"
           echo "::endgroup::"
 
@@ -156,7 +156,7 @@ jobs:
               head -1 | cut -d. -f1
           }
 
-          for dep in chrono clap semver sysexits; do
+          for dep in chrono clap list-my-licence semver sysexits; do
             old="$(git show "$LAST:Cargo.toml" | depmajor "$dep")"
             new="$(depmajor "$dep" < Cargo.toml)"
             if [ -n "$old" ] && [ -n "$new" ] && [ "$new" -gt "$old" ]

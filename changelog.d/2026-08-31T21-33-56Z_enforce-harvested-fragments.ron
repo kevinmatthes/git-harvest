@@ -1,0 +1,8 @@
+(
+  references: {},
+  changes: {
+    "Added": [
+      ("a CI check that a branch harvests its changelog fragments", Some("ed76675")),
+    ],
+  },
+)

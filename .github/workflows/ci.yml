@@ -197,10 +197,78 @@ jobs:
           echo "Cargo.lock and the version of CITATION.cff to $EXPECTED"
           exit 1
 
+  changelog-fragment:
+    runs-on: ubuntu-latest
+    steps:
+      - if: github.event_name == 'pull_request'
+        run: rustup update
+
+      - if: github.event_name == 'pull_request'
+        uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - if: github.event_name == 'pull_request'
+        name: a Bucket ::= commit is matched by a committed fragment
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+
+          harvested=no
+          while IFS= read -r subject; do
+            case "$subject" in
+              'Added ::= '* | 'Changed ::= '* | 'Deprecated ::= '* | \
+              'Fixed ::= '* | 'Removed ::= '* | 'Security ::= '*)
+                harvested=yes ;;
+            esac
+          done < <(git log --format='%s' "$BASE..$HEAD")
+
+          added=$(git diff --diff-filter=A --name-only "$BASE...$HEAD" \
+                  -- changelog.d/)
+
+          if [ "$harvested" = yes ] && [ -z "$added" ]; then
+            echo "::error::a 'Bucket ::= ' commit on this branch adds no"
+            echo "changelog.d/ fragment.  Run 'git harvest scan' and commit"
+            echo "the result before merging."
+            exit 1
+          fi
+
+          scan_dir="$RUNNER_TEMP/harvest"
+          cargo run --locked --quiet -- scan --base "$BASE" \
+            --output "$scan_dir"
+
+          fresh=("$scan_dir"/*.ron)
+          if [ ${#fresh[@]} -eq 0 ]; then
+            echo "nothing to harvest; the fragment check passes"
+            exit 0
+          fi
+
+          normalise() { sed -E 's/Some\("[0-9a-f]+"\)/Some(HASH)/g' "$1"; }
+          want=$(normalise "${fresh[0]}")
+
+          for committed in changelog.d/*.ron; do
+            if [ "$(normalise "$committed")" = "$want" ]; then
+              echo "a committed fragment matches a fresh scan of this branch"
+              exit 0
+            fi
+          done
+
+          echo "::error::'git harvest scan' finds entries that no committed"
+          echo "changelog.d/ fragment carries -- the fragment is missing or"
+          echo "stale.  Re-run 'git harvest scan' and commit it."
+          echo '--- a fresh scan of this branch ---'
+          cat "${fresh[0]}"
+          exit 1
+
   gate:
     needs:
       - actionlint
       - cargo
+      - changelog-fragment
       - cffconvert
       - formatting
       - release-level

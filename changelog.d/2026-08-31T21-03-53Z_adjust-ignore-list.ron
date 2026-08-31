@@ -1,0 +1,8 @@
+(
+  references: {},
+  changes: {
+    "Changed": [
+      ("adjust ignore list style", Some("e6dacf0")),
+    ],
+  },
+)

@@ -103,7 +103,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - uses: softprops/action-gh-release@v3.0.2
+      - uses: softprops/action-gh-release@v3.0.3
         with:
           generate_release_notes: true
           tag_name: v${{ needs.decide.outputs.version }}

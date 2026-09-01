@@ -19,7 +19,7 @@
 
 [package]
 name = "git-harvest"
-version = "0.2.1"
+version = "0.3.0"
 edition = "2024"
 rust-version = "1.98.0"
 description = "Harvest a CHANGELOG from your Git history."

@@ -36,9 +36,16 @@
     serde::Deserialize,
     serde::Serialize,
 )]
+#[non_exhaustive]
 pub struct Entry(pub String, pub Option<String>);
 
 impl Entry {
+    /// An entry written by hand, with no commit behind it.
+    #[must_use]
+    pub fn authored(text: &str) -> Self {
+        Self(text.to_owned(), None)
+    }
+
     /// The abbreviated commit hash this entry was harvested from, if any.
     #[must_use]
     pub fn commit(&self) -> Option<&str> {

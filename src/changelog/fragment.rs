@@ -27,6 +27,7 @@
 #[derive(
     Clone, Debug, Default, Eq, PartialEq, serde::Deserialize, serde::Serialize,
 )]
+#[non_exhaustive]
 pub struct Fragment {
     /// The contributors this branch registers, keyed by alias.
     #[serde(default)]

@@ -34,6 +34,7 @@ adheres to \
 #[derive(
     Clone, Debug, Default, Eq, PartialEq, serde::Deserialize, serde::Serialize,
 )]
+#[non_exhaustive]
 pub struct Changelog {
     /// The harvest settings for this repository.
     pub configuration: crate::Configuration,

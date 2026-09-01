@@ -46,8 +46,8 @@ fn a_released_section_renders_in_keep_a_changelog_form() {
     changelog.sections.push(section(
         "0.2.0",
         &[
-            ("Added", &[Entry("a new flag".to_owned(), None)]),
-            ("Fixed", &[Entry("a crash".to_owned(), None)]),
+            ("Added", &[Entry::authored("a new flag")]),
+            ("Fixed", &[Entry::authored("a crash")]),
         ],
     ));
 
@@ -62,8 +62,7 @@ fn a_released_section_renders_in_keep_a_changelog_form() {
 #[test]
 fn a_pending_section_is_left_out() {
     let mut changelog = Changelog::default();
-    let mut pending =
-        section("0.3.0", &[("Added", &[Entry("x".to_owned(), None)])]);
+    let mut pending = section("0.3.0", &[("Added", &[Entry::authored("x")])]);
     pending.released = None;
     changelog.sections.push(pending);
 
@@ -78,8 +77,8 @@ fn buckets_follow_the_configuration_order() {
     changelog.sections.push(section(
         "0.2.0",
         &[
-            ("Added", &[Entry("an addition".to_owned(), None)]),
-            ("Fixed", &[Entry("a repair".to_owned(), None)]),
+            ("Added", &[Entry::authored("an addition")]),
+            ("Fixed", &[Entry::authored("a repair")]),
         ],
     ));
 

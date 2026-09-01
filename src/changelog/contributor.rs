@@ -27,6 +27,7 @@
 /// `alias` is mandatory and, before curation, is simply the raw e-mail the
 /// contributor was first registered under.
 #[derive(Clone, Debug, Eq, PartialEq, serde::Deserialize, serde::Serialize)]
+#[non_exhaustive]
 pub struct Contributor {
     /// The short handle this contributor is credited as.
     pub alias: String,

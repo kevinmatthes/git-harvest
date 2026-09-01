@@ -31,7 +31,8 @@ mod git;
 
 pub use crate::{
     changelog::{
-        Changelog, Configuration, Entry, Fragment, Grammar, Renderer, Section,
+        Changelog, Configuration, Contributor, Entry, Fragment, Grammar,
+        Renderer, Section,
     },
     cli::{
         AssembleArguments, Cli, Command, InitArguments, RenderArguments,

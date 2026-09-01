@@ -17,23 +17,48 @@
 |                                                                              |
 \******************************************************************************/
 
-//! The CHANGELOG data model:  configuration, fragments, sections, document.
+//! A `Contributor` keeps its identities in insertion order through RON.
 
-mod configuration;
-mod contributor;
-mod document;
-mod entry;
-mod fragment;
-mod section;
-mod version;
+use git_harvest::Contributor;
 
-pub use crate::changelog::{
-    configuration::{Configuration, Grammar, Renderer},
-    contributor::Contributor,
-    document::Changelog,
-    entry::Entry,
-    fragment::Fragment,
-    section::Section,
-};
+#[test]
+fn a_repeated_identity_is_not_recorded_twice() {
+    let mut contributor = Contributor::new("octocat");
+    contributor.add_email("octocat@github.com");
+    contributor.add_email("octocat@github.com");
+
+    assert_eq!(contributor.emails.len(), 1);
+}
+
+#[test]
+fn the_identities_keep_their_insertion_order_through_ron() {
+    let mut contributor = Contributor::new("octocat");
+    contributor.add_name("The Octocat");
+    contributor.add_name("octocat");
+    contributor.add_email("octocat@github.com");
+    contributor.add_url("https://github.blog");
+    contributor.add_url("https://github.com/octocat");
+
+    let ron = ron::ser::to_string(&contributor).unwrap();
+    let parsed: Contributor = ron::from_str(&ron).unwrap();
+
+    assert_eq!(parsed, contributor);
+    assert_eq!(parsed.primary_name(), Some("The Octocat"));
+    assert_eq!(parsed.primary_email(), Some("octocat@github.com"));
+    assert_eq!(parsed.primary_url(), Some("https://github.blog"));
+    assert_eq!(
+        parsed.urls.iter().map(String::as_str).collect::<Vec<_>>(),
+        ["https://github.blog", "https://github.com/octocat"],
+    );
+}
+
+#[test]
+fn a_bare_alias_carries_no_identities() {
+    let contributor = Contributor::new("dependabot");
+
+    assert!(contributor.primary_name().is_none());
+    assert!(contributor.primary_email().is_none());
+    assert!(contributor.primary_url().is_none());
+}
 
 /******************************************************************************/

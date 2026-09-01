@@ -31,6 +31,7 @@
     serde::Serialize,
 )]
 #[serde(rename_all = "snake_case")]
+#[non_exhaustive]
 pub enum Grammar {
     /// `Bucket <delimiter> entry`, for example `Added ::= a new option`.
     #[default]
@@ -52,6 +53,7 @@ pub enum Grammar {
     serde::Serialize,
 )]
 #[serde(rename_all = "snake_case")]
+#[non_exhaustive]
 pub enum Renderer {
     /// A *Keep a Changelog* Markdown document beside the RON source.
     #[default]
@@ -64,6 +66,7 @@ pub enum Renderer {
 /// the CHANGELOG document, and [`Configuration::default`] is what
 /// `git-harvest init` writes into a fresh one.
 #[derive(Clone, Debug, Eq, PartialEq, serde::Deserialize, serde::Serialize)]
+#[non_exhaustive]
 pub struct Configuration {
     /// The token separating a bucket from its entry under
     /// [`Grammar::Delimited`].

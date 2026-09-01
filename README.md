@@ -1,4 +1,4 @@
-# git-harvest
+# `git-harvest`
 
 Harvest a CHANGELOG from your Git history.
 

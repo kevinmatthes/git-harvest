@@ -4,6 +4,12 @@ Harvest a CHANGELOG from your Git history.
 
 `git-harvest` turns the commits you already write into a CHANGELOG.
 
+> **Made with Anthropic Claude.**  The implementation and the documentation
+> were written by Claude, working to the direction and review of the author,
+> with whom every design decision rests.  Each commit names the model in a
+> `Co-Authored-By` trailer, so the record is per change rather than only
+> here.
+
 ## Status
 
 Early, but working end to end.  Four subcommands cover both passes:  `init`,

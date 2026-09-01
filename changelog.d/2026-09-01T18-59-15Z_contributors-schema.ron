@@ -1,0 +1,12 @@
+(
+  contributors: {},
+  references: {},
+  changes: {
+    "Added": [
+      ("a Contributor type and the CHANGELOG\'s contributor registry", Some("edbe223")),
+    ],
+    "Changed": [
+      ("the CHANGELOG data-model types are #[non_exhaustive]", Some("9bec99c")),
+    ],
+  },
+)

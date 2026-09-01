@@ -38,6 +38,10 @@ pub struct Changelog {
     /// The harvest settings for this repository.
     pub configuration: crate::Configuration,
 
+    /// The contributors credited across this document, keyed by alias.
+    #[serde(default)]
+    pub contributors: std::collections::BTreeMap<String, crate::Contributor>,
+
     /// An optional prose lead for the whole document.
     pub introduction: Option<String>,
 

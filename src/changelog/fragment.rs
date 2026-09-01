@@ -28,6 +28,10 @@
     Clone, Debug, Default, Eq, PartialEq, serde::Deserialize, serde::Serialize,
 )]
 pub struct Fragment {
+    /// The contributors this branch registers, keyed by alias.
+    #[serde(default)]
+    pub contributors: std::collections::BTreeMap<String, crate::Contributor>,
+
     /// Link labels used by this fragment, mapped to their targets.
     pub references: std::collections::BTreeMap<String, String>,
 

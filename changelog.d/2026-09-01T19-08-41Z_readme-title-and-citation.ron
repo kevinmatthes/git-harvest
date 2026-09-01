@@ -1,0 +1,9 @@
+(
+  contributors: {},
+  references: {},
+  changes: {
+    "Changed": [
+      ("the README now titles the crate in code font", Some("24e5161")),
+    ],
+  },
+)

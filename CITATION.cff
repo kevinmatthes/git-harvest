@@ -39,6 +39,6 @@ message: Please cite this software using these information.
 repository-code: https://github.com/kevinmatthes/git-harvest
 title: git-harvest
 url: https://github.com/kevinmatthes/git-harvest
-version: 0.3.0
+version: 0.2.0
 
 ################################################################################

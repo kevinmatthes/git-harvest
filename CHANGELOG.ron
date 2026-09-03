@@ -68,6 +68,127 @@
   references: {},
   sections: [
     (
+      version: (0, 3, 0),
+      released: Some("2026-09-03T20:38:14.029376775Z"),
+      introduction: None,
+      references: {},
+      changes: {
+        "Added": [
+          (
+            text: "a CI check that a branch harvests its changelog fragments",
+            commit: Some("ed76675"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "a Contributor type and the CHANGELOG\'s contributor registry",
+            commit: Some("edbe223"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "contributor attribution across scan, id, assemble and render",
+            commit: Some("d98fb3f"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "credit Anthropic Claude in the README",
+            commit: Some("91f11fc"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+        ],
+        "Changed": [
+          (
+            text: "adjust ignore list style",
+            commit: Some("e6dacf0"),
+            aliases: [
+              "kevinmatthes",
+            ],
+          ),
+          (
+            text: "an Entry carries the contributor aliases credited for it",
+            commit: Some("d5ea4f9"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "harvested dependency bumps credit the Renovate bot",
+            commit: Some("a2c6df2"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "release and Renovate automation carry the branch-commit grammar",
+            commit: Some("8352ad1"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "the CHANGELOG data-model types are #[non_exhaustive]",
+            commit: Some("9bec99c"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "the GitHub release notes are the assembled CHANGELOG section",
+            commit: Some("263ab2e"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "the README now titles the crate in code font",
+            commit: Some("24e5161"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "update dependency rust to v1.98.1",
+            commit: None,
+            aliases: [
+              "renovate",
+            ],
+          ),
+          (
+            text: "update softprops/action-gh-release action to v3.0.3",
+            commit: None,
+            aliases: [
+              "renovate",
+            ],
+          ),
+          (
+            text: "update taiki-e/install-action action to v2.87.4",
+            commit: None,
+            aliases: [
+              "renovate",
+              "github-actions",
+            ],
+          ),
+        ],
+      },
+    ),
+    (
       version: (0, 2, 0),
       released: Some("2026-08-30T00:00:00Z"),
       introduction: None,
@@ -77,14 +198,20 @@
           (
             text: "`git harvest licences` reproduces the verbatim licence notices of git-harvest and every dependency it ships",
             commit: None,
-            aliases: ["kevinmatthes", "claude"],
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
           ),
         ],
         "Changed": [
           (
             text: "the `Command` enum is `#[non_exhaustive]`, so a new subcommand is a minor release rather than a breaking one",
             commit: None,
-            aliases: ["kevinmatthes", "claude"],
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
           ),
         ],
       },
@@ -99,22 +226,34 @@
           (
             text: "`git-harvest assemble` folds the fragments into a new CHANGELOG section",
             commit: None,
-            aliases: ["kevinmatthes", "claude"],
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
           ),
           (
             text: "`git-harvest init` writes a starter CHANGELOG carrying the default configuration",
             commit: None,
-            aliases: ["kevinmatthes", "claude"],
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
           ),
           (
             text: "`git-harvest render` exports the CHANGELOG as Keep a Changelog Markdown",
             commit: None,
-            aliases: ["kevinmatthes", "claude"],
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
           ),
           (
             text: "`git-harvest scan` harvests a branch\'s structured commit subjects into a RON fragment",
             commit: None,
-            aliases: ["kevinmatthes", "claude"],
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
           ),
         ],
       },

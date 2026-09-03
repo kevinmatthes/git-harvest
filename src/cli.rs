@@ -39,6 +39,9 @@ pub enum Command {
     /// Merge the harvested fragments into a new CHANGELOG section.
     Assemble(AssembleArguments),
 
+    /// Register and maintain the CHANGELOG's contributor registry.
+    Id(IdArguments),
+
     /// Write a fresh CHANGELOG carrying the default configuration.
     Init(InitArguments),
 
@@ -70,6 +73,110 @@ pub struct AssembleArguments {
 
     /// The version the new section documents, as `major.minor.patch`.
     pub version: String,
+}
+
+/// The arguments of `git-harvest id`.
+#[derive(clap::Args, Debug)]
+pub struct IdArguments {
+    /// The CHANGELOG whose contributor registry is edited.
+    #[arg(default_value = "CHANGELOG.ron", long, short)]
+    pub changelog: std::path::PathBuf,
+
+    /// The registry operation to perform.
+    #[command(subcommand)]
+    pub command: IdCommand,
+}
+
+/// The operations of `git-harvest id`.
+///
+/// `#[non_exhaustive]`:  a new operation is a minor release.
+#[derive(clap::Subcommand, Debug)]
+#[non_exhaustive]
+pub enum IdCommand {
+    /// Register the identity from the local Git configuration.
+    Inherit,
+
+    /// Register a contributor under a chosen alias.
+    Register(RegisterArguments),
+
+    /// Change a registered contributor's names, e-mails or URLs.
+    Update(UpdateArguments),
+
+    /// Fold several registered contributors into one.
+    Merge(MergeArguments),
+}
+
+/// The arguments of `git-harvest id register`.
+#[derive(clap::Args, Debug)]
+pub struct RegisterArguments {
+    /// The alias to credit this contributor as.
+    pub alias: String,
+
+    /// The contributor's name.
+    pub name: String,
+
+    /// The contributor's e-mail address.
+    pub email: String,
+}
+
+/// The arguments of `git-harvest id update`.
+///
+/// Adds are applied first, then removes, then primary promotions, then the
+/// rename; the request is validated whole and written once or not at all
+/// (`git-harvest.md` D58).
+#[derive(clap::Args, Debug)]
+pub struct UpdateArguments {
+    /// The contributor to change.
+    pub alias: String,
+
+    /// Rename the contributor; the new alias must be unregistered.
+    #[arg(long)]
+    pub rename: Option<String>,
+
+    /// Add a name; repeatable.
+    #[arg(long)]
+    pub add_name: Vec<String>,
+
+    /// Remove a name; repeatable.
+    #[arg(long)]
+    pub remove_name: Vec<String>,
+
+    /// Add an e-mail address; repeatable.
+    #[arg(long)]
+    pub add_email: Vec<String>,
+
+    /// Remove an e-mail address; repeatable.
+    #[arg(long)]
+    pub remove_email: Vec<String>,
+
+    /// Add a URL; repeatable.
+    #[arg(long)]
+    pub add_url: Vec<String>,
+
+    /// Remove a URL; repeatable.
+    #[arg(long)]
+    pub remove_url: Vec<String>,
+
+    /// Make this name the primary, adding it if absent.
+    #[arg(long)]
+    pub primary_name: Option<String>,
+
+    /// Make this e-mail the primary, adding it if absent.
+    #[arg(long)]
+    pub primary_email: Option<String>,
+
+    /// Make this URL the primary, adding it if absent.
+    #[arg(long)]
+    pub primary_url: Option<String>,
+}
+
+/// The arguments of `git-harvest id merge`.
+#[derive(clap::Args, Debug)]
+pub struct MergeArguments {
+    /// The aliases to fold together; the last one names the survivor and
+    /// may be a fresh alias (`git-harvest.md` D59).
+    #[arg(num_args = 2.., required = true)]
+    pub aliases: Vec<String>,
 }
 
 /// The arguments of `git-harvest init`.

@@ -29,14 +29,17 @@ mod changelog;
 mod cli;
 mod git;
 
+use crate::changelog::registry;
+
 pub use crate::{
     changelog::{
         Changelog, Configuration, Contributor, Entry, Fragment, Grammar,
         Renderer, Section,
     },
     cli::{
-        AssembleArguments, Cli, Command, InitArguments, RenderArguments,
-        ScanArguments,
+        AssembleArguments, Cli, Command, IdArguments, IdCommand, InitArguments,
+        MergeArguments, RegisterArguments, RenderArguments, ScanArguments,
+        UpdateArguments,
     },
 };
 
@@ -49,6 +52,7 @@ pub use crate::{
 pub fn run(cli: Cli) -> sysexits::Result<()> {
     match cli.command {
         Command::Assemble(arguments) => assemble(&arguments),
+        Command::Id(arguments) => id(&arguments),
         Command::Init(arguments) => init(&arguments),
         Command::Licences(command) => {
             licences(&command);
@@ -126,8 +130,18 @@ fn scan(arguments: &ScanArguments) -> sysexits::Result<()> {
 
     for commit in &commits {
         if let Some((bucket, text)) = configuration.parse(&commit.subject) {
-            fragment
-                .record(&bucket, Entry::harvested(&text, &commit.short_hash));
+            let mut entry = Entry::harvested(&text, &commit.short_hash);
+
+            for identity in &commit.identities {
+                let alias = registry::register(
+                    &mut fragment.contributors,
+                    &identity.name,
+                    &identity.email,
+                );
+                entry.credit(&alias);
+            }
+
+            fragment.record(&bucket, entry);
         }
     }
 
@@ -249,12 +263,16 @@ fn tidy(changes: &mut std::collections::BTreeMap<String, Vec<Entry>>) {
     }
 }
 
-/// Read the `paths` fragments into one section for `version` at `released`.
+/// The credited contributors a fragment or a document keeps, keyed by alias.
+type Registry = std::collections::BTreeMap<String, Contributor>;
+
+/// Read the `paths` fragments into one section for `version` at `released`,
+/// alongside the contributor registrations they carry.
 fn harvested_section(
     version: semver::Version,
     released: chrono::DateTime<chrono::Utc>,
     paths: &[std::path::PathBuf],
-) -> sysexits::Result<Section> {
+) -> sysexits::Result<(Section, Registry)> {
     let mut section = Section {
         version,
         released: Some(released),
@@ -262,6 +280,7 @@ fn harvested_section(
         references: std::collections::BTreeMap::new(),
         changes: std::collections::BTreeMap::new(),
     };
+    let mut contributors = Registry::new();
 
     for path in paths {
         let source = std::fs::read_to_string(path).map_err(|reason| {
@@ -283,10 +302,43 @@ fn harvested_section(
         for (bucket, entries) in fragment.changes {
             section.changes.entry(bucket).or_default().extend(entries);
         }
+        for (alias, contributor) in fragment.contributors {
+            contributors
+                .entry(alias)
+                .and_modify(|known| registry::fold(known, &contributor))
+                .or_insert(contributor);
+        }
     }
 
     tidy(&mut section.changes);
-    Ok(section)
+    Ok((section, contributors))
+}
+
+/// Rewrite every credited alias in `section` through `remap`.
+fn remap_credits(
+    section: &mut Section,
+    remap: &std::collections::BTreeMap<String, String>,
+) {
+    for entries in section.changes.values_mut() {
+        for entry in entries {
+            entry.aliases = entry
+                .aliases
+                .iter()
+                .map(|alias| remap.get(alias).unwrap_or(alias).clone())
+                .collect();
+        }
+    }
+}
+
+/// Serialise `changelog` back to its RON file.
+fn write_changelog(
+    path: &std::path::Path,
+    changelog: &Changelog,
+) -> sysexits::Result<()> {
+    std::fs::write(path, changelog.to_ron()?).map_err(|reason| {
+        eprintln!("git-harvest:  cannot write {}:  {reason}", path.display());
+        sysexits::ExitCode::IoErr
+    })
 }
 
 /// Merge `section` into the CHANGELOG, joining a same-version section or
@@ -351,18 +403,16 @@ fn assemble(arguments: &AssembleArguments) -> sysexits::Result<()> {
         return Ok(());
     }
 
-    let section = harvested_section(version.clone(), released, &fragments)?;
+    let (mut section, contributors) =
+        harvested_section(version.clone(), released, &fragments)?;
+    let remap = registry::absorb(&mut changelog.contributors, &contributors)?;
+    remap_credits(&mut section, &remap);
+    for existing in &mut changelog.sections {
+        remap_credits(existing, &remap);
+    }
     splice(&mut changelog, section);
 
-    std::fs::write(&arguments.changelog, changelog.to_ron()?).map_err(
-        |reason| {
-            eprintln!(
-                "git-harvest:  cannot write {}:  {reason}",
-                arguments.changelog.display()
-            );
-            sysexits::ExitCode::IoErr
-        },
-    )?;
+    write_changelog(&arguments.changelog, &changelog)?;
 
     for path in &fragments {
         std::fs::remove_file(path).map_err(|reason| {
@@ -379,6 +429,217 @@ fn assemble(arguments: &AssembleArguments) -> sysexits::Result<()> {
         fragments.len(),
         arguments.changelog.display()
     );
+    Ok(())
+}
+
+/// Register or maintain the contributor registry (`git-harvest.md` D57).
+fn id(arguments: &IdArguments) -> sysexits::Result<()> {
+    let mut changelog = read_changelog(&arguments.changelog)?;
+
+    match &arguments.command {
+        IdCommand::Inherit => id_inherit(&mut changelog)?,
+        IdCommand::Register(register) => registry::register_curated(
+            &mut changelog.contributors,
+            &register.alias,
+            &register.name,
+            &register.email,
+        )?,
+        IdCommand::Update(update) => id_update(&mut changelog, update)?,
+        IdCommand::Merge(merge) => id_merge(&mut changelog, merge)?,
+    }
+
+    write_changelog(&arguments.changelog, &changelog)
+}
+
+/// Register the identity from the local Git configuration.
+fn id_inherit(changelog: &mut Changelog) -> sysexits::Result<()> {
+    let identity = git::identity()?;
+    let alias = registry::register(
+        &mut changelog.contributors,
+        &identity.name,
+        &identity.email,
+    );
+
+    eprintln!("git-harvest:  registered <{}> as {alias:?}", identity.email);
+    Ok(())
+}
+
+/// Whether an `id update` request asks for any change at all.
+fn requests_change(arguments: &UpdateArguments) -> bool {
+    arguments.rename.is_some()
+        || arguments.primary_name.is_some()
+        || arguments.primary_email.is_some()
+        || arguments.primary_url.is_some()
+        || [
+            &arguments.add_name,
+            &arguments.remove_name,
+            &arguments.add_email,
+            &arguments.remove_email,
+            &arguments.add_url,
+            &arguments.remove_url,
+        ]
+        .iter()
+        .any(|list| !list.is_empty())
+}
+
+/// Apply one validated `id update` request (`git-harvest.md` D58).
+fn id_update(
+    changelog: &mut Changelog,
+    arguments: &UpdateArguments,
+) -> sysexits::Result<()> {
+    if !requests_change(arguments) {
+        eprintln!("git-harvest:  nothing to update for {:?}", arguments.alias);
+        return Err(sysexits::ExitCode::Usage);
+    }
+
+    let Some(original) = changelog.contributors.get(&arguments.alias).cloned()
+    else {
+        eprintln!("git-harvest:  no contributor {:?}", arguments.alias);
+        return Err(sysexits::ExitCode::Usage);
+    };
+
+    for (adds, removes, field) in [
+        (&arguments.add_name, &arguments.remove_name, "name"),
+        (&arguments.add_email, &arguments.remove_email, "e-mail"),
+        (&arguments.add_url, &arguments.remove_url, "URL"),
+    ] {
+        if let Some(clash) = adds.iter().find(|value| removes.contains(value)) {
+            eprintln!(
+                "git-harvest:  {clash:?} is both added and removed as a \
+                 {field}"
+            );
+            return Err(sysexits::ExitCode::Usage);
+        }
+    }
+
+    let mut updated = original.clone();
+
+    for name in &arguments.add_name {
+        updated.names.insert(name.clone());
+    }
+    for email in &arguments.add_email {
+        updated.emails.insert(email.clone());
+    }
+    for url in &arguments.add_url {
+        updated.urls.insert(url.clone());
+    }
+
+    for name in &arguments.remove_name {
+        updated.names.shift_remove(name);
+    }
+    for email in &arguments.remove_email {
+        updated.emails.shift_remove(email);
+    }
+    for url in &arguments.remove_url {
+        updated.urls.shift_remove(url);
+    }
+
+    if updated.emails.is_empty() {
+        eprintln!(
+            "git-harvest:  {:?} would keep no e-mail address",
+            arguments.alias
+        );
+        return Err(sysexits::ExitCode::Usage);
+    }
+
+    if original.emails.contains(&original.alias)
+        && !updated.emails.contains(&original.alias)
+        && arguments.rename.is_none()
+    {
+        eprintln!(
+            "git-harvest:  removing <{}> leaves {:?} without the e-mail \
+             that names it; pass --rename",
+            original.alias, arguments.alias
+        );
+        return Err(sysexits::ExitCode::Usage);
+    }
+
+    if let Some(name) = &arguments.primary_name {
+        registry::promote(&mut updated.names, name);
+    }
+    if let Some(email) = &arguments.primary_email {
+        registry::promote(&mut updated.emails, email);
+    }
+    if let Some(url) = &arguments.primary_url {
+        registry::promote(&mut updated.urls, url);
+    }
+
+    let key = match &arguments.rename {
+        None => arguments.alias.clone(),
+        Some(rename) => {
+            if rename != &arguments.alias
+                && changelog.contributors.contains_key(rename)
+            {
+                eprintln!(
+                    "git-harvest:  {rename:?} is registered already; use \
+                     `git harvest id merge`"
+                );
+                return Err(sysexits::ExitCode::DataErr);
+            }
+            updated.alias.clone_from(rename);
+            rename.clone()
+        }
+    };
+
+    changelog.contributors.remove(&arguments.alias);
+    changelog.contributors.insert(key.clone(), updated);
+
+    if key != arguments.alias {
+        let remap = std::iter::once((arguments.alias.clone(), key)).collect();
+        for section in &mut changelog.sections {
+            remap_credits(section, &remap);
+        }
+    }
+
+    Ok(())
+}
+
+/// Fold several registered contributors into one (`git-harvest.md` D59).
+fn id_merge(
+    changelog: &mut Changelog,
+    arguments: &MergeArguments,
+) -> sysexits::Result<()> {
+    let split = arguments.aliases.len() - 1;
+    let sources = &arguments.aliases[..split];
+    let target = arguments.aliases[split].clone();
+
+    for source in sources {
+        if !changelog.contributors.contains_key(source) {
+            eprintln!("git-harvest:  no contributor {source:?}");
+            return Err(sysexits::ExitCode::Usage);
+        }
+    }
+
+    let mut order: Vec<String> = Vec::new();
+    if changelog.contributors.contains_key(&target) {
+        order.push(target.clone());
+    }
+    for source in sources {
+        if !order.contains(source) {
+            order.push(source.clone());
+        }
+    }
+
+    let mut merged = changelog.contributors[&order[0]].clone();
+    merged.alias.clone_from(&target);
+    for alias in &order[1..] {
+        let taken = changelog.contributors[alias].clone();
+        registry::fold(&mut merged, &taken);
+    }
+
+    for alias in &order {
+        changelog.contributors.remove(alias);
+    }
+    changelog.contributors.insert(target.clone(), merged);
+
+    let remap: std::collections::BTreeMap<String, String> = order
+        .iter()
+        .map(|alias| (alias.clone(), target.clone()))
+        .collect();
+    for section in &mut changelog.sections {
+        remap_credits(section, &remap);
+    }
+
     Ok(())
 }
 

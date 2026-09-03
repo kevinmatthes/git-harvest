@@ -141,7 +141,8 @@ jobs:
           next=$(echo "$VERSION" |
                  awk -F. '{ printf "%s.%s.%d", $1, $2, $3 + 1 }')
           branch="github-actions/post-v$VERSION"
-          subject="[GitHub Actions] Release:  bump to $next"
+          commit="Skip ::= pre-bump the manifest to $next"
+          title="[GitHub Actions] Release:  bump to $next"
 
           cargo run --locked -- assemble "$VERSION"
 
@@ -167,7 +168,7 @@ jobs:
 
           git switch -c "$branch"
           git add -A
-          git commit -m "$subject"
+          git commit -m "$commit"
           git push -u origin "$branch"
 
           body="v$VERSION is published, so the manifest moves on to $next."
@@ -177,6 +178,6 @@ jobs:
           body="$body  a larger change has already landed; release-level says."
 
           gh pr create --base main --head "$branch" \
-             --title "$subject" --body "$body"
+             --title "$title" --body "$body"
 
 ################################################################################

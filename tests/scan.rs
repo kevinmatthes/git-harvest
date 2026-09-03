@@ -72,6 +72,81 @@ fn fragment(directory: &Path) -> Fragment {
 }
 
 #[test]
+fn the_author_and_co_authors_are_registered_and_credit_the_entry() {
+    let repository = repository();
+    let path = repository.path();
+
+    git(path, &["checkout", "-b", "enhancement/thing"]);
+    git(
+        path,
+        &[
+            "commit",
+            "--allow-empty",
+            "-m",
+            "Added ::= a joint effort\n\nCo-authored-by: Claude <c@ai.test>",
+        ],
+    );
+
+    assert!(scan(path, &[]));
+
+    let fragment = fragment(path);
+
+    assert_eq!(fragment.contributors.len(), 2);
+    assert_eq!(
+        fragment.contributors["test@example.com"].primary_name(),
+        Some("Test")
+    );
+    assert_eq!(
+        fragment.contributors["c@ai.test"].primary_name(),
+        Some("Claude")
+    );
+
+    let aliases: Vec<&str> = fragment.changes["Added"][0]
+        .aliases
+        .iter()
+        .map(String::as_str)
+        .collect();
+    assert_eq!(aliases, ["test@example.com", "c@ai.test"]);
+}
+
+#[test]
+fn one_e_mail_under_two_names_stays_one_contributor() {
+    let repository = repository();
+    let path = repository.path();
+
+    git(path, &["checkout", "-b", "enhancement/thing"]);
+    git(
+        path,
+        &["commit", "--allow-empty", "-m", "Added ::= the first"],
+    );
+    git(
+        path,
+        &[
+            "-c",
+            "user.name=Tester Prime",
+            "commit",
+            "--allow-empty",
+            "-m",
+            "Fixed ::= the second",
+        ],
+    );
+
+    assert!(scan(path, &[]));
+
+    let fragment = fragment(path);
+
+    assert_eq!(fragment.contributors.len(), 1);
+    let names: Vec<&str> = fragment.contributors["test@example.com"]
+        .names
+        .iter()
+        .map(String::as_str)
+        .collect();
+    assert_eq!(names.len(), 2);
+    assert!(names.contains(&"Test"));
+    assert!(names.contains(&"Tester Prime"));
+}
+
+#[test]
 fn harvested_entries_are_bucketed_with_their_commit() {
     let repository = repository();
     let path = repository.path();

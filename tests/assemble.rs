@@ -20,7 +20,8 @@
 //! `git-harvest assemble` merges the fragments into a CHANGELOG section.
 
 use git_harvest::{
-    AssembleArguments, Changelog, Cli, Command, Entry, Fragment, InitArguments,
+    AssembleArguments, Changelog, Cli, Command, Contributor, Entry, Fragment,
+    IdArguments, IdCommand, InitArguments, RegisterArguments,
 };
 
 /// A test bench:  a temp directory, an initialised CHANGELOG, an input dir.
@@ -194,6 +195,70 @@ fn the_same_change_credited_apart_folds_into_one_entry() {
             .collect::<Vec<_>>(),
         ["kevinmatthes", "claude"],
     );
+}
+
+#[test]
+fn a_harvested_contributor_folds_into_a_curated_one_by_shared_e_mail() {
+    let bench = Bench::new();
+
+    git_harvest::run(Cli {
+        command: Command::Id(IdArguments {
+            changelog: bench.changelog.clone(),
+            command: IdCommand::Register(RegisterArguments {
+                alias: "kevinmatthes".to_owned(),
+                name: "Kevin Matthes".to_owned(),
+                email: "kevin@example.com".to_owned(),
+            }),
+        }),
+    })
+    .unwrap();
+
+    let mut fragment = Fragment::default();
+    let mut harvested = Contributor::new("kevin@example.com");
+    harvested.add_name("kevin");
+    harvested.add_email("kevin@example.com");
+    fragment
+        .contributors
+        .insert("kevin@example.com".to_owned(), harvested);
+    let mut entry = Entry::harvested("a change", "aaaa111");
+    entry.credit("kevin@example.com");
+    fragment.record("Added", entry);
+    std::fs::write(bench.input.join("harvest.ron"), fragment.to_ron().unwrap())
+        .unwrap();
+
+    bench.assemble("0.2.0").unwrap();
+
+    let changelog = bench.changelog();
+    assert_eq!(changelog.contributors.len(), 1);
+    assert!(changelog.contributors.contains_key("kevinmatthes"));
+    assert_eq!(
+        changelog.sections[0].changes["Added"][0]
+            .aliases
+            .iter()
+            .map(String::as_str)
+            .collect::<Vec<_>>(),
+        ["kevinmatthes"],
+    );
+}
+
+#[test]
+fn assemble_refuses_two_curated_contributors_sharing_an_e_mail() {
+    let bench = Bench::new();
+
+    let mut changelog = bench.changelog();
+    for alias in ["alpha", "beta"] {
+        let mut contributor = Contributor::new(alias);
+        contributor.add_email("shared@example.com");
+        changelog.contributors.insert(alias.to_owned(), contributor);
+    }
+    std::fs::write(&bench.changelog, changelog.to_ron().unwrap()).unwrap();
+
+    bench.drop_fragment(
+        "one",
+        &[("Added", &[Entry::harvested("a change", "aaaa111")])],
+    );
+
+    assert!(bench.assemble("0.2.0").is_err());
 }
 
 #[test]

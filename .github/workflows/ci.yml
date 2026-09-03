@@ -264,6 +264,57 @@ jobs:
           cat "${fresh[0]}"
           exit 1
 
+  harvest-renovate:
+    if: >-
+      github.event_name == 'pull_request' &&
+      startsWith(github.head_ref, 'renovate/')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+          ref: ${{ github.head_ref }}
+
+      - uses: fregante/setup-git-user@v2.0.2
+
+      - name: record the dependency bump as a freely authored fragment
+        env:
+          BASE: ${{ github.base_ref }}
+          LEAF: ${{ github.head_ref }}
+          TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          set -euo pipefail
+
+          marker="Skip ::= record the dependency bump"
+          if git log --format='%s' "origin/$BASE..HEAD" |
+             grep -qxF "$marker"
+          then
+            echo "the fragment is already recorded"
+            exit 0
+          fi
+
+          entry=$(printf '%s' "$TITLE" | sed -E 's/^\[Renovate\] +//')
+          entry=$(printf '%s' "$entry" | sed -E 's/(["\\])/\\\1/g')
+          head=$(printf '%s' "$entry" | cut -c1 | tr '[:upper:]' '[:lower:]')
+          rest=$(printf '%s' "$entry" | cut -c2-)
+          leaf=${LEAF##*/}
+          stamp=$(date -u +%Y-%m-%dT%H-%M-%SZ)
+          file="changelog.d/${stamp}_${leaf}.ron"
+
+          mkdir -p changelog.d
+          {
+            printf '(\n  references: {},\n  changes: {\n'
+            printf '    "Changed": [\n'
+            printf '      (text: "%s%s", commit: None),\n' "$head" "$rest"
+            printf '    ],\n  },\n)\n'
+          } > "$file"
+
+          git add "$file"
+          git commit -m "$marker"
+          git push
+
   gate:
     needs:
       - actionlint

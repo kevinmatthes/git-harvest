@@ -80,10 +80,13 @@ impl Changelog {
     /// Only released sections appear:  the loose fragments are the pending
     /// state and are not shown (`git-harvest.md` D21).  Buckets render in the
     /// configuration's order, then any others alphabetically.  An entry's
-    /// commit is provenance for the RON, not for readers, so it is left out.
+    /// commit is provenance for the RON, not for readers, so it is left out;
+    /// its credited contributors are shown inline and gathered into a
+    /// `### Contributors` block, linked through the trailing reference list.
     #[must_use]
     pub fn to_markdown(&self) -> String {
         let mut out = String::from(PREAMBLE);
+        let mut references = self.references.clone();
 
         if let Some(lead) = &self.introduction {
             out.push_str(lead);
@@ -92,51 +95,103 @@ impl Changelog {
 
         for section in &self.sections {
             if section.released.is_some() {
-                out.push_str(&section_markdown(&self.configuration, section));
+                out.push_str(&section_markdown(
+                    &self.configuration,
+                    section,
+                    &self.contributors,
+                    &mut references,
+                ));
             }
         }
 
-        out.push_str(&reference_block(self));
+        for section in &self.sections {
+            if section.released.is_some() {
+                for (label, url) in &section.references {
+                    references
+                        .entry(label.clone())
+                        .or_insert_with(|| url.clone());
+                }
+            }
+        }
+
+        out.push_str(&reference_block(&references));
         format!("{}\n", out.trim_end())
     }
 }
 
-/// One bucket's heading and its entries, or nothing when it is empty.
-fn bucket_markdown(bucket: &str, entries: &[crate::Entry]) -> String {
-    if entries.is_empty() {
-        return String::new();
+/// The contributor registry, keyed by alias.
+type Registry = std::collections::BTreeMap<String, crate::Contributor>;
+
+/// The link-reference definitions gathered while rendering, keyed by label.
+type References = std::collections::BTreeMap<String, String>;
+
+/// How one credited `alias` reads:  `@alias` for a curated alias, or the
+/// contributor's primary name — falling back to the bare alias — while it is
+/// still keyed by a raw e-mail.
+fn credit_label(alias: &str, contributors: &Registry) -> String {
+    if !alias.contains('@') {
+        return format!("@{alias}");
     }
 
-    let mut out = format!("### {bucket}\n\n");
-
-    for entry in entries {
-        out.push_str("- ");
-        out.push_str(entry.text());
-        out.push('\n');
-    }
-
-    out.push('\n');
-    out
+    contributors
+        .get(alias)
+        .and_then(crate::Contributor::primary_name)
+        .map_or_else(|| alias.to_owned(), ToOwned::to_owned)
 }
 
-/// The trailing `[label]: url` block:  document references, then any the
-/// released sections add.
-fn reference_block(changelog: &Changelog) -> String {
-    let mut references = changelog.references.clone();
+/// The inline token for one credited `alias`:  the [`credit_label`] wrapped
+/// as a reference link when the contributor has a URL — recorded in
+/// `references` — or left bare.
+fn credit_token(
+    alias: &str,
+    contributors: &Registry,
+    references: &mut References,
+) -> String {
+    let label = credit_label(alias, contributors);
 
-    for section in &changelog.sections {
-        if section.released.is_some() {
-            for (label, url) in &section.references {
+    contributors
+        .get(alias)
+        .and_then(crate::Contributor::primary_url)
+        .map_or_else(
+            || label.clone(),
+            |url| {
                 references
                     .entry(label.clone())
-                    .or_insert_with(|| url.clone());
-            }
+                    .or_insert_with(|| url.to_owned());
+                format!("[{label}]")
+            },
+        )
+}
+
+/// The buckets of `section`, configuration order first, then any others.
+fn ordered_buckets<'a>(
+    configuration: &'a crate::Configuration,
+    section: &'a crate::Section,
+) -> Vec<&'a str> {
+    let mut seen = std::collections::BTreeSet::new();
+    let mut order = Vec::new();
+
+    for bucket in &configuration.buckets {
+        if section.changes.contains_key(bucket) {
+            order.push(bucket.as_str());
+            seen.insert(bucket.as_str());
         }
     }
 
+    for bucket in section.changes.keys() {
+        if !seen.contains(bucket.as_str()) {
+            order.push(bucket.as_str());
+        }
+    }
+
+    order
+}
+
+/// The trailing `[label]: url` block.
+fn reference_block(references: &References) -> String {
     let mut out = String::new();
 
-    for (label, url) in &references {
+    for (label, url) in references {
         out.push('[');
         out.push_str(label);
         out.push_str("]: ");
@@ -147,10 +202,91 @@ fn reference_block(changelog: &Changelog) -> String {
     out
 }
 
-/// One released section:  its heading, lead and buckets.
+/// One bucket's heading and its entries, or nothing when it is empty.
+fn bucket_markdown(
+    bucket: &str,
+    entries: &[crate::Entry],
+    contributors: &Registry,
+    references: &mut References,
+) -> String {
+    if entries.is_empty() {
+        return String::new();
+    }
+
+    let mut out = format!("### {bucket}\n\n");
+
+    for entry in entries {
+        out.push_str("- ");
+        out.push_str(entry.text());
+
+        if !entry.aliases.is_empty() {
+            let credit: Vec<String> = entry
+                .aliases
+                .iter()
+                .map(|alias| credit_token(alias, contributors, references))
+                .collect();
+            out.push_str(" (");
+            out.push_str(&credit.join(", "));
+            out.push(')');
+        }
+
+        out.push('\n');
+    }
+
+    out.push('\n');
+    out
+}
+
+/// The `### Contributors` block:  every alias credited anywhere in the
+/// section, each linked and named by its primaries.
+fn contributors_markdown(
+    order: &[&str],
+    section: &crate::Section,
+    contributors: &Registry,
+    references: &mut References,
+) -> String {
+    let mut credited = indexmap::IndexSet::new();
+
+    for bucket in order {
+        for entry in &section.changes[*bucket] {
+            for alias in &entry.aliases {
+                credited.insert(alias.clone());
+            }
+        }
+    }
+
+    if credited.is_empty() {
+        return String::new();
+    }
+
+    let mut out = String::from("### Contributors\n\n");
+
+    for alias in &credited {
+        out.push_str("- ");
+        out.push_str(&credit_token(alias, contributors, references));
+
+        if !alias.contains('@')
+            && let Some(name) = contributors
+                .get(alias)
+                .and_then(crate::Contributor::primary_name)
+        {
+            out.push_str(" — ");
+            out.push_str(name);
+        }
+
+        out.push('\n');
+    }
+
+    out.push('\n');
+    out
+}
+
+/// One released section:  its heading, lead, buckets and contributors.
 fn section_markdown(
     configuration: &crate::Configuration,
     section: &crate::Section,
+    contributors: &Registry,
+    references: &mut References,
 ) -> String {
     let date = section
         .released
@@ -167,21 +303,23 @@ fn section_markdown(
         out.push_str("\n\n");
     }
 
-    let mut seen = std::collections::BTreeSet::new();
+    let order = ordered_buckets(configuration, section);
 
-    for bucket in &configuration.buckets {
-        if let Some(entries) = section.changes.get(bucket) {
-            out.push_str(&bucket_markdown(bucket, entries));
-            seen.insert(bucket);
-        }
+    for bucket in &order {
+        out.push_str(&bucket_markdown(
+            bucket,
+            &section.changes[*bucket],
+            contributors,
+            references,
+        ));
     }
 
-    for (bucket, entries) in &section.changes {
-        if !seen.contains(bucket) {
-            out.push_str(&bucket_markdown(bucket, entries));
-        }
-    }
-
+    out.push_str(&contributors_markdown(
+        &order,
+        section,
+        contributors,
+        references,
+    ));
     out
 }
 

@@ -27,6 +27,18 @@
         "https://claude.com/claude-code",
       ],
     ),
+    "github-actions": (
+      alias: "github-actions",
+      names: [
+        "GitHub Actions Bot",
+      ],
+      emails: [
+        "41898282+github-actions[bot]@users.noreply.github.com",
+      ],
+      urls: [
+        "https://github.com/features/actions",
+      ],
+    ),
     "kevinmatthes": (
       alias: "kevinmatthes",
       names: [

@@ -17,51 +17,65 @@
 |                                                                              |
 \******************************************************************************/
 
-//! One change entry:  its prose, and where it came from.
+//! One change entry:  its prose, its origin commit, and its credited authors.
 
-/// One line of a CHANGELOG:  the change described, and the commit it was
-/// harvested from.
+/// One line of a CHANGELOG:  the change, the commit it was harvested from,
+/// and the contributors credited for it.
 ///
-/// Field `0` is the human-readable text.  Field `1` is the abbreviated hash
-/// of the commit the harvest read it off, or `None` for an entry written by
-/// hand into a fragment.  The tuple shape keeps a hand-authored entry terse
-/// in RON:  `("a new option", None)`.
-#[derive(
-    Clone,
-    Debug,
-    Eq,
-    Ord,
-    PartialEq,
-    PartialOrd,
-    serde::Deserialize,
-    serde::Serialize,
-)]
+/// `commit` is the abbreviated hash the harvest read the entry off, or `None`
+/// for an entry written by hand into a fragment.  `aliases` names the
+/// contributors credited for this one change, primary first; assembly unions
+/// it across entries that describe the very same change.
+#[derive(Clone, Debug, Eq, PartialEq, serde::Deserialize, serde::Serialize)]
 #[non_exhaustive]
-pub struct Entry(pub String, pub Option<String>);
+pub struct Entry {
+    /// The prose describing the change.
+    pub text: String,
+
+    /// The abbreviated hash of the commit this entry was harvested from.
+    pub commit: Option<String>,
+
+    /// The aliases credited for this change, primary first.
+    #[serde(default, skip_serializing_if = "indexmap::IndexSet::is_empty")]
+    pub aliases: indexmap::IndexSet<String>,
+}
 
 impl Entry {
-    /// An entry written by hand, with no commit behind it.
+    /// An entry written by hand, with no commit and no credit behind it.
     #[must_use]
     pub fn authored(text: &str) -> Self {
-        Self(text.to_owned(), None)
+        Self {
+            text: text.to_owned(),
+            commit: None,
+            aliases: indexmap::IndexSet::new(),
+        }
     }
 
     /// The abbreviated commit hash this entry was harvested from, if any.
     #[must_use]
     pub fn commit(&self) -> Option<&str> {
-        self.1.as_deref()
+        self.commit.as_deref()
+    }
+
+    /// Credit `alias` for this change, unless it is credited already.
+    pub fn credit(&mut self, alias: &str) {
+        self.aliases.insert(alias.to_owned());
     }
 
     /// An entry harvested from a commit, carrying its abbreviated hash.
     #[must_use]
     pub fn harvested(text: &str, commit: &str) -> Self {
-        Self(text.to_owned(), Some(commit.to_owned()))
+        Self {
+            text: text.to_owned(),
+            commit: Some(commit.to_owned()),
+            aliases: indexmap::IndexSet::new(),
+        }
     }
 
     /// The prose describing the change.
     #[must_use]
     pub fn text(&self) -> &str {
-        &self.0
+        &self.text
     }
 }
 

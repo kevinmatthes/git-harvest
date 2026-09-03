@@ -169,6 +169,34 @@ fn sections_stay_in_descending_version_order() {
 }
 
 #[test]
+fn the_same_change_credited_apart_folds_into_one_entry() {
+    let bench = Bench::new();
+
+    let mut first = Entry::harvested("the fix", "a1b2c3d");
+    first.credit("kevinmatthes");
+    let mut second = Entry::harvested("the fix", "a1b2c3d");
+    second.credit("claude");
+
+    bench.drop_fragment("1_kevinmatthes", &[("Fixed", &[first])]);
+    bench.drop_fragment("2_claude", &[("Fixed", &[second])]);
+
+    bench.assemble("0.2.0").unwrap();
+
+    let changelog = bench.changelog();
+    let fixed = &changelog.sections[0].changes["Fixed"];
+
+    assert_eq!(fixed.len(), 1);
+    assert_eq!(
+        fixed[0]
+            .aliases
+            .iter()
+            .map(String::as_str)
+            .collect::<Vec<_>>(),
+        ["kevinmatthes", "claude"],
+    );
+}
+
+#[test]
 fn a_pre_release_version_is_refused_at_write_time() {
     let bench = Bench::new();
 

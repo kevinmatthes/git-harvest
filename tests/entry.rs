@@ -17,51 +17,53 @@
 |                                                                              |
 \******************************************************************************/
 
-//! A `Contributor` keeps its identities in insertion order through RON.
+//! An `Entry` carries its credited aliases through RON, primary first.
 
-use git_harvest::Contributor;
+use git_harvest::Entry;
 
 #[test]
-fn a_repeated_identity_is_not_recorded_twice() {
-    let mut contributor = Contributor::new("kevinmatthes");
-    contributor.add_email("92332892+kevinmatthes@users.noreply.github.com");
-    contributor.add_email("92332892+kevinmatthes@users.noreply.github.com");
+fn a_repeated_credit_is_not_recorded_twice() {
+    let mut entry = Entry::authored("a change");
+    entry.credit("claude");
+    entry.credit("claude");
 
-    assert_eq!(contributor.emails.len(), 1);
+    assert_eq!(entry.aliases.len(), 1);
 }
 
 #[test]
-fn the_identities_keep_their_insertion_order_through_ron() {
-    let mut contributor = Contributor::new("claude");
-    contributor.add_name("Claude");
-    contributor.add_name("Claude Sonnet 5");
-    contributor.add_email("noreply@anthropic.com");
-    contributor.add_url("https://claude.com/claude-code");
-    contributor.add_url("https://www.anthropic.com");
+fn the_credits_keep_their_order_through_ron() {
+    let mut entry = Entry::harvested("a change", "abc1234");
+    entry.credit("kevinmatthes");
+    entry.credit("claude");
 
-    let ron = ron::ser::to_string(&contributor).unwrap();
-    let parsed: Contributor = ron::from_str(&ron).unwrap();
+    let ron = ron::ser::to_string(&entry).unwrap();
+    let parsed: Entry = ron::from_str(&ron).unwrap();
 
-    assert_eq!(parsed, contributor);
-    assert_eq!(parsed.primary_name(), Some("Claude"));
-    assert_eq!(parsed.primary_email(), Some("noreply@anthropic.com"));
-    assert_eq!(parsed.primary_url(), Some("https://claude.com/claude-code"));
+    assert_eq!(parsed, entry);
     assert_eq!(
-        parsed.urls.iter().map(String::as_str).collect::<Vec<_>>(),
-        [
-            "https://claude.com/claude-code",
-            "https://www.anthropic.com"
-        ],
+        parsed
+            .aliases
+            .iter()
+            .map(String::as_str)
+            .collect::<Vec<_>>(),
+        ["kevinmatthes", "claude"],
     );
 }
 
 #[test]
-fn a_bare_alias_carries_no_identities() {
-    let contributor = Contributor::new("renovate");
+fn an_uncredited_entry_serialises_without_the_field() {
+    let ron = ron::ser::to_string(&Entry::authored("a change")).unwrap();
 
-    assert!(contributor.primary_name().is_none());
-    assert!(contributor.primary_email().is_none());
-    assert!(contributor.primary_url().is_none());
+    assert!(!ron.contains("aliases"));
+}
+
+#[test]
+fn a_credited_entry_round_trips_from_the_terse_form() {
+    let parsed: Entry =
+        ron::from_str(r#"(text:"a change",commit:None)"#).unwrap();
+
+    assert_eq!(parsed, Entry::authored("a change"));
+    assert!(parsed.aliases.is_empty());
 }
 
 /******************************************************************************/

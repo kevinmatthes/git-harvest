@@ -232,11 +232,20 @@ fn fragment_paths(directory: &std::path::Path) -> Vec<std::path::PathBuf> {
     paths
 }
 
-/// Sort and deduplicate every bucket's entries.
+/// Sort every bucket's entries and fold ones describing the same change,
+/// unioning their credited aliases into the first occurrence.
 fn tidy(changes: &mut std::collections::BTreeMap<String, Vec<Entry>>) {
     for entries in changes.values_mut() {
-        entries.sort();
-        entries.dedup();
+        entries.sort_by(|a, b| {
+            a.text.cmp(&b.text).then_with(|| a.commit.cmp(&b.commit))
+        });
+        entries.dedup_by(|later, kept| {
+            if later.text != kept.text || later.commit != kept.commit {
+                return false;
+            }
+            kept.aliases.extend(std::mem::take(&mut later.aliases));
+            true
+        });
     }
 }
 

@@ -24,8 +24,8 @@ use git_harvest::Entry;
 #[test]
 fn a_repeated_credit_is_not_recorded_twice() {
     let mut entry = Entry::authored("a change");
-    entry.credit("octocat");
-    entry.credit("octocat");
+    entry.credit("claude");
+    entry.credit("claude");
 
     assert_eq!(entry.aliases.len(), 1);
 }
@@ -34,7 +34,7 @@ fn a_repeated_credit_is_not_recorded_twice() {
 fn the_credits_keep_their_order_through_ron() {
     let mut entry = Entry::harvested("a change", "abc1234");
     entry.credit("kevinmatthes");
-    entry.credit("octocat");
+    entry.credit("claude");
 
     let ron = ron::ser::to_string(&entry).unwrap();
     let parsed: Entry = ron::from_str(&ron).unwrap();
@@ -46,7 +46,7 @@ fn the_credits_keep_their_order_through_ron() {
             .iter()
             .map(String::as_str)
             .collect::<Vec<_>>(),
-        ["kevinmatthes", "octocat"],
+        ["kevinmatthes", "claude"],
     );
 }
 

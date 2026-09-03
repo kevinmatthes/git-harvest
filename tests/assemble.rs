@@ -172,13 +172,13 @@ fn sections_stay_in_descending_version_order() {
 fn the_same_change_credited_apart_folds_into_one_entry() {
     let bench = Bench::new();
 
-    let mut alice = Entry::harvested("the fix", "a1b2c3d");
-    alice.credit("alice");
-    let mut bob = Entry::harvested("the fix", "a1b2c3d");
-    bob.credit("bob");
+    let mut first = Entry::harvested("the fix", "a1b2c3d");
+    first.credit("kevinmatthes");
+    let mut second = Entry::harvested("the fix", "a1b2c3d");
+    second.credit("claude");
 
-    bench.drop_fragment("1_alice", &[("Fixed", &[alice])]);
-    bench.drop_fragment("2_bob", &[("Fixed", &[bob])]);
+    bench.drop_fragment("1_kevinmatthes", &[("Fixed", &[first])]);
+    bench.drop_fragment("2_claude", &[("Fixed", &[second])]);
 
     bench.assemble("0.2.0").unwrap();
 
@@ -192,7 +192,7 @@ fn the_same_change_credited_apart_folds_into_one_entry() {
             .iter()
             .map(String::as_str)
             .collect::<Vec<_>>(),
-        ["alice", "bob"],
+        ["kevinmatthes", "claude"],
     );
 }
 

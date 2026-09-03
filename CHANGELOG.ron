@@ -13,7 +13,33 @@
     fallback_bucket: None,
     renderer: markdown,
   ),
-  contributors: {},
+  contributors: {
+    "claude": (
+      alias: "claude",
+      names: [
+        "Claude",
+        "Claude Sonnet 5",
+      ],
+      emails: [
+        "noreply@anthropic.com",
+      ],
+      urls: [
+        "https://claude.com/claude-code",
+      ],
+    ),
+    "kevinmatthes": (
+      alias: "kevinmatthes",
+      names: [
+        "Kevin Matthes",
+      ],
+      emails: [
+        "92332892+kevinmatthes@users.noreply.github.com",
+      ],
+      urls: [
+        "https://github.com/kevinmatthes",
+      ],
+    ),
+  },
   introduction: None,
   references: {},
   sections: [
@@ -24,10 +50,16 @@
       references: {},
       changes: {
         "Added": [
-          (text: "`git harvest licences` reproduces the verbatim licence notices of git-harvest and every dependency it ships", commit: None),
+          (
+            text: "`git harvest licences` reproduces the verbatim licence notices of git-harvest and every dependency it ships",
+            commit: None,
+          ),
         ],
         "Changed": [
-          (text: "the `Command` enum is `#[non_exhaustive]`, so a new subcommand is a minor release rather than a breaking one", commit: None),
+          (
+            text: "the `Command` enum is `#[non_exhaustive]`, so a new subcommand is a minor release rather than a breaking one",
+            commit: None,
+          ),
         ],
       },
     ),
@@ -38,10 +70,22 @@
       references: {},
       changes: {
         "Added": [
-          (text: "`git-harvest assemble` folds the fragments into a new CHANGELOG section", commit: None),
-          (text: "`git-harvest init` writes a starter CHANGELOG carrying the default configuration", commit: None),
-          (text: "`git-harvest render` exports the CHANGELOG as Keep a Changelog Markdown", commit: None),
-          (text: "`git-harvest scan` harvests a branch\'s structured commit subjects into a RON fragment", commit: None),
+          (
+            text: "`git-harvest assemble` folds the fragments into a new CHANGELOG section",
+            commit: None,
+          ),
+          (
+            text: "`git-harvest init` writes a starter CHANGELOG carrying the default configuration",
+            commit: None,
+          ),
+          (
+            text: "`git-harvest render` exports the CHANGELOG as Keep a Changelog Markdown",
+            commit: None,
+          ),
+          (
+            text: "`git-harvest scan` harvests a branch\'s structured commit subjects into a RON fragment",
+            commit: None,
+          ),
         ],
       },
     ),

@@ -39,6 +39,18 @@
         "https://github.com/kevinmatthes",
       ],
     ),
+    "renovate": (
+      alias: "renovate",
+      names: [
+        "Renovate Bot",
+      ],
+      emails: [
+        "29139614+renovate[bot]@users.noreply.github.com",
+      ],
+      urls: [
+        "https://github.com/apps/renovate",
+      ],
+    ),
   },
   introduction: None,
   references: {},

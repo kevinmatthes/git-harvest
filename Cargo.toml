@@ -21,7 +21,7 @@
 name = "git-harvest"
 version = "0.3.0"
 edition = "2024"
-rust-version = "1.98.0"
+rust-version = "1.98.1"
 description = "Harvest a CHANGELOG from your Git history."
 repository = "https://github.com/kevinmatthes/git-harvest"
 license = "GPL-3.0-or-later"

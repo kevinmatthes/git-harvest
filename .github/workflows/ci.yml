@@ -307,7 +307,9 @@ jobs:
           {
             printf '(\n  references: {},\n  changes: {\n'
             printf '    "Changed": [\n'
-            printf '      (text: "%s%s", commit: None),\n' "$head" "$rest"
+            printf \
+              '      (text: "%s%s", commit: None, aliases: ["renovate"]),\n' \
+              "$head" "$rest"
             printf '    ],\n  },\n)\n'
           } > "$file"
 

@@ -20,7 +20,8 @@
 //! `git-harvest render` exports the CHANGELOG as Keep a Changelog Markdown.
 
 use git_harvest::{
-    Changelog, Cli, Command, Entry, InitArguments, RenderArguments, Section,
+    Changelog, Cli, Command, Contributor, Entry, InitArguments,
+    RenderArguments, Section,
 };
 
 /// A section for `version`, released on 2026-09-01, with the given changes.
@@ -101,6 +102,49 @@ fn an_entry_renders_its_text_without_the_commit() {
 
     assert!(markdown.contains("- some change\n"));
     assert!(!markdown.contains("abc1234"));
+}
+
+#[test]
+fn credited_entries_link_through_a_contributors_block() {
+    let mut changelog = Changelog::default();
+
+    let mut kevin = Contributor::new("kevinmatthes");
+    kevin.add_name("Kevin Matthes");
+    kevin.add_email("kevin@example.com");
+    kevin.add_url("https://github.com/kevinmatthes");
+    changelog
+        .contributors
+        .insert("kevinmatthes".to_owned(), kevin);
+
+    let mut entry = Entry::harvested("a joint change", "abc1234");
+    entry.credit("kevinmatthes");
+    changelog
+        .sections
+        .push(section("0.2.0", &[("Added", &[entry])]));
+
+    let markdown = changelog.to_markdown();
+
+    assert!(markdown.contains("- a joint change ([@kevinmatthes])\n"));
+    assert!(markdown.contains("### Contributors\n\n"));
+    assert!(markdown.contains("- [@kevinmatthes] — Kevin Matthes\n"));
+    assert!(
+        markdown.contains("[@kevinmatthes]: https://github.com/kevinmatthes\n")
+    );
+}
+
+#[test]
+fn an_empty_registry_renders_no_contributor_markup() {
+    let mut changelog = Changelog::default();
+    changelog.sections.push(section(
+        "0.2.0",
+        &[("Added", &[Entry::authored("a plain change")])],
+    ));
+
+    let markdown = changelog.to_markdown();
+
+    assert!(!markdown.contains("### Contributors"));
+    assert!(!markdown.contains(" (@"));
+    assert!(markdown.contains("- a plain change\n"));
 }
 
 #[test]

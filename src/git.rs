@@ -23,6 +23,16 @@
 //! a later change of library stays contained to this file (`git-harvest.md`
 //! D27).
 
+/// A name and e-mail pair, as Git records an author or a co-author.
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct Identity {
+    /// The name Git carries for this identity.
+    pub name: String,
+
+    /// The e-mail address Git carries for this identity.
+    pub email: String,
+}
+
 /// One commit on the branch, reduced to what the harvest needs.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Commit {
@@ -31,6 +41,46 @@ pub struct Commit {
 
     /// The commit's subject line, trimmed.
     pub subject: String,
+
+    /// The author first, then each `Co-authored-by` trailer, deduplicated.
+    pub identities: Vec<Identity>,
+}
+
+/// Parse a `Name <e-mail>` string, as a `Co-authored-by` trailer carries it.
+fn trailer_identity(raw: &str) -> Option<Identity> {
+    let raw = raw.trim();
+    let open = raw.rfind('<')?;
+    let close = raw[open..].find('>')? + open;
+    let email = raw[open + 1..close].trim().to_owned();
+
+    (!email.is_empty()).then(|| Identity {
+        name: raw[..open].trim().to_owned(),
+        email,
+    })
+}
+
+/// The author plus every `Co-authored-by` trailer of `message`, in order and
+/// without duplicates.
+fn identities(
+    author: &gix::actor::SignatureRef<'_>,
+    body: Option<&gix::bstr::BStr>,
+) -> Vec<Identity> {
+    let mut found = vec![Identity {
+        name: author.name.to_string().trim().to_owned(),
+        email: author.email.to_string().trim().to_owned(),
+    }];
+
+    for line in body.map(ToString::to_string).unwrap_or_default().lines() {
+        if let Some((token, value)) = line.split_once(':')
+            && token.trim().eq_ignore_ascii_case("co-authored-by")
+            && let Some(identity) = trailer_identity(value)
+            && !found.contains(&identity)
+        {
+            found.push(identity);
+        }
+    }
+
+    found
 }
 
 /// The leaf of the current branch's name, or `HEAD` when detached.
@@ -110,13 +160,43 @@ pub fn commits_since(
             sysexits::ExitCode::Software
         })?;
 
+        let author = commit.author().map_err(|reason| {
+            eprintln!("git-harvest:  cannot read a commit author:  {reason}");
+            sysexits::ExitCode::Software
+        })?;
+
         commits.push(Commit {
             short_hash: info.id.to_hex_with_len(7).to_string(),
             subject: message.title.to_string().trim().to_owned(),
+            identities: identities(&author, message.body),
         });
     }
 
     Ok(commits)
+}
+
+/// The `user.name` and `user.email` of the local Git configuration.
+///
+/// # Errors
+///
+/// [`sysexits::ExitCode::Unavailable`] when either value is unset.
+pub fn identity() -> sysexits::Result<Identity> {
+    let repository = open()?;
+    let config = repository.config_snapshot();
+    let (Some(name), Some(email)) =
+        (config.string("user.name"), config.string("user.email"))
+    else {
+        eprintln!(
+            "git-harvest:  user.name and user.email must both be set in the \
+             Git configuration"
+        );
+        return Err(sysexits::ExitCode::Unavailable);
+    };
+
+    Ok(Identity {
+        name: name.to_string(),
+        email: email.to_string(),
+    })
 }
 
 /// Open the repository containing the working directory.

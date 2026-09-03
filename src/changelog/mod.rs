@@ -24,6 +24,7 @@ mod contributor;
 mod document;
 mod entry;
 mod fragment;
+pub mod registry;
 mod section;
 mod version;
 

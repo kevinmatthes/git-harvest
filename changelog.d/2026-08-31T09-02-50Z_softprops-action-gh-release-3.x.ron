@@ -1,0 +1,8 @@
+(
+  references: {},
+  changes: {
+    "Changed": [
+      (text: "update softprops/action-gh-release action to v3.0.3", commit: None, aliases: ["renovate"]),
+    ],
+  },
+)

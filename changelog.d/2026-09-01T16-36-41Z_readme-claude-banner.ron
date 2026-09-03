@@ -2,7 +2,7 @@
   references: {},
   changes: {
     "Added": [
-      (text: "credit Anthropic Claude in the README", commit: Some("91f11fc")),
+      (text: "credit Anthropic Claude in the README", commit: Some("91f11fc"), aliases: ["kevinmatthes", "claude"]),
     ],
   },
 )

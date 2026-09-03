@@ -2,7 +2,7 @@
   references: {},
   changes: {
     "Added": [
-      (text: "a CI check that a branch harvests its changelog fragments", commit: Some("ed76675")),
+      (text: "a CI check that a branch harvests its changelog fragments", commit: Some("ed76675"), aliases: ["kevinmatthes", "claude"]),
     ],
   },
 )

@@ -103,9 +103,29 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: assemble this version's notes from the CHANGELOG
+        env:
+          VERSION: ${{ needs.decide.outputs.version }}
+        run: |
+          set -euo pipefail
+
+          cargo run --locked --quiet -- assemble "$VERSION"
+          cargo run --locked --quiet -- render -o rendered.md
+
+          awk -v v="$VERSION" '
+            $0 ~ "^## \\[" v "\\] " { grab = 1; print; next }
+            grab && /^## \[/ { grab = 0 }
+            grab { print }
+            /^\[[^]]+\]: / { print }
+          ' rendered.md > release-notes.md
+
+          echo "::group::release-notes.md"
+          cat release-notes.md
+          echo "::endgroup::"
+
       - uses: softprops/action-gh-release@v3.0.3
         with:
-          generate_release_notes: true
+          body_path: release-notes.md
           tag_name: v${{ needs.decide.outputs.version }}
 
       - id: auth

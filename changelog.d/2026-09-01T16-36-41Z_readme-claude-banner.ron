@@ -2,7 +2,7 @@
   references: {},
   changes: {
     "Added": [
-      ("credit Anthropic Claude in the README", Some("91f11fc")),
+      (text: "credit Anthropic Claude in the README", commit: Some("91f11fc")),
     ],
   },
 )

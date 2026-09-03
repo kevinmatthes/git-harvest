@@ -2,7 +2,7 @@
   references: {},
   changes: {
     "Changed": [
-      ("adjust ignore list style", Some("e6dacf0")),
+      (text: "adjust ignore list style", commit: Some("e6dacf0")),
     ],
   },
 )

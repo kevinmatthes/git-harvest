@@ -27,6 +27,18 @@
         "https://claude.com/claude-code",
       ],
     ),
+    "github-actions": (
+      alias: "github-actions",
+      names: [
+        "GitHub Actions Bot",
+      ],
+      emails: [
+        "41898282+github-actions[bot]@users.noreply.github.com",
+      ],
+      urls: [
+        "https://github.com/features/actions",
+      ],
+    ),
     "kevinmatthes": (
       alias: "kevinmatthes",
       names: [
@@ -65,12 +77,14 @@
           (
             text: "`git harvest licences` reproduces the verbatim licence notices of git-harvest and every dependency it ships",
             commit: None,
+            aliases: ["kevinmatthes", "claude"],
           ),
         ],
         "Changed": [
           (
             text: "the `Command` enum is `#[non_exhaustive]`, so a new subcommand is a minor release rather than a breaking one",
             commit: None,
+            aliases: ["kevinmatthes", "claude"],
           ),
         ],
       },
@@ -85,18 +99,22 @@
           (
             text: "`git-harvest assemble` folds the fragments into a new CHANGELOG section",
             commit: None,
+            aliases: ["kevinmatthes", "claude"],
           ),
           (
             text: "`git-harvest init` writes a starter CHANGELOG carrying the default configuration",
             commit: None,
+            aliases: ["kevinmatthes", "claude"],
           ),
           (
             text: "`git-harvest render` exports the CHANGELOG as Keep a Changelog Markdown",
             commit: None,
+            aliases: ["kevinmatthes", "claude"],
           ),
           (
             text: "`git-harvest scan` harvests a branch\'s structured commit subjects into a RON fragment",
             commit: None,
+            aliases: ["kevinmatthes", "claude"],
           ),
         ],
       },

@@ -1,0 +1,37 @@
+(
+  contributors: {
+    "92332892+kevinmatthes@users.noreply.github.com": (
+      alias: "92332892+kevinmatthes@users.noreply.github.com",
+      names: [
+        "Kevin Matthes",
+      ],
+      emails: [
+        "92332892+kevinmatthes@users.noreply.github.com",
+      ],
+      urls: [],
+    ),
+    "noreply@anthropic.com": (
+      alias: "noreply@anthropic.com",
+      names: [
+        "Claude Sonnet 5",
+      ],
+      emails: [
+        "noreply@anthropic.com",
+      ],
+      urls: [],
+    ),
+  },
+  references: {},
+  changes: {
+    "Changed": [
+      (
+        text: "harvested dependency bumps also credit the GitHub Actions bot",
+        commit: Some("cb0ab54"),
+        aliases: [
+          "92332892+kevinmatthes@users.noreply.github.com",
+          "noreply@anthropic.com",
+        ],
+      ),
+    ],
+  },
+)

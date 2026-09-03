@@ -1,8 +1,0 @@
-(
-  references: {},
-  changes: {
-    "Changed": [
-      (text: "update dependency rust to v1.98.1", commit: None, aliases: ["renovate"]),
-    ],
-  },
-)

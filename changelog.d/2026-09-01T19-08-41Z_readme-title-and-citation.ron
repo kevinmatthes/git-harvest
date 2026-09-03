@@ -1,9 +1,0 @@
-(
-  contributors: {},
-  references: {},
-  changes: {
-    "Changed": [
-      (text: "the README now titles the crate in code font", commit: Some("24e5161"), aliases: ["kevinmatthes", "claude"]),
-    ],
-  },
-)

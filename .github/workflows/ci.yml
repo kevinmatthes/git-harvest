@@ -308,8 +308,8 @@ jobs:
             printf '(\n  references: {},\n  changes: {\n'
             printf '    "Changed": [\n'
             printf \
-              '      (text: "%s%s", commit: None, aliases: ["renovate"]),\n' \
-              "$head" "$rest"
+              '      (text: "%s%s", commit: None, aliases: %s),\n' \
+              "$head" "$rest" '["renovate", "github-actions"]'
             printf '    ],\n  },\n)\n'
           } > "$file"
 

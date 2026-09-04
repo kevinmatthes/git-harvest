@@ -43,7 +43,8 @@ released sections of `CHANGELOG.ron`.
 
 `git-harvest licences` reproduces the verbatim licence notices of
 `git-harvest` and every dependency it ships, harvested at build time by
-`list-my-licence`.  Pass a crate name to narrow the report to one package.
+[`list-my-licence`][list-my-licence].  Pass a crate name to narrow the
+report to one package.
 
 Because the binary is named `git-harvest`, Git runs it as a subcommand:
 `git harvest init`, `git harvest scan` and the rest work with no further
@@ -54,6 +55,9 @@ repository's own release workflow.
 
 ## Licence
 
-GNU General Public License v3.0 or later.  See `LICENCE` for the full text.
+GNU General Public License v3.0 or later.  See [`LICENCE`](LICENCE) for the
+full text.
+
+[list-my-licence]: https://crates.io/crates/list-my-licence
 
 <!-------------------------------------------------------------------------- -->

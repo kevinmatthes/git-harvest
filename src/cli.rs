@@ -56,7 +56,7 @@ pub enum Command {
     Scan(ScanArguments),
 }
 
-/// The arguments of `git-harvest assemble`.
+/// The arguments of `git harvest assemble`.
 #[derive(clap::Args, Debug)]
 pub struct AssembleArguments {
     /// The CHANGELOG to merge the fragments into.
@@ -75,7 +75,7 @@ pub struct AssembleArguments {
     pub version: String,
 }
 
-/// The arguments of `git-harvest id`.
+/// The arguments of `git harvest id`.
 #[derive(clap::Args, Debug)]
 pub struct IdArguments {
     /// The CHANGELOG whose contributor registry is edited.
@@ -87,7 +87,7 @@ pub struct IdArguments {
     pub command: IdCommand,
 }
 
-/// The operations of `git-harvest id`.
+/// The operations of `git harvest id`.
 ///
 /// `#[non_exhaustive]`:  a new operation is a minor release.
 #[derive(clap::Subcommand, Debug)]
@@ -106,7 +106,7 @@ pub enum IdCommand {
     Merge(MergeArguments),
 }
 
-/// The arguments of `git-harvest id register`.
+/// The arguments of `git harvest id register`.
 #[derive(clap::Args, Debug)]
 pub struct RegisterArguments {
     /// The alias to credit this contributor as.
@@ -119,7 +119,7 @@ pub struct RegisterArguments {
     pub email: String,
 }
 
-/// The arguments of `git-harvest id update`.
+/// The arguments of `git harvest id update`.
 ///
 /// Adds are applied first, then removes, then primary promotions, then the
 /// rename; the request is validated whole and written once or not at all
@@ -170,7 +170,7 @@ pub struct UpdateArguments {
     pub primary_url: Option<String>,
 }
 
-/// The arguments of `git-harvest id merge`.
+/// The arguments of `git harvest id merge`.
 #[derive(clap::Args, Debug)]
 pub struct MergeArguments {
     /// The aliases to fold together; the last one names the survivor and
@@ -179,7 +179,7 @@ pub struct MergeArguments {
     pub aliases: Vec<String>,
 }
 
-/// The arguments of `git-harvest init`.
+/// The arguments of `git harvest init`.
 #[derive(clap::Args, Debug)]
 pub struct InitArguments {
     /// The path to write the CHANGELOG to.
@@ -191,7 +191,7 @@ pub struct InitArguments {
     pub force: bool,
 }
 
-/// The arguments of `git-harvest render`.
+/// The arguments of `git harvest render`.
 #[derive(clap::Args, Debug)]
 pub struct RenderArguments {
     /// The CHANGELOG to read.
@@ -203,7 +203,7 @@ pub struct RenderArguments {
     pub output: std::path::PathBuf,
 }
 
-/// The arguments of `git-harvest scan`.
+/// The arguments of `git harvest scan`.
 #[derive(clap::Args, Debug)]
 pub struct ScanArguments {
     /// The ref the branch diverged from; its merge base bounds the walk.

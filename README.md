@@ -23,25 +23,25 @@ conventions harness.
 
 Two passes, four subcommands.
 
-`git-harvest init` writes a starter `CHANGELOG.ron` carrying the default
+`git harvest init` writes a starter `CHANGELOG.ron` carrying the default
 configuration:  the commit-subject delimiter, the grammar, the bucket
 vocabulary and the renderer.  It refuses to overwrite an existing file
 without `--force`.
 
-`git-harvest scan`, run on a feature branch, reads that branch's structured
+`git harvest scan`, run on a feature branch, reads that branch's structured
 commit subjects — by default `Bucket ::= entry`, for example
 `Added ::= a new option` — and writes them to a RON fragment under
 `changelog.d/`, one file per branch.  Only commits absent from `main` are
 read, and merges are skipped.  The grammar is configurable.
 
-`git-harvest assemble <version>` folds every fragment into a new section of
+`git harvest assemble <version>` folds every fragment into a new section of
 `CHANGELOG.ron`, stamps it with that version and the release date, inserts
 it in descending version order, and deletes the fragments it consumed.
 
-`git-harvest render` writes a Keep a Changelog Markdown file from the
+`git harvest render` writes a Keep a Changelog Markdown file from the
 released sections of `CHANGELOG.ron`.
 
-`git-harvest licences` reproduces the verbatim licence notices of
+`git harvest licences` reproduces the verbatim licence notices of
 `git-harvest` and every dependency it ships, harvested at build time by
 [`list-my-licence`][list-my-licence].  Pass a crate name to narrow the
 report to one package.

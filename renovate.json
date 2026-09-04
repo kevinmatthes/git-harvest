@@ -44,6 +44,18 @@
         "rust-version = \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
       ],
       "packageNameTemplate": "rust-lang/rust"
+    },
+    {
+      "customType": "regex",
+      "datasourceTemplate": "crate",
+      "depNameTemplate": "cargo-semver-checks",
+      "managerFilePatterns": [
+        "/^\\.github/workflows/ci\\.yml$/"
+      ],
+      "matchStrings": [
+        "cargo-semver-checks@(?<currentValue>\\d+\\.\\d+\\.\\d+)"
+      ],
+      "packageNameTemplate": "cargo-semver-checks"
     }
   ],
   "dependencyDashboard": true,
@@ -97,6 +109,17 @@
       ],
       "matchDepNames": [
         "rust"
+      ],
+      "matchManagers": [
+        "custom.regex"
+      ]
+    },
+    {
+      "addLabels": [
+        "rust"
+      ],
+      "matchDepNames": [
+        "cargo-semver-checks"
       ],
       "matchManagers": [
         "custom.regex"

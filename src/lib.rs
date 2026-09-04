@@ -19,11 +19,11 @@
 
 //! Harvest a CHANGELOG from a repository's Git history.
 //!
-//! Two passes:  `git-harvest scan` harvests a branch's structured commits
-//! into a RON fragment, and `git-harvest assemble` merges the fragments into
-//! a new section of the RON CHANGELOG.  `git-harvest init` writes a fresh
-//! CHANGELOG to start from, `git-harvest render` exports it as Markdown, and
-//! `git-harvest licences` reproduces the dependency licence notices.
+//! Two passes:  `git harvest scan` harvests a branch's structured commits
+//! into a RON fragment, and `git harvest assemble` merges the fragments into
+//! a new section of the RON CHANGELOG.  `git harvest init` writes a fresh
+//! CHANGELOG to start from, `git harvest render` exports it as Markdown, and
+//! `git harvest licences` reproduces the dependency licence notices.
 
 mod changelog;
 mod cli;
@@ -217,7 +217,7 @@ fn render(arguments: &RenderArguments) -> sysexits::Result<()> {
 fn read_changelog(path: &std::path::Path) -> sysexits::Result<Changelog> {
     let source = std::fs::read_to_string(path).map_err(|reason| {
         eprintln!(
-            "git-harvest:  cannot read {}:  {reason}; run `git-harvest init` \
+            "git-harvest:  cannot read {}:  {reason}; run `git harvest init` \
              first",
             path.display()
         );

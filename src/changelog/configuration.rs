@@ -64,7 +64,7 @@ pub enum Renderer {
 ///
 /// `git-harvest` has no separate configuration file:  these settings live in
 /// the CHANGELOG document, and [`Configuration::default`] is what
-/// `git-harvest init` writes into a fresh one.
+/// `git harvest init` writes into a fresh one.
 #[derive(Clone, Debug, Eq, PartialEq, serde::Deserialize, serde::Serialize)]
 #[non_exhaustive]
 pub struct Configuration {
@@ -119,7 +119,7 @@ impl Configuration {
 }
 
 impl Default for Configuration {
-    /// The defaults `git-harvest init` writes:  the `::=` delimiter, the
+    /// The defaults `git harvest init` writes:  the `::=` delimiter, the
     /// delimited grammar, the six *Keep a Changelog* buckets, no fallback,
     /// and Markdown rendering.
     fn default() -> Self {

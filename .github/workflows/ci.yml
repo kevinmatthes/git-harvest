@@ -272,6 +272,8 @@ jobs:
     permissions:
       contents: write
     steps:
+      - run: rustup update
+
       - uses: actions/checkout@v7.0.1
         with:
           fetch-depth: 0
@@ -279,7 +281,7 @@ jobs:
 
       - uses: fregante/setup-git-user@v2.0.2
 
-      - name: record the dependency bump as a freely authored fragment
+      - name: record the bump and refresh the shipped licence notices
         env:
           BASE: ${{ github.base_ref }}
           LEAF: ${{ github.head_ref }}
@@ -291,7 +293,7 @@ jobs:
           if git log --format='%s' "origin/$BASE..HEAD" |
              grep -qxF "$marker"
           then
-            echo "the fragment is already recorded"
+            echo "the bump is already recorded"
             exit 0
           fi
 
@@ -300,8 +302,7 @@ jobs:
           head=$(printf '%s' "$entry" | cut -c1 | tr '[:upper:]' '[:lower:]')
           rest=$(printf '%s' "$entry" | cut -c2-)
           leaf=${LEAF##*/}
-          stamp=$(date -u +%Y-%m-%dT%H-%M-%SZ)
-          file="changelog.d/${stamp}_${leaf}.ron"
+          file="changelog.d/${leaf}.ron"
 
           mkdir -p changelog.d
           {
@@ -313,7 +314,16 @@ jobs:
             printf '    ],\n  },\n)\n'
           } > "$file"
 
-          git add "$file"
+          if ! git diff --quiet "origin/$BASE" HEAD -- Cargo.lock; then
+            env -u CI cargo check --locked
+          fi
+
+          git add "$file" THIRDPARTY.md
+          if git diff --cached --quiet; then
+            echo "nothing new to record"
+            exit 0
+          fi
+
           git commit -m "$marker"
           git push
 

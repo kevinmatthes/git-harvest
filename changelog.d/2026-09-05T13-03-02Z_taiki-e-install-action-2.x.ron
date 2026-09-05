@@ -1,0 +1,8 @@
+(
+  references: {},
+  changes: {
+    "Changed": [
+      (text: "update taiki-e/install-action action to v2.87.6", commit: None, aliases: ["renovate", "github-actions"]),
+    ],
+  },
+)

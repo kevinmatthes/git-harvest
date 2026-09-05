@@ -103,7 +103,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - uses: taiki-e/install-action@v2.87.5
+      - uses: taiki-e/install-action@v2.87.6
         with:
           tool: cargo-semver-checks@0.50.0
 

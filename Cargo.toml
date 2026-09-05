@@ -36,14 +36,14 @@ chrono = { version = "0.4.45", features = ["serde"] }
 clap = { version = "4.6.6", features = ["derive"] }
 gix = "0.87.1"
 indexmap = { version = "2.14.1", features = ["serde"] }
-list-my-licence = { version = "0.1.2", features = ["clap"] }
+list-my-licence = { version = "0.2.0", features = ["clap"] }
 ron = "0.12.2"
 semver = "1.0.28"
 serde = { version = "1.0.229", features = ["derive"] }
 sysexits = "0.13.0"
 
 [build-dependencies]
-list-my-licence = { version = "0.1.2", features = ["build"] }
+list-my-licence = { version = "0.2.0", features = ["build"] }
 
 [dev-dependencies]
 chrono = { version = "0.4.45", features = ["serde"] }

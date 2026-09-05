@@ -1,0 +1,8 @@
+(
+  references: {},
+  changes: {
+    "Changed": [
+      (text: "update Rust crate indexmap to 2.14.2", commit: None, aliases: ["renovate", "github-actions"]),
+    ],
+  },
+)

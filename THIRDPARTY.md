@@ -26343,7 +26343,7 @@ IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 ```
 
-## list-my-licence 0.1.2
+## list-my-licence 0.2.0
 
 ### GPL-3.0-or-later (as distributed, in LICENCE)
 

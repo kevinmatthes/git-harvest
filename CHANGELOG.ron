@@ -68,6 +68,100 @@
   references: {},
   sections: [
     (
+      version: (0, 3, 1),
+      released: Some("2026-09-07T02:16:53.383472142Z"),
+      introduction: None,
+      references: {},
+      changes: {
+        "Added": [
+          (
+            text: "a `workflow_dispatch` changelog-fragment helper",
+            commit: Some("f8777c8"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "let Renovate track the cargo-semver-checks tool pin",
+            commit: Some("c9e6d59"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+        ],
+        "Changed": [
+          (
+            text: "Renovate bumps reuse one branch-named fragment and refresh THIRDPARTY.md",
+            commit: Some("c368e50"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "harvested dependency bumps also credit the GitHub Actions bot",
+            commit: Some("cb0ab54"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "link the LICENCE file and list-my-licence in the README",
+            commit: Some("b19a6ad"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "recommend `git harvest`, not `git-harvest`, for invocation",
+            commit: Some("3335b5e"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "update Rust crate indexmap to 2.14.2",
+            commit: None,
+            aliases: [
+              "renovate",
+              "github-actions",
+            ],
+          ),
+          (
+            text: "update Rust crate list-my-licence to 0.2.1",
+            commit: None,
+            aliases: [
+              "renovate",
+              "github-actions",
+            ],
+          ),
+          (
+            text: "update taiki-e/install-action action to v2.87.7",
+            commit: None,
+            aliases: [
+              "renovate",
+              "github-actions",
+            ],
+          ),
+        ],
+        "Fixed": [
+          (
+            text: "the shipped THIRDPARTY.md lists list-my-licence at its resolved version",
+            commit: Some("bb6298b"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+        ],
+      },
+    ),
+    (
       version: (0, 3, 0),
       released: Some("2026-09-03T20:38:14.029376775Z"),
       introduction: None,

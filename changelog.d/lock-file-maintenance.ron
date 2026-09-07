@@ -1,0 +1,8 @@
+(
+  references: {},
+  changes: {
+    "Changed": [
+      (text: "lock file maintenance", commit: None, aliases: ["renovate", "github-actions"]),
+    ],
+  },
+)

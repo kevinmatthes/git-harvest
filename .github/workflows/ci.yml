@@ -264,7 +264,7 @@ jobs:
           cat "${fresh[0]}"
           exit 1
 
-  harvest-renovate:
+  renovate-licences:
     if: >-
       github.event_name == 'pull_request' &&
       startsWith(github.head_ref, 'renovate/')
@@ -281,46 +281,30 @@ jobs:
 
       - uses: fregante/setup-git-user@v2.0.2
 
-      - name: record the bump and refresh the shipped licence notices
+      - name: refresh the shipped licence notices when the lock file moved
         env:
           BASE: ${{ github.base_ref }}
-          LEAF: ${{ github.head_ref }}
-          TITLE: ${{ github.event.pull_request.title }}
         run: |
           set -euo pipefail
 
-          marker="Skip ::= record the dependency bump"
+          marker="Skip ::= refresh the shipped licence notices"
           if git log --format='%s' "origin/$BASE..HEAD" |
              grep -qxF "$marker"
           then
-            echo "the bump is already recorded"
+            echo "the notices are already refreshed"
             exit 0
           fi
 
-          entry=$(printf '%s' "$TITLE" | sed -E 's/^\[Renovate\] +//')
-          entry=$(printf '%s' "$entry" | sed -E 's/(["\\])/\\\1/g')
-          head=$(printf '%s' "$entry" | cut -c1 | tr '[:upper:]' '[:lower:]')
-          rest=$(printf '%s' "$entry" | cut -c2-)
-          leaf=${LEAF##*/}
-          file="changelog.d/${leaf}.ron"
-
-          mkdir -p changelog.d
-          {
-            printf '(\n  references: {},\n  changes: {\n'
-            printf '    "Changed": [\n'
-            printf \
-              '      (text: "%s%s", commit: None, aliases: %s),\n' \
-              "$head" "$rest" '["renovate", "github-actions"]'
-            printf '    ],\n  },\n)\n'
-          } > "$file"
-
-          if ! git diff --quiet "origin/$BASE" HEAD -- Cargo.lock; then
-            env -u CI cargo check --locked
+          if git diff --quiet "origin/$BASE" HEAD -- Cargo.lock; then
+            echo "the lock file is unchanged; nothing to refresh"
+            exit 0
           fi
 
-          git add "$file" THIRDPARTY.md
+          env -u CI cargo check --locked
+
+          git add THIRDPARTY.md
           if git diff --cached --quiet; then
-            echo "nothing new to record"
+            echo "the notices already match the graph"
             exit 0
           fi
 

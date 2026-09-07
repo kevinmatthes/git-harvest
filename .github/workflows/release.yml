@@ -32,6 +32,7 @@ jobs:
       contents: read
     outputs:
       release: ${{ steps.check.outputs.release }}
+      renovate_fragment: ${{ steps.check.outputs.renovate_fragment }}
       version: ${{ steps.check.outputs.version }}
     steps:
       - name: checkout w/ tags
@@ -83,9 +84,28 @@ jobs:
             release=yes
           fi
 
+          entries=$(git log --first-parent --format='%s' "$last..HEAD" |
+                    sed -n 's/^\[Renovate\] //p' |
+                    sed -E 's/ \(#[0-9]+\)$//')
+
+          fragment=
+          if [ -n "$entries" ]; then
+            fragment=$(
+              printf '(\n  references: {},\n  changes: {\n    "Changed": [\n'
+              printf '%s\n' "$entries" | while IFS= read -r subject; do
+                esc=$(printf '%s' "$subject" | sed -E 's/(["\\])/\\\1/g')
+                printf '      (text: "%s", commit: None, aliases: %s),\n' \
+                  "${esc,}" '["renovate", "github-actions"]'
+              done
+              printf '    ],\n  },\n)\n'
+            )
+            fragment=$(printf '%s' "$fragment" | base64 -w0)
+          fi
+
           echo "last=$last version=$version shipped=$shipped -> $release"
           {
             echo "release=$release"
+            echo "renovate_fragment=$fragment"
             echo "version=$version"
           } >> "$GITHUB_OUTPUT"
 
@@ -105,9 +125,19 @@ jobs:
 
       - name: assemble this version's notes from the CHANGELOG
         env:
+          RENOVATE_FRAGMENT: ${{ needs.decide.outputs.renovate_fragment }}
           VERSION: ${{ needs.decide.outputs.version }}
         run: |
           set -euo pipefail
+
+          if [ -n "$RENOVATE_FRAGMENT" ]; then
+            mkdir -p changelog.d
+            printf '%s' "$RENOVATE_FRAGMENT" |
+              base64 -d > changelog.d/renovate.ron
+            echo "::group::synthesised changelog.d/renovate.ron"
+            cat changelog.d/renovate.ron
+            echo "::endgroup::"
+          fi
 
           cargo run --locked --quiet -- assemble "$VERSION"
           cargo run --locked --quiet -- render -o rendered.md
@@ -144,6 +174,7 @@ jobs:
       pull-requests: write
     env:
       GH_TOKEN: ${{ github.token }}
+      RENOVATE_FRAGMENT: ${{ needs.decide.outputs.renovate_fragment }}
       VERSION: ${{ needs.decide.outputs.version }}
     steps:
       - run: rustup update
@@ -163,6 +194,12 @@ jobs:
           branch="github-actions/post-v$VERSION"
           commit="Skip ::= pre-bump the manifest to $next"
           title="[GitHub Actions] Release:  bump to $next"
+
+          if [ -n "$RENOVATE_FRAGMENT" ]; then
+            mkdir -p changelog.d
+            printf '%s' "$RENOVATE_FRAGMENT" |
+              base64 -d > changelog.d/renovate.ron
+          fi
 
           cargo run --locked -- assemble "$VERSION"
 

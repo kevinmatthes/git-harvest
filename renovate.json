@@ -10,27 +10,27 @@
   "customManagers": [
     {
       "customType": "regex",
-      "datasourceTemplate": "github-releases",
+      "datasourceTemplate": "docker",
       "depNameTemplate": "actionlint",
       "managerFilePatterns": [
         "/^\\.github/workflows/ci\\.yml$/"
       ],
       "matchStrings": [
-        "rhysd/actionlint:(?<currentValue>\\d+\\.\\d+\\.\\d+)"
+        "rhysd/actionlint@(?<currentDigest>sha256:[0-9a-f]+) # (?<currentValue>\\d+\\.\\d+\\.\\d+)"
       ],
       "packageNameTemplate": "rhysd/actionlint"
     },
     {
       "customType": "regex",
-      "datasourceTemplate": "github-releases",
+      "datasourceTemplate": "docker",
       "depNameTemplate": "cffconvert",
       "managerFilePatterns": [
         "/^\\.github/workflows/ci\\.yml$/"
       ],
       "matchStrings": [
-        "citationcff/cffconvert:(?<currentValue>\\d+\\.\\d+\\.\\d+)"
+        "citationcff/cffconvert@(?<currentDigest>sha256:[0-9a-f]+) # (?<currentValue>\\d+\\.\\d+\\.\\d+)"
       ],
-      "packageNameTemplate": "citation-file-format/cffconvert"
+      "packageNameTemplate": "citationcff/cffconvert"
     },
     {
       "customType": "regex",
@@ -66,7 +66,8 @@
   ],
   "dependencyDashboardTitle": "[Renovate] Dependency Dashboard",
   "extends": [
-    "config:recommended"
+    "config:recommended",
+    "helpers:pinGitHubActionDigests"
   ],
   "labels": [
     "dependencies"
@@ -128,9 +129,12 @@
       ]
     },
     {
-      "extractVersion": "^v(?<version>.*)$",
-      "matchDepNames": [
-        "actionlint"
+      "enabled": false,
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchManagers": [
+        "github-actions"
       ]
     },
     {

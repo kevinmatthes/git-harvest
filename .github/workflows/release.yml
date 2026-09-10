@@ -173,8 +173,6 @@ jobs:
       contents: write
       pull-requests: write
     env:
-      GH_TOKEN: ${{ github.token }}
-      RENOVATE_FRAGMENT: ${{ needs.decide.outputs.renovate_fragment }}
       VERSION: ${{ needs.decide.outputs.version }}
     steps:
       - run: rustup update
@@ -185,7 +183,9 @@ jobs:
 
       - uses: fregante/setup-git-user@v2.0.2
 
-      - name: open the next-patch pull request
+      - name: prepare the next-patch branch
+        env:
+          RENOVATE_FRAGMENT: ${{ needs.decide.outputs.renovate_fragment }}
         run: |
           set -euo pipefail
 
@@ -193,7 +193,6 @@ jobs:
                  awk -F. '{ printf "%s.%s.%d", $1, $2, $3 + 1 }')
           branch="github-actions/post-v$VERSION"
           commit="Skip ::= pre-bump the manifest to $next"
-          title="[GitHub Actions] Release:  bump to $next"
 
           if [ -n "$RENOVATE_FRAGMENT" ]; then
             mkdir -p changelog.d
@@ -227,6 +226,17 @@ jobs:
           git add -A
           git commit -m "$commit"
           git push -u origin "$branch"
+
+      - name: open the next-patch pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          next=$(echo "$VERSION" |
+                 awk -F. '{ printf "%s.%s.%d", $1, $2, $3 + 1 }')
+          branch="github-actions/post-v$VERSION"
+          title="[GitHub Actions] Release:  bump to $next"
 
           body="v$VERSION is published, so the manifest moves on to $next."
           body="$body  The assembled CHANGELOG.ron section, the consumed"

@@ -4,6 +4,7 @@
     "kevinmatthes"
   ],
   "automerge": false,
+  "automergeStrategy": "squash",
   "commitMessageLowerCase": "never",
   "commitMessagePrefix": "[Renovate]",
   "customManagers": [
@@ -71,6 +72,7 @@
     "dependencies"
   ],
   "lockFileMaintenance": {
+    "automerge": true,
     "enabled": true
   },
   "packageRules": [
@@ -130,7 +132,16 @@
       "matchDepNames": [
         "actionlint"
       ]
+    },
+    {
+      "automerge": true,
+      "matchUpdateTypes": [
+        "digest",
+        "patch",
+        "pin"
+      ]
     }
   ],
+  "platformAutomerge": true,
   "prHourlyLimit": 0
 }

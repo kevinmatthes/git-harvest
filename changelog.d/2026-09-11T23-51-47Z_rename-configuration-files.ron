@@ -1,0 +1,33 @@
+(
+  contributors: {
+    "92332892+kevinmatthes@users.noreply.github.com": (
+      alias: "92332892+kevinmatthes@users.noreply.github.com",
+      names: [
+        "Kevin Matthes",
+      ],
+      emails: [
+        "92332892+kevinmatthes@users.noreply.github.com",
+      ],
+      urls: [],
+    ),
+  },
+  references: {},
+  changes: {
+    "Changed": [
+      (
+        text: "rename rustfmt configuration file",
+        commit: Some("475be36"),
+        aliases: [
+          "92332892+kevinmatthes@users.noreply.github.com",
+        ],
+      ),
+      (
+        text: "rename Clippy configuration file",
+        commit: Some("03d90b3"),
+        aliases: [
+          "92332892+kevinmatthes@users.noreply.github.com",
+        ],
+      ),
+    ],
+  },
+)

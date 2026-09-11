@@ -146,6 +146,6 @@
       ]
     }
   ],
-  "platformAutomerge": false,
+  "platformAutomerge": true,
   "prHourlyLimit": 0
 }

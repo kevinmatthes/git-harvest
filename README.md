@@ -42,8 +42,8 @@ it in descending version order, and deletes the fragments it consumed.
 released sections of `CHANGELOG.ron`.
 
 `git harvest licences` reproduces the verbatim licence notices of
-`git-harvest` and every dependency it ships **for the platform it was
-built on**, harvested at build time by [`list-my-licence`][list-my-licence].
+`git-harvest` and every dependency it ships for the platform it was
+built on, harvested at build time by [`list-my-licence`][list-my-licence].
 Pass a crate name to narrow the report to one package.  The same harvest
 also refreshes the committed `THIRDPARTY.md` on every compile, covering
 every platform the source can be built for, not only the one it was

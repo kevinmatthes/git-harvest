@@ -86,7 +86,18 @@ jobs:
 
           entries=$(git log --first-parent --format='%s' "$last..HEAD" |
                     sed -n 's/^\[Renovate\] //p' |
-                    sed -E 's/ \(#[0-9]+\)$//')
+                    sed -E 's/ \(#[0-9]+\)$//' |
+                    awk -F' to ' '
+                      {
+                        key = $0
+                        if (NF > 1 && $NF ~ /^v?[0-9]/) {
+                          sub(/ to [^ ]*$/, "", key)
+                        }
+                        if (!(key in seen)) {
+                          seen[key] = $0; order[++n] = key
+                        }
+                      }
+                      END { for (i = 1; i <= n; i++) print seen[order[i]] }')
 
           fragment=
           if [ -n "$entries" ]; then

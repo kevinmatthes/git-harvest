@@ -127,7 +127,7 @@ jobs:
           }
 
           echo "::group::cargo-semver-checks"
-          report="$(cargo semver-checks --baseline-rev "$LAST" \
+          report="$(env -u CI cargo semver-checks --baseline-rev "$LAST" \
                     --release-type patch 2>&1 || true)"
           echo "$report"
           echo "::endgroup::"

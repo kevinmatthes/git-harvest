@@ -220,11 +220,27 @@ jobs:
                { print }' Cargo.toml > Cargo.toml.next
           mv Cargo.toml.next Cargo.toml
 
-          awk -v v="$next" '/^name = "git-harvest"$/ { seen = 1 }
-               seen && /^version = / {
-                 print "version = \"" v "\""; seen = 0; next
+          awk -v v="$next" '
+               /^\[\[package\]\]/ {
+                 if (block != "") {
+                   if (target && !sourced) {
+                     gsub(/version = "[^"]*"/, "version = \"" v "\"", block)
+                   }
+                   printf "%s", block
+                 }
+                 block = $0 "\n"; target = 0; sourced = 0; next
                }
-               { print }' Cargo.lock > Cargo.lock.next
+               {
+                 block = block $0 "\n"
+                 if ($0 == "name = \"git-harvest\"") target = 1
+                 if ($0 ~ /^source = /) sourced = 1
+               }
+               END {
+                 if (target && !sourced) {
+                   gsub(/version = "[^"]*"/, "version = \"" v "\"", block)
+                 }
+                 printf "%s", block
+               }' Cargo.lock > Cargo.lock.next
           mv Cargo.lock.next Cargo.lock
 
           env -u CI cargo check --locked

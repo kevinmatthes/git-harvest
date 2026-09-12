@@ -1,0 +1,53 @@
+(
+  contributors: {
+    "92332892+kevinmatthes@users.noreply.github.com": (
+      alias: "92332892+kevinmatthes@users.noreply.github.com",
+      names: [
+        "Kevin Matthes",
+      ],
+      emails: [
+        "92332892+kevinmatthes@users.noreply.github.com",
+      ],
+      urls: [],
+    ),
+    "noreply@anthropic.com": (
+      alias: "noreply@anthropic.com",
+      names: [
+        "Claude Sonnet 5",
+      ],
+      emails: [
+        "noreply@anthropic.com",
+      ],
+      urls: [],
+    ),
+  },
+  references: {},
+  changes: {
+    "Fixed": [
+      (
+        text: "identify the bookkeep version bump by structure, not by name alone",
+        commit: Some("937e12d"),
+        aliases: [
+          "92332892+kevinmatthes@users.noreply.github.com",
+          "noreply@anthropic.com",
+        ],
+      ),
+      (
+        text: "collapse several Renovate bumps of the same dependency into the last, at synthesis time",
+        commit: Some("afcd933"),
+        aliases: [
+          "92332892+kevinmatthes@users.noreply.github.com",
+          "noreply@anthropic.com",
+        ],
+      ),
+      (
+        text: "disable rename detection in the changelog-fragment gate\'s diff",
+        commit: Some("50f5e42"),
+        aliases: [
+          "92332892+kevinmatthes@users.noreply.github.com",
+          "noreply@anthropic.com",
+        ],
+      ),
+    ],
+  },
+)

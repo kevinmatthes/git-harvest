@@ -227,8 +227,8 @@ jobs:
             esac
           done < <(git log --format='%s' "$BASE..$HEAD")
 
-          added=$(git diff --diff-filter=A --name-only "$BASE...$HEAD" \
-                  -- changelog.d/)
+          added=$(git diff --no-renames --diff-filter=A --name-only \
+                  "$BASE...$HEAD" -- changelog.d/)
 
           if [ "$harvested" = yes ] && [ -z "$added" ]; then
             echo "::error::a 'Bucket ::= ' commit on this branch adds no"

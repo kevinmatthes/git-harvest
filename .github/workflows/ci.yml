@@ -94,6 +94,8 @@ jobs:
 
   release-level:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - run: rustup update
 
@@ -101,13 +103,19 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
-          persist-credentials: false
+          ref: ${{ github.head_ref || github.ref }}
 
       - uses: taiki-e/install-action@3f74d7c16a4242f1c95561e98edc25d36adb4375 # v2.87.12
         with:
           tool: cargo-semver-checks@0.50.0
 
-      - run: |
+      - name: compute the required release level
+        id: level
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          BASE_REPO: ${{ github.repository }}
+        run: |
           set -euo pipefail
 
           LAST="$(git describe --tags --abbrev=0 2>/dev/null || true)"
@@ -188,14 +196,49 @@ jobs:
           echo "the manifest says $ACTUAL"
 
           if [ "$ACTUAL" = "$EXPECTED" ] || [ "$ACTUAL" = 1.0.0 ]; then
+            echo "mismatch=no" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
-          echo "this change asks for a $level release over $BASE, so the"
-          echo "manifest must read $EXPECTED, not $ACTUAL:  set the"
-          echo "package version in Cargo.toml, the git-harvest entry in"
-          echo "Cargo.lock and the version of CITATION.cff to $EXPECTED"
-          exit 1
+          correctable=no
+          if [ "$EVENT_NAME" = pull_request ] &&
+             [ "$HEAD_REPO" = "$BASE_REPO" ]
+          then
+            correctable=yes
+          fi
+
+          if [ "$correctable" = no ]; then
+            echo "this change asks for a $level release over $BASE, so the"
+            echo "manifest must read $EXPECTED, not $ACTUAL:  set the"
+            echo "package version in Cargo.toml, the git-harvest entry in"
+            echo "Cargo.lock and the version of CITATION.cff to $EXPECTED"
+            exit 1
+          fi
+
+          echo "self-correcting: $ACTUAL -> $EXPECTED"
+          {
+            echo "mismatch=yes"
+            echo "expected=$EXPECTED"
+          } >> "$GITHUB_OUTPUT"
+
+      - if: steps.level.outputs.mismatch == 'yes'
+        uses: taiki-e/install-action@3f74d7c16a4242f1c95561e98edc25d36adb4375 # v2.87.12
+        with:
+          tool: cargo-release@1.1.5
+
+      - if: steps.level.outputs.mismatch == 'yes'
+        uses: fregante/setup-git-user@024bc0b8e177d7e77203b48dab6fb45666854b35 # v2.0.2
+
+      - if: steps.level.outputs.mismatch == 'yes'
+        name: bump the manifest to the required release level
+        env:
+          EXPECTED: ${{ steps.level.outputs.expected }}
+          HEAD_REF: ${{ github.head_ref }}
+        run: |
+          set -euo pipefail
+          git checkout -B "$HEAD_REF"
+          cargo release "$EXPECTED" --execute --no-confirm
+          git push origin "HEAD:$HEAD_REF"
 
   changelog-fragment:
     runs-on: ubuntu-latest

@@ -31,6 +31,18 @@ categories = ["command-line-utilities", "development-tools"]
 readme = "README.md"
 include = ["build.rs", "src/**", "README.md", "LICENCE", "THIRDPARTY.md"]
 
+[package.metadata.release]
+publish = false
+tag = false
+push = false
+pre-release-commit-message = "Skip ::= pre-bump the manifest to {{version}}"
+
+[[package.metadata.release.pre-release-replacements]]
+file = "CITATION.cff"
+search = "^version: .*"
+replace = "version: {{version}}"
+exactly = 1
+
 [dependencies]
 chrono = { version = "0.4.45", features = ["serde"] }
 clap = { version = "4.6.6", features = ["derive"] }

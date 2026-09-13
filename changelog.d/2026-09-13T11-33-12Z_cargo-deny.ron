@@ -1,0 +1,45 @@
+(
+  contributors: {
+    "92332892+kevinmatthes@users.noreply.github.com": (
+      alias: "92332892+kevinmatthes@users.noreply.github.com",
+      names: [
+        "Kevin Matthes",
+      ],
+      emails: [
+        "92332892+kevinmatthes@users.noreply.github.com",
+      ],
+      urls: [],
+    ),
+    "noreply@anthropic.com": (
+      alias: "noreply@anthropic.com",
+      names: [
+        "Claude Sonnet 5",
+      ],
+      emails: [
+        "noreply@anthropic.com",
+      ],
+      urls: [],
+    ),
+  },
+  references: {},
+  changes: {
+    "Added": [
+      (
+        text: "wire cargo-deny into ci.yml\'s gate",
+        commit: Some("a7dc094"),
+        aliases: [
+          "92332892+kevinmatthes@users.noreply.github.com",
+          "noreply@anthropic.com",
+        ],
+      ),
+      (
+        text: "add a cargo-deny configuration for the permissive-licence dependency policy",
+        commit: Some("eb122eb"),
+        aliases: [
+          "92332892+kevinmatthes@users.noreply.github.com",
+          "noreply@anthropic.com",
+        ],
+      ),
+    ],
+  },
+)

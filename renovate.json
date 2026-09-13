@@ -48,6 +48,18 @@
     {
       "customType": "regex",
       "datasourceTemplate": "crate",
+      "depNameTemplate": "cargo-deny",
+      "managerFilePatterns": [
+        "/^\\.github/workflows/ci\\.yml$/"
+      ],
+      "matchStrings": [
+        "cargo-deny@(?<currentValue>\\d+\\.\\d+\\.\\d+)"
+      ],
+      "packageNameTemplate": "cargo-deny"
+    },
+    {
+      "customType": "regex",
+      "datasourceTemplate": "crate",
       "depNameTemplate": "cargo-semver-checks",
       "managerFilePatterns": [
         "/^\\.github/workflows/ci\\.yml$/"
@@ -120,6 +132,7 @@
         "rust"
       ],
       "matchDepNames": [
+        "cargo-deny",
         "cargo-semver-checks"
       ],
       "matchManagers": [

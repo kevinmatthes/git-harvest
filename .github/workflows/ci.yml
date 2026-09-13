@@ -73,6 +73,24 @@ jobs:
 
       - run: cargo deny check advisories licenses
 
+  msrv:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: install the declared minimum toolchain
+        run: |
+          set -euo pipefail
+
+          MSRV="$(awk -F'"' '/^rust-version = / { print $2; exit }' \
+                  Cargo.toml)"
+          rustup toolchain install "$MSRV" --profile minimal
+          rustup default "$MSRV"
+
+      - run: cargo check --locked
+
   cffconvert:
     runs-on: ubuntu-latest
     steps:
@@ -377,6 +395,7 @@ jobs:
       - changelog-fragment
       - cffconvert
       - formatting
+      - msrv
       - release-level
       - renovate-linter
     runs-on: ubuntu-latest

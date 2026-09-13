@@ -36,6 +36,7 @@ keywords:
   - ron
 license: GPL-3.0-or-later
 message: Please cite this software using these information.
+repository-artifact: https://crates.io/crates/git-harvest
 repository-code: https://github.com/kevinmatthes/git-harvest
 title: git-harvest
 url: https://github.com/kevinmatthes/git-harvest

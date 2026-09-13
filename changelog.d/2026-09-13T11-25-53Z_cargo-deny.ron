@@ -41,5 +41,15 @@
         ],
       ),
     ],
+    "Changed": [
+      (
+        text: "install cargo-deny via taiki-e/install-action instead of a Docker-based action",
+        commit: Some("a8ce3ba"),
+        aliases: [
+          "92332892+kevinmatthes@users.noreply.github.com",
+          "noreply@anthropic.com",
+        ],
+      ),
+    ],
   },
 )

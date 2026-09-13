@@ -1040,6 +1040,44 @@ fn subject_names_a_category(subject: &str) -> bool {
     })
 }
 
+/// The version the examples must quote, from the crate's own manifest.
+///
+/// `major` alone once it reaches 1, `major.minor` before then:  an example
+/// pinned to `0.1` keeps working across every `0.1.z`, and the rule stops it
+/// going stale at the 1.0.0 boundary rather than one release before.
+fn example_version() -> String {
+    let version = env!("CARGO_PKG_VERSION");
+    let mut parts = version.split('.');
+    let major = parts.next().expect("a version has a major component");
+    let minor = parts.next().expect("a version has a minor component");
+
+    if major
+        .parse::<u64>()
+        .expect("the major component is a number")
+        >= 1
+    {
+        major.to_owned()
+    } else {
+        format!("{major}.{minor}")
+    }
+}
+
+/// The version quoted by a `git-harvest = …` example, if it carries one.
+///
+/// Both the bare string and the `{ version = "…", … }` table are read.
+fn quoted_version(rest: &str) -> Option<String> {
+    let rest = rest.trim_start();
+
+    let tail = if let Some(bare) = rest.strip_prefix('"') {
+        bare
+    } else {
+        let marker = "version = \"";
+        &rest[rest.find(marker)? + marker.len()..]
+    };
+
+    tail.split('"').next().map(str::to_owned)
+}
+
 #[test]
 fn every_commit_since_the_last_tag_names_a_category() {
     let Some(subjects) = commit_subjects() else {
@@ -1055,6 +1093,40 @@ fn every_commit_since_the_last_tag_names_a_category() {
     assert!(
         wrong.is_empty(),
         "a commit subject must open with one of {COMMIT_CATEGORIES:?}:\n{}",
+        wrong.join("\n")
+    );
+}
+
+#[test]
+fn every_version_example_matches_the_manifest() {
+    let want = example_version();
+    let mut wrong = Vec::new();
+
+    for file in ["README.md", "src/lib.rs"] {
+        let text = std::fs::read_to_string(root().join(file))
+            .unwrap_or_else(|_| panic!("cannot read {file}"));
+
+        for (number, line) in text.lines().enumerate() {
+            let Some((_, rest)) = line.split_once("git-harvest = ") else {
+                continue;
+            };
+
+            let Some(found) = quoted_version(rest) else {
+                continue;
+            };
+
+            if found != want {
+                wrong.push(format!(
+                    "{file}:{}  quotes {found:?}, manifest wants {want:?}",
+                    number + 1
+                ));
+            }
+        }
+    }
+
+    assert!(
+        wrong.is_empty(),
+        "the version examples have drifted from the manifest:\n{}",
         wrong.join("\n")
     );
 }

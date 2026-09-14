@@ -164,10 +164,19 @@ jobs:
           cat release-notes.md
           echo "::endgroup::"
 
+      - name: bundle the dependency graph's corresponding source
+        run: |
+          set -euo pipefail
+
+          cargo vendor --locked vendor > /dev/null
+          tar -cf - vendor | xz -9e > vendor-source.tar.xz
+          rm -rf vendor
+
       - uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
         with:
           body_path: release-notes.md
           tag_name: v${{ needs.decide.outputs.version }}
+          files: vendor-source.tar.xz
 
       - id: auth
         uses: rust-lang/crates-io-auth-action@c6f97d42243bad5fab37ca0427f495c86d5b1a18 # v1.0.5

@@ -220,7 +220,7 @@ jobs:
                { print }' Cargo.toml > Cargo.toml.next
           mv Cargo.toml.next Cargo.toml
 
-          cargo check
+          env -u CI cargo check
           env -u CI cargo check --locked
 
           today=$(date -u +%F)

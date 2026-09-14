@@ -68,6 +68,186 @@
   references: {},
   sections: [
     (
+      version: (0, 3, 2),
+      released: Some("2026-09-14T02:47:42Z"),
+      introduction: None,
+      references: {},
+      changes: {
+        "Added": [
+          (
+            text: "a conventions check guarding a future version-pinned dependency example against manifest drift",
+            commit: Some("f470417"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "a repository-artifact field naming the crates.io package",
+            commit: Some("e1cc616"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "add a cargo-deny configuration for the permissive-licence dependency policy",
+            commit: Some("eb122eb"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "track cargo-deny\'s version with Renovate",
+            commit: Some("7ec9831"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "verify the crate builds against its declared minimum Rust toolchain",
+            commit: Some("3d42064"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "wire cargo-deny into ci.yml\'s gate",
+            commit: Some("a7dc094"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+        ],
+        "Changed": [
+          (
+            text: "lock file maintenance",
+            commit: None,
+            aliases: [
+              "renovate",
+              "github-actions",
+            ],
+          ),
+          (
+            text: "pin every workflow action to its release commit hash",
+            commit: Some("b5cbbe0"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "reinstate cargo-release so release-level self-corrects a same-repo pull request\'s manifest version",
+            commit: Some("02c8db8"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "rename Clippy configuration file",
+            commit: Some("03d90b3"),
+            aliases: [
+              "kevinmatthes",
+            ],
+          ),
+          (
+            text: "rename rustfmt configuration file",
+            commit: Some("475be36"),
+            aliases: [
+              "kevinmatthes",
+            ],
+          ),
+          (
+            text: "scope the release book-keeping token to the step that uses it",
+            commit: Some("c1712fd"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "simplify the next-patch branch\'s Cargo.lock bump",
+            commit: Some("c365a68"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "synthesise Renovate changelog entries at release time",
+            commit: Some("41d5382"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "update Rust crate list-my-licence to 0.2.5",
+            commit: None,
+            aliases: [
+              "renovate",
+              "github-actions",
+            ],
+          ),
+          (
+            text: "update taiki-e/install-action action to v2.87.12",
+            commit: None,
+            aliases: [
+              "renovate",
+              "github-actions",
+            ],
+          ),
+        ],
+        "Fixed": [
+          (
+            text: "collapse several Renovate bumps of the same dependency into the last, at synthesis time",
+            commit: Some("afcd933"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "disable rename detection in the changelog-fragment gate\'s diff",
+            commit: Some("50f5e42"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "identify the bookkeep version bump by structure, not by name alone",
+            commit: Some("937e12d"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "release-level no longer treats cargo-semver-checks\' own fresh baseline resolve as branch drift",
+            commit: Some("034c295"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "the spacing check no longer panics on a multibyte character before a checked punctuation mark",
+            commit: Some("0118a39"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+        ],
+      },
+    ),
+    (
       version: (0, 3, 1),
       released: Some("2026-09-07T02:16:53.383472142Z"),
       introduction: None,

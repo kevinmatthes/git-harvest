@@ -14,16 +14,6 @@
     renderer: markdown,
   ),
   contributors: {
-    "aeruginous.rs@gmail.com": (
-      alias: "aeruginous.rs@gmail.com",
-      names: [
-        "Kevin Matthes",
-      ],
-      emails: [
-        "aeruginous.rs@gmail.com",
-      ],
-      urls: [],
-    ),
     "claude": (
       alias: "claude",
       names: [
@@ -146,7 +136,7 @@
             text: "pin every workflow action to its release commit hash",
             commit: Some("b5cbbe0"),
             aliases: [
-              "aeruginous.rs@gmail.com",
+              "kevinmatthes",
               "claude",
             ],
           ),

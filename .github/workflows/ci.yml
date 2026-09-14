@@ -364,15 +364,12 @@ jobs:
           set -euo pipefail
 
           marker="Skip ::= refresh the shipped licence notices"
-          if git log --format='%s' "origin/$BASE..HEAD" |
-             grep -qxF "$marker"
-          then
-            echo "the notices are already refreshed"
-            exit 0
-          fi
+          since=$(git log --format='%H %s' "origin/$BASE..HEAD" |
+                  grep -F " $marker" | head -n1 | cut -d' ' -f1)
+          since="${since:-origin/$BASE}"
 
-          if git diff --quiet "origin/$BASE" HEAD -- Cargo.lock; then
-            echo "the lock file is unchanged; nothing to refresh"
+          if git diff --quiet "$since" HEAD -- Cargo.lock; then
+            echo "the lock file is unchanged since the last refresh"
             exit 0
           fi
 

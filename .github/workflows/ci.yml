@@ -365,7 +365,7 @@ jobs:
 
           marker="Skip ::= refresh the shipped licence notices"
           since=$(git log --format='%H %s' "origin/$BASE..HEAD" |
-                  grep -F " $marker" | head -n1 | cut -d' ' -f1)
+                  grep -F " $marker" | head -n1 | cut -d' ' -f1 || true)
           since="${since:-origin/$BASE}"
 
           if git diff --quiet "$since" HEAD -- Cargo.lock; then

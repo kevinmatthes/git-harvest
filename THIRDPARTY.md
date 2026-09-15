@@ -5138,7 +5138,7 @@ limitations under the License.
 ~~~~
 ```
 
-## clap 4.6.6
+## clap 4.6.7
 
 ### MIT (as distributed, in LICENSE-MIT)
 
@@ -5355,7 +5355,7 @@ SOFTWARE.
       same "printed page" as the copyright notice for easier
       identification within third-party archives.
 
-   Copyright {yyyy} {name of copyright owner}
+   Copyright Individual contributors
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -5370,7 +5370,7 @@ SOFTWARE.
    limitations under the License.
 ```
 
-## clap_builder 4.6.6
+## clap_builder 4.6.7
 
 ### MIT (as distributed, in LICENSE-MIT)
 
@@ -5587,7 +5587,7 @@ SOFTWARE.
       same "printed page" as the copyright notice for easier
       identification within third-party archives.
 
-   Copyright {yyyy} {name of copyright owner}
+   Copyright Individual contributors
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -5602,7 +5602,7 @@ SOFTWARE.
    limitations under the License.
 ```
 
-## clap_derive 4.6.4
+## clap_derive 4.6.7
 
 ### MIT (as distributed, in LICENSE-MIT)
 
@@ -5819,7 +5819,7 @@ SOFTWARE.
       same "printed page" as the copyright notice for easier
       identification within third-party archives.
 
-   Copyright {yyyy} {name of copyright owner}
+   Copyright Individual contributors
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.

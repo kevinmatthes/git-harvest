@@ -1714,9 +1714,9 @@ checksum = "32a66949e030da00e8c7d4434b251670a91556f4144941d37452769c25d58a53"
 
 [[package]]
 name = "list-my-licence"
-version = "0.2.6"
+version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2ee160b98129e78e9d334058373f5b99c7fdcd9554ebc552a351d860fde86c59"
+checksum = "ff777d8c1d7b16d3653383ba663d5406d8b2fd2fbc2ec5bc24e64d15c739c8b6"
 dependencies = [
  "cargo_metadata",
  "clap",

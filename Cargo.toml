@@ -29,7 +29,14 @@ authors = ["Kevin Matthes <aeruginous.rs@gmail.com>"]
 keywords = ["changelog", "git", "keep-a-changelog", "release", "ron"]
 categories = ["command-line-utilities", "development-tools"]
 readme = "README.md"
-include = ["build.rs", "src/**", "README.md", "LICENCE", "THIRDPARTY.md"]
+include = [
+    "build.rs",
+    "src/**",
+    "README.md",
+    "LICENCE",
+    "THIRDPARTY.md",
+    "debian/copyright",
+]
 
 [package.metadata.release]
 publish = false

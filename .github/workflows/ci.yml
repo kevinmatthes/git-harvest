@@ -375,7 +375,7 @@ jobs:
 
           env -u CI cargo check --locked
 
-          git add THIRDPARTY.md
+          git add THIRDPARTY.md debian/copyright
           if git diff --cached --quiet; then
             echo "the notices already match the graph"
             exit 0

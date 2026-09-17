@@ -109,6 +109,17 @@ fn changelog_ron(name: &str) -> bool {
     Path::new(name).extension().is_some_and(|end| end == "ron")
 }
 
+/// Whether the file is a generated `man/` page rather than prose.
+///
+/// `man/*.1` is ROFF rendered from clap's doc comments by the `xtask`
+/// crate — width and hyphenation are the ROFF renderer's concern, and the
+/// doc comments it renders from are already held to these rules at their
+/// own source.  The width and language rules step over it the way they
+/// step over `Cargo.lock`.
+fn man_page(name: &str) -> bool {
+    Path::new(name).extension().is_some_and(|end| end == "1")
+}
+
 /// Whether the line pins a workflow action to a commit, past any width.
 ///
 /// A forty-character commit SHA or a `sha256:` digest on a `uses:` line
@@ -763,6 +774,7 @@ fn language_findings() -> Vec<String> {
         if UNCHECKED.contains(&base.as_str())
             || name.starts_with(FIXTURES)
             || changelog_ron(&name)
+            || man_page(&name)
         {
             continue;
         }
@@ -833,7 +845,10 @@ fn every_file_holds_its_lines_within_eighty_characters() {
         let name = show(&path);
         let base = name.rsplit('/').next().unwrap_or(&name).to_owned();
 
-        if UNCHECKED.contains(&base.as_str()) || changelog_ron(&name) {
+        if UNCHECKED.contains(&base.as_str())
+            || changelog_ron(&name)
+            || man_page(&name)
+        {
             continue;
         }
 

@@ -73,6 +73,17 @@ jobs:
 
       - run: cargo deny check advisories licenses
 
+  man-page:
+    runs-on: ubuntu-latest
+    steps:
+      - run: rustup update
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - run: cargo run -p xtask
+
   msrv:
     runs-on: ubuntu-latest
     steps:
@@ -392,6 +403,7 @@ jobs:
       - changelog-fragment
       - cffconvert
       - formatting
+      - man-page
       - msrv
       - release-level
       - renovate-linter

@@ -1,0 +1,48 @@
+.ie \n(.g .ds Aq \(aq
+.el .ds Aq '
+.TH git-harvest-id-update 1  "update " 
+.SH NAME
+git\-harvest\-id\-update \- Change a registered contributor\*(Aqs names, e\-mails or URLs
+.SH SYNOPSIS
+\fBgit\-harvest id update\fR [\fB\-\-rename\fR] [\fB\-\-add\-name\fR] [\fB\-\-remove\-name\fR] [\fB\-\-add\-email\fR] [\fB\-\-remove\-email\fR] [\fB\-\-add\-url\fR] [\fB\-\-remove\-url\fR] [\fB\-\-primary\-name\fR] [\fB\-\-primary\-email\fR] [\fB\-\-primary\-url\fR] [\fB\-h\fR|\fB\-\-help\fR] <\fIALIAS\fR> 
+.SH DESCRIPTION
+Change a registered contributor\*(Aqs names, e\-mails or URLs.
+.PP
+Changes an already\-registered contributor\*(Aqs names, e\-mail addresses or URLs, promotes one of them to primary, or renames the contributor\*(Aqs alias — every requested change is validated together and applied in one atomic write, or none of them are.
+.SH OPTIONS
+.TP
+\fB\-\-rename\fR \fI<RENAME>\fR
+Rename the contributor; the new alias must be unregistered
+.TP
+\fB\-\-add\-name\fR \fI<ADD_NAME>\fR
+Add a name; repeatable
+.TP
+\fB\-\-remove\-name\fR \fI<REMOVE_NAME>\fR
+Remove a name; repeatable
+.TP
+\fB\-\-add\-email\fR \fI<ADD_EMAIL>\fR
+Add an e\-mail address; repeatable
+.TP
+\fB\-\-remove\-email\fR \fI<REMOVE_EMAIL>\fR
+Remove an e\-mail address; repeatable
+.TP
+\fB\-\-add\-url\fR \fI<ADD_URL>\fR
+Add a URL; repeatable
+.TP
+\fB\-\-remove\-url\fR \fI<REMOVE_URL>\fR
+Remove a URL; repeatable
+.TP
+\fB\-\-primary\-name\fR \fI<PRIMARY_NAME>\fR
+Make this name the primary, adding it if absent
+.TP
+\fB\-\-primary\-email\fR \fI<PRIMARY_EMAIL>\fR
+Make this e\-mail the primary, adding it if absent
+.TP
+\fB\-\-primary\-url\fR \fI<PRIMARY_URL>\fR
+Make this URL the primary, adding it if absent
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+Print help (see a summary with \*(Aq\-h\*(Aq)
+.TP
+<\fIALIAS\fR>
+The contributor to change

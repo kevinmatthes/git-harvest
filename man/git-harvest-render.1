@@ -1,0 +1,21 @@
+.ie \n(.g .ds Aq \(aq
+.el .ds Aq '
+.TH git-harvest-render 1  "render " 
+.SH NAME
+git\-harvest\-render \- Render the CHANGELOG as a Keep a Changelog Markdown file
+.SH SYNOPSIS
+\fBgit\-harvest render\fR [\fB\-c\fR|\fB\-\-changelog\fR] [\fB\-o\fR|\fB\-\-output\fR] [\fB\-h\fR|\fB\-\-help\fR] 
+.SH DESCRIPTION
+Render the CHANGELOG as a Keep a Changelog Markdown file.
+.PP
+Renders only released sections — the CHANGELOG\*(Aqs unreleased state lives in `changelog.d/`\*(Aqs fragments, never in the CHANGELOG file itself — as a Keep a Changelog Markdown document with reference\-style contributor links.  The output file is always overwritten in full; it is a generated artefact, not one to hand\-edit.
+.SH OPTIONS
+.TP
+\fB\-c\fR, \fB\-\-changelog\fR \fI<CHANGELOG>\fR [default: CHANGELOG.ron]
+The CHANGELOG to read
+.TP
+\fB\-o\fR, \fB\-\-output\fR \fI<OUTPUT>\fR [default: CHANGELOG.md]
+The Markdown file to write; it is always overwritten
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+Print help (see a summary with \*(Aq\-h\*(Aq)

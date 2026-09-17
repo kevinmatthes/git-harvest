@@ -1,0 +1,18 @@
+.ie \n(.g .ds Aq \(aq
+.el .ds Aq '
+.TH git-harvest-id-merge 1  "merge " 
+.SH NAME
+git\-harvest\-id\-merge \- Fold several registered contributors into one
+.SH SYNOPSIS
+\fBgit\-harvest id merge\fR [\fB\-h\fR|\fB\-\-help\fR] <\fIALIASES\fR> 
+.SH DESCRIPTION
+Fold several registered contributors into one.
+.PP
+Folds two or more registered contributors into one, for the cases `scan` cannot resolve automatically:  the same person recorded under different e\-mail addresses, or two already curated aliases found to disagree.  The surviving alias may be a fresh name, not necessarily one of the merged entries.
+.SH OPTIONS
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+Print help (see a summary with \*(Aq\-h\*(Aq)
+.TP
+<\fIALIASES\fR>
+The aliases to fold together; the last one names the survivor and may be a fresh alias

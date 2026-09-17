@@ -17,69 +17,23 @@
 ##                                                                            ##
 ################################################################################
 
-[workspace]
-exclude = ["target"]
-members = ["xtask"]
-
-[workspace.metadata.release]
-publish = false
-tag = false
-push = false
-pre-release-commit-message = "Skip ::= pre-bump the manifest to {{version}}"
-
 [package]
-name = "git-harvest"
-version = "0.3.3"
+name = "xtask"
+version = "0.0.0"
 edition = "2024"
 rust-version = "1.98.1"
-description = "Harvest a CHANGELOG from your Git history."
-repository = "https://github.com/kevinmatthes/git-harvest"
+description = "Generates or checks the committed git-harvest.1 man page."
 license = "GPL-3.0-or-later"
 authors = ["Kevin Matthes <aeruginous.rs@gmail.com>"]
-keywords = ["changelog", "git", "keep-a-changelog", "release", "ron"]
-categories = ["command-line-utilities", "development-tools"]
-readme = "README.md"
-include = [
-    "build.rs",
-    "src/**",
-    "README.md",
-    "LICENCE",
-    "THIRDPARTY.md",
-    "debian/copyright",
-]
+publish = false
 
 [package.metadata.release]
-publish = false
-tag = false
-push = false
-shared-version = true
-pre-release-hook = ["env", "-u", "CI", "cargo", "run", "-p", "xtask"]
-pre-release-commit-message = "Skip ::= pre-bump the manifest to {{version}}"
-
-[[package.metadata.release.pre-release-replacements]]
-file = "CITATION.cff"
-search = "^version: .*"
-replace = "version: {{version}}"
-exactly = 1
+release = false
 
 [dependencies]
-chrono = { version = "0.4.45", features = ["serde"] }
-clap = { version = "4.6.7", features = ["derive"] }
-gix = "0.87.1"
-indexmap = { version = "2.14.2", features = ["serde"] }
-list-my-licence = { version = "0.3.0", features = ["clap"] }
-ron = "0.12.2"
-semver = "1.0.28"
-serde = { version = "1.0.229", features = ["derive"] }
-sysexits = "0.13.0"
-
-[build-dependencies]
-list-my-licence = { version = "0.3.0", features = ["build"] }
-
-[dev-dependencies]
-chrono = { version = "0.4.45", features = ["serde"] }
-sysexits = "0.13.0"
-tempfile = "3.27.0"
+clap = "4.6.7"
+clap_mangen = "0.2.33"
+git-harvest = { path = ".." }
 
 [lints.clippy]
 all = { level = "deny", priority = -1 }

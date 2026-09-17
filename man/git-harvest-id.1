@@ -1,0 +1,31 @@
+.ie \n(.g .ds Aq \(aq
+.el .ds Aq '
+.TH git-harvest-id 1  "id " 
+.SH NAME
+git\-harvest\-id \- Register and maintain the CHANGELOG\*(Aqs contributor registry
+.SH SYNOPSIS
+\fBgit\-harvest id\fR [\fB\-c\fR|\fB\-\-changelog\fR] [\fB\-h\fR|\fB\-\-help\fR] <\fIsubcommands\fR>
+.SH DESCRIPTION
+Register and maintain the CHANGELOG\*(Aqs contributor registry.
+.PP
+Wraps four registry operations — `inherit`, `register`, `update` and `merge` — used to keep the registry accurate as people join, change their Git identity, or need two recorded identities folded into one.
+.SH OPTIONS
+.TP
+\fB\-c\fR, \fB\-\-changelog\fR \fI<CHANGELOG>\fR [default: CHANGELOG.ron]
+The CHANGELOG whose contributor registry is edited
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+Print help (see a summary with \*(Aq\-h\*(Aq)
+.SH SUBCOMMANDS
+.TP
+git\-harvest\-id\-inherit(1)
+Register the identity from the local Git configuration
+.TP
+git\-harvest\-id\-register(1)
+Register a contributor under a chosen alias
+.TP
+git\-harvest\-id\-update(1)
+Change a registered contributor\*(Aqs names, e\-mails or URLs
+.TP
+git\-harvest\-id\-merge(1)
+Fold several registered contributors into one

@@ -64,7 +64,8 @@ jobs:
 
           last=$(git describe --tags --abbrev=0)
           version=$(cargo metadata --format-version 1 --no-deps |
-                    jq -r '.packages[0].version')
+                    jq -r '.packages[] |
+                           select(.name == "git-harvest") | .version')
 
           shipped=no
           for f in $(git diff --name-only "$last"..HEAD); do
@@ -230,6 +231,7 @@ jobs:
           mv Cargo.toml.next Cargo.toml
 
           env -u CI cargo check
+          env -u CI cargo run -p xtask
           env -u CI cargo check --locked
 
           today=$(date -u +%F)

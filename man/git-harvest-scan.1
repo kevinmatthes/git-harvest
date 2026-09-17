@@ -1,0 +1,27 @@
+.ie \n(.g .ds Aq \(aq
+.el .ds Aq '
+.TH git-harvest-scan 1  "scan " 
+.SH NAME
+git\-harvest\-scan \- Harvest this branch\*(Aqs structured commits into a fragment
+.SH SYNOPSIS
+\fBgit\-harvest scan\fR [\fB\-b\fR|\fB\-\-base\fR] [\fB\-c\fR|\fB\-\-changelog\fR] [\fB\-f\fR|\fB\-\-force\fR] [\fB\-o\fR|\fB\-\-output\fR] [\fB\-h\fR|\fB\-\-help\fR] 
+.SH DESCRIPTION
+Harvest this branch\*(Aqs structured commits into a fragment.
+.PP
+Walks the commits on the current branch back to its merge base with `\-\-base`, splits every commit subject on the CHANGELOG\*(Aqs configured delimiter into a bucket and an entry, and writes the harvested entries as one fragment file.  A commit with no delimiter, an unrecognised bucket, or the standing `Skip ::=` marker is dropped silently; a branch with nothing to harvest writes no file and exits successfully.
+.SH OPTIONS
+.TP
+\fB\-b\fR, \fB\-\-base\fR \fI<BASE>\fR [default: main]
+The ref the branch diverged from; its merge base bounds the walk
+.TP
+\fB\-c\fR, \fB\-\-changelog\fR \fI<CHANGELOG>\fR [default: CHANGELOG.ron]
+The CHANGELOG to read the harvest configuration from, if it exists
+.TP
+\fB\-f\fR, \fB\-\-force\fR
+Overwrite the fragment when one of the same name exists already
+.TP
+\fB\-o\fR, \fB\-\-output\fR \fI<OUTPUT>\fR [default: changelog.d]
+The directory to write the fragment into
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+Print help (see a summary with \*(Aq\-h\*(Aq)

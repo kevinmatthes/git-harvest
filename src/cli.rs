@@ -20,6 +20,16 @@
 //! The command line surface of `git-harvest`.
 
 /// Harvest a CHANGELOG from a repository's Git history.
+///
+/// `git-harvest` produces a Keep a Changelog-style CHANGELOG from a Git
+/// repository's commit history in two passes.  `scan` harvests the
+/// structured commits on the current branch into a fragment file under
+/// `changelog.d/`; `assemble` later folds every pending fragment into a
+/// new released section of the CHANGELOG, deleting the fragments it
+/// consumes.  `render` exports the released history as Markdown, `id`
+/// registers and maintains the contributor registry both passes
+/// consult, and `licences` reproduces the licence notices of
+/// `git-harvest` and its own dependencies.
 #[derive(clap::Parser, Debug)]
 #[command(about, version)]
 pub struct Cli {
@@ -37,12 +47,31 @@ pub struct Cli {
 #[non_exhaustive]
 pub enum Command {
     /// Merge the harvested fragments into a new CHANGELOG section.
+    ///
+    /// Reads every fragment file in the input directory, folds duplicate
+    /// entries — the same change recorded by more than one fragment —
+    /// into a single entry crediting every contributor who reported it,
+    /// and writes the result as a new section for the given version.
+    /// Every fragment consumed this way is then deleted; a fragment for
+    /// a still-unreleased change is left untouched.
     Assemble(AssembleArguments),
 
     /// Register and maintain the CHANGELOG's contributor registry.
+    ///
+    /// Wraps four registry operations — `inherit`, `register`, `update`
+    /// and `merge` — used to keep the registry accurate as people join,
+    /// change their Git identity, or need two recorded identities
+    /// folded into one.
     Id(IdArguments),
 
     /// Write a fresh CHANGELOG carrying the default configuration.
+    ///
+    /// Writes a starter CHANGELOG carrying the default harvest
+    /// configuration — the commit-message grammar, the accepted change
+    /// buckets and the default renderer — so a repository has something
+    /// for `scan` and `assemble` to read and write to from its very
+    /// first commit.  Refuses to overwrite an existing CHANGELOG unless
+    /// told to.
     Init(InitArguments),
 
     /// Reproduce the licences of `git-harvest` and its dependencies.
@@ -50,9 +79,24 @@ pub enum Command {
     Licences(list_my_licence::cli::LicenceCommand),
 
     /// Render the CHANGELOG as a Keep a Changelog Markdown file.
+    ///
+    /// Renders only released sections — the CHANGELOG's unreleased
+    /// state lives in `changelog.d/`'s fragments, never in the
+    /// CHANGELOG file itself — as a Keep a Changelog Markdown document
+    /// with reference-style contributor links.  The output file is
+    /// always overwritten in full; it is a generated artefact, not one
+    /// to hand-edit.
     Render(RenderArguments),
 
     /// Harvest this branch's structured commits into a fragment.
+    ///
+    /// Walks the commits on the current branch back to its merge base
+    /// with `--base`, splits every commit subject on the CHANGELOG's
+    /// configured delimiter into a bucket and an entry, and writes the
+    /// harvested entries as one fragment file.  A commit with no
+    /// delimiter, an unrecognised bucket, or the standing `Skip ::=`
+    /// marker is dropped silently; a branch with nothing to harvest
+    /// writes no file and exits successfully.
     Scan(ScanArguments),
 }
 
@@ -94,15 +138,35 @@ pub struct IdArguments {
 #[non_exhaustive]
 pub enum IdCommand {
     /// Register the identity from the local Git configuration.
+    ///
+    /// Reads `user.name` and `user.email` from the repository's local
+    /// Git configuration and registers that identity proactively,
+    /// rather than waiting for it to be discovered the first time
+    /// `scan` harvests one of its commits.
     Inherit,
 
     /// Register a contributor under a chosen alias.
+    ///
+    /// Adds a contributor immediately under a chosen alias, for a bot
+    /// or a person who has not committed yet and so cannot be
+    /// auto-registered by `scan`.
     Register(RegisterArguments),
 
     /// Change a registered contributor's names, e-mails or URLs.
+    ///
+    /// Changes an already-registered contributor's names, e-mail
+    /// addresses or URLs, promotes one of them to primary, or renames
+    /// the contributor's alias — every requested change is validated
+    /// together and applied in one atomic write, or none of them are.
     Update(UpdateArguments),
 
     /// Fold several registered contributors into one.
+    ///
+    /// Folds two or more registered contributors into one, for the
+    /// cases `scan` cannot resolve automatically:  the same person
+    /// recorded under different e-mail addresses, or two already
+    /// curated aliases found to disagree.  The surviving alias may be
+    /// a fresh name, not necessarily one of the merged entries.
     Merge(MergeArguments),
 }
 
@@ -122,8 +186,7 @@ pub struct RegisterArguments {
 /// The arguments of `git harvest id update`.
 ///
 /// Adds are applied first, then removes, then primary promotions, then the
-/// rename; the request is validated whole and written once or not at all
-/// (`git-harvest.md` D58).
+/// rename; the request is validated whole and written once or not at all.
 #[derive(clap::Args, Debug)]
 pub struct UpdateArguments {
     /// The contributor to change.
@@ -174,7 +237,7 @@ pub struct UpdateArguments {
 #[derive(clap::Args, Debug)]
 pub struct MergeArguments {
     /// The aliases to fold together; the last one names the survivor and
-    /// may be a fresh alias (`git-harvest.md` D59).
+    /// may be a fresh alias.
     #[arg(num_args = 2.., required = true)]
     pub aliases: Vec<String>,
 }

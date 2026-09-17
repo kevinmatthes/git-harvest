@@ -1,0 +1,27 @@
+.ie \n(.g .ds Aq \(aq
+.el .ds Aq '
+.TH git-harvest-assemble 1  "assemble " 
+.SH NAME
+git\-harvest\-assemble \- Merge the harvested fragments into a new CHANGELOG section
+.SH SYNOPSIS
+\fBgit\-harvest assemble\fR [\fB\-c\fR|\fB\-\-changelog\fR] [\fB\-i\fR|\fB\-\-input\fR] [\fB\-r\fR|\fB\-\-released\fR] [\fB\-h\fR|\fB\-\-help\fR] <\fIVERSION\fR> 
+.SH DESCRIPTION
+Merge the harvested fragments into a new CHANGELOG section.
+.PP
+Reads every fragment file in the input directory, folds duplicate entries — the same change recorded by more than one fragment — into a single entry crediting every contributor who reported it, and writes the result as a new section for the given version. Every fragment consumed this way is then deleted; a fragment for a still\-unreleased change is left untouched.
+.SH OPTIONS
+.TP
+\fB\-c\fR, \fB\-\-changelog\fR \fI<CHANGELOG>\fR [default: CHANGELOG.ron]
+The CHANGELOG to merge the fragments into
+.TP
+\fB\-i\fR, \fB\-\-input\fR \fI<INPUT>\fR [default: changelog.d]
+The directory the fragments are read from and then cleared
+.TP
+\fB\-r\fR, \fB\-\-released\fR \fI<RELEASED>\fR
+The publish moment, RFC 3339; defaults to now, in UTC
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+Print help (see a summary with \*(Aq\-h\*(Aq)
+.TP
+<\fIVERSION\fR>
+The version the new section documents, as `major.minor.patch`

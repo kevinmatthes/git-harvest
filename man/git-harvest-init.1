@@ -1,0 +1,21 @@
+.ie \n(.g .ds Aq \(aq
+.el .ds Aq '
+.TH git-harvest-init 1  "init " 
+.SH NAME
+git\-harvest\-init \- Write a fresh CHANGELOG carrying the default configuration
+.SH SYNOPSIS
+\fBgit\-harvest init\fR [\fB\-o\fR|\fB\-\-output\fR] [\fB\-f\fR|\fB\-\-force\fR] [\fB\-h\fR|\fB\-\-help\fR] 
+.SH DESCRIPTION
+Write a fresh CHANGELOG carrying the default configuration.
+.PP
+Writes a starter CHANGELOG carrying the default harvest configuration — the commit\-message grammar, the accepted change buckets and the default renderer — so a repository has something for `scan` and `assemble` to read and write to from its very first commit.  Refuses to overwrite an existing CHANGELOG unless told to.
+.SH OPTIONS
+.TP
+\fB\-o\fR, \fB\-\-output\fR \fI<OUTPUT>\fR [default: CHANGELOG.ron]
+The path to write the CHANGELOG to
+.TP
+\fB\-f\fR, \fB\-\-force\fR
+Overwrite the target when it exists already
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+Print help (see a summary with \*(Aq\-h\*(Aq)

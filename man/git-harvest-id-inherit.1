@@ -1,0 +1,15 @@
+.ie \n(.g .ds Aq \(aq
+.el .ds Aq '
+.TH git-harvest-id-inherit 1  "inherit " 
+.SH NAME
+git\-harvest\-id\-inherit \- Register the identity from the local Git configuration
+.SH SYNOPSIS
+\fBgit\-harvest id inherit\fR [\fB\-h\fR|\fB\-\-help\fR] 
+.SH DESCRIPTION
+Register the identity from the local Git configuration.
+.PP
+Reads `user.name` and `user.email` from the repository\*(Aqs local Git configuration and registers that identity proactively, rather than waiting for it to be discovered the first time `scan` harvests one of its commits.
+.SH OPTIONS
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+Print help (see a summary with \*(Aq\-h\*(Aq)

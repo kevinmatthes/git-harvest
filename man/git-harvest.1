@@ -1,0 +1,39 @@
+.ie \n(.g .ds Aq \(aq
+.el .ds Aq '
+.TH git-harvest 1  "git-harvest 0.3.3" 
+.SH NAME
+git\-harvest \- Harvest a CHANGELOG from your Git history.
+.SH SYNOPSIS
+\fBgit\-harvest\fR [\fB\-h\fR|\fB\-\-help\fR] [\fB\-V\fR|\fB\-\-version\fR] <\fIsubcommands\fR>
+.SH DESCRIPTION
+Harvest a CHANGELOG from a repository\*(Aqs Git history.
+.PP
+`git\-harvest` produces a Keep a Changelog\-style CHANGELOG from a Git repository\*(Aqs commit history in two passes.  `scan` harvests the structured commits on the current branch into a fragment file under `changelog.d/`; `assemble` later folds every pending fragment into a new released section of the CHANGELOG, deleting the fragments it consumes.  `render` exports the released history as Markdown, `id` registers and maintains the contributor registry both passes consult, and `licences` reproduces the licence notices of `git\-harvest` and its own dependencies.
+.SH OPTIONS
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+Print help (see a summary with \*(Aq\-h\*(Aq)
+.TP
+\fB\-V\fR, \fB\-\-version\fR
+Print version
+.SH SUBCOMMANDS
+.TP
+git\-harvest\-assemble(1)
+Merge the harvested fragments into a new CHANGELOG section
+.TP
+git\-harvest\-id(1)
+Register and maintain the CHANGELOG\*(Aqs contributor registry
+.TP
+git\-harvest\-init(1)
+Write a fresh CHANGELOG carrying the default configuration
+.TP
+git\-harvest\-licences(1)
+Show the licences of this application and its dependencies
+.TP
+git\-harvest\-render(1)
+Render the CHANGELOG as a Keep a Changelog Markdown file
+.TP
+git\-harvest\-scan(1)
+Harvest this branch\*(Aqs structured commits into a fragment
+.SH VERSION
+v0.3.3

@@ -1,0 +1,24 @@
+.ie \n(.g .ds Aq \(aq
+.el .ds Aq '
+.TH git-harvest-id-register 1  "register " 
+.SH NAME
+git\-harvest\-id\-register \- Register a contributor under a chosen alias
+.SH SYNOPSIS
+\fBgit\-harvest id register\fR [\fB\-h\fR|\fB\-\-help\fR] <\fIALIAS\fR> <\fINAME\fR> <\fIEMAIL\fR> 
+.SH DESCRIPTION
+Register a contributor under a chosen alias.
+.PP
+Adds a contributor immediately under a chosen alias, for a bot or a person who has not committed yet and so cannot be auto\-registered by `scan`.
+.SH OPTIONS
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+Print help (see a summary with \*(Aq\-h\*(Aq)
+.TP
+<\fIALIAS\fR>
+The alias to credit this contributor as
+.TP
+<\fINAME\fR>
+The contributor\*(Aqs name
+.TP
+<\fIEMAIL\fR>
+The contributor\*(Aqs e\-mail address

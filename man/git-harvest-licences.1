@@ -1,0 +1,31 @@
+.ie \n(.g .ds Aq \(aq
+.el .ds Aq '
+.TH git-harvest-licences 1  "licences " 
+.SH NAME
+git\-harvest\-licences \- Show the licences of this application and its dependencies
+.SH SYNOPSIS
+\fBgit\-harvest licences\fR [\fB\-\-format\fR] [\fB\-h\fR|\fB\-\-help\fR] [\fICRATE\fR] 
+.SH DESCRIPTION
+Show the licences of this application and its dependencies
+.SH OPTIONS
+.TP
+\fB\-\-format\fR \fI<FORMAT>\fR [default: text]
+How to render the licences
+.br
+
+.br
+\fIPossible values:\fR
+.RS 14
+.IP \(bu 2
+dep5: A machine\-readable DEP\-5 `debian/copyright`
+.IP \(bu 2
+markdown: Markdown, with licence texts in fenced blocks
+.IP \(bu 2
+text: Plain text, for a terminal
+.RE
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+Print help (see a summary with \*(Aq\-h\*(Aq)
+.TP
+[\fICRATE\fR]
+Show only this crate\*(Aqs licences

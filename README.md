@@ -76,10 +76,13 @@ mandb ~/.local/share/man 2>/dev/null || true
 
 ## Requesting other platforms
 
-Pre-built packages and binaries are not available for every architecture
-or ecosystem yet.  If yours is missing, [open an
-issue][issues] — it will be looked at, not dismissed for being
-unusual or old hardware.
+Considering the impressive variety of ecosystems and architectures, it is
+not impossible that some configurations are not yet provided with
+precompiled binaries and/or packages.  Users who find their respective
+ecosystem and/or architecture missing are thus invited to submit a brief
+[issue][issues] to request support for that particular configuration.
+All ecosystems and architectures are welcome — they just need to be asked
+for such that they can be supported, eventually.
 
 ## Licence
 

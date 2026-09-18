@@ -32,7 +32,7 @@ release = false
 
 [dependencies]
 clap = "4.6.7"
-clap_mangen = "0.2.33"
+clap_mangen = "0.3.3"
 git-harvest = { path = ".." }
 
 [lints.clippy]

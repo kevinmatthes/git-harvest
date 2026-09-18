@@ -33,5 +33,15 @@
         ],
       ),
     ],
+    "Changed": [
+      (
+        text: "rework the platform-request wording to avoid overpromising",
+        commit: Some("8d9561e"),
+        aliases: [
+          "92332892+kevinmatthes@users.noreply.github.com",
+          "noreply@anthropic.com",
+        ],
+      ),
+    ],
   },
 )

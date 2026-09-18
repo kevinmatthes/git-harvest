@@ -57,11 +57,40 @@ setup.
 Assembling release notes is the tool's job; version bumping stays with each
 repository's own release workflow.
 
+## Man pages
+
+Git looks for a `git-harvest.1` man page whenever `--help` is passed to a
+subcommand — `git harvest --help` runs `git help harvest`, which expects
+that page on `MANPATH`, and fails if it is not installed, even though
+`git harvest -h` and the binary's own `--help` still work without it.
+Every subcommand's page is generated from the CLI's own definitions and
+ships as its own `man-pages.tar.gz` asset on each [GitHub
+Release][releases] — installed by a `.deb` automatically, or by hand
+otherwise, e.g. into `~/.local/share/man/man1`:
+
+```sh
+mkdir -p ~/.local/share/man/man1
+tar -xzf man-pages.tar.gz -C ~/.local/share/man/man1 --strip-components=1
+mandb ~/.local/share/man 2>/dev/null || true
+```
+
+## Requesting other platforms
+
+Considering the impressive variety of ecosystems and architectures, it is
+not impossible that some configurations are not yet provided with
+precompiled binaries and/or packages.  Users who find their respective
+ecosystem and/or architecture missing are thus invited to submit a brief
+[issue][issues] to request support for that particular configuration.
+All ecosystems and architectures are welcome — they just need to be asked
+for such that they can be supported, eventually.
+
 ## Licence
 
 GNU General Public License v3.0 or later.  See [`LICENCE`](LICENCE) for the
 full text.
 
+[issues]: https://github.com/kevinmatthes/git-harvest/issues
 [list-my-licence]: https://crates.io/crates/list-my-licence
+[releases]: https://github.com/kevinmatthes/git-harvest/releases
 
 <!-------------------------------------------------------------------------- -->

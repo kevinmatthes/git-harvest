@@ -191,6 +191,47 @@ jobs:
           CARGO_REGISTRY_TOKEN: ${{ steps.auth.outputs.token }}
         run: cargo publish --locked
 
+  binaries:
+    needs: [decide, release]
+    if: needs.decide.outputs.release == 'yes'
+    strategy:
+      matrix:
+        include:
+          - target: x86_64-unknown-linux-musl
+            runs-on: ubuntu-latest
+          - target: aarch64-unknown-linux-musl
+            runs-on: ubuntu-24.04-arm
+    runs-on: ${{ matrix.runs-on }}
+    permissions:
+      contents: write
+    steps:
+      - run: rustup update
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: add the musl target
+        run: rustup target add ${{ matrix.target }}
+
+      - name: install the musl linker
+        run: sudo apt-get update && sudo apt-get install -y musl-tools
+
+      - name: build the release binary
+        run: cargo build --release --locked --target ${{ matrix.target }}
+
+      - name: package the binary
+        run: |
+          set -euo pipefail
+
+          tar -cz -C "target/${{ matrix.target }}/release" git-harvest \
+            > "git-harvest-${{ matrix.target }}.tar.gz"
+
+      - uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
+        with:
+          tag_name: v${{ needs.decide.outputs.version }}
+          files: git-harvest-${{ matrix.target }}.tar.gz
+
   bookkeep:
     needs: [decide, release]
     if: needs.decide.outputs.release == 'yes'

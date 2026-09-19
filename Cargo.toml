@@ -46,6 +46,7 @@ include = [
     "LICENCE",
     "THIRDPARTY.md",
     "debian/copyright",
+    "licences/musl/COPYRIGHT",
 ]
 
 [package.metadata.release]

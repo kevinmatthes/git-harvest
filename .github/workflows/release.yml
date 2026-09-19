@@ -215,23 +215,25 @@ jobs:
       - name: add the musl target
         run: rustup target add ${{ matrix.target }}
 
-      - name: install the musl linker
-        run: sudo apt-get update && sudo apt-get install -y musl-tools
-
-      - name: confirm the installed musl matches the pinned notice
+      - name: confirm the linked musl matches the pinned notice
         run: |
           set -euo pipefail
 
-          installed=$(dpkg-query -W -f='${Version}' musl-tools |
-                      grep -oP '^\K[0-9]+\.[0-9]+\.[0-9]+')
+          sysroot=$(rustc --print sysroot)
+          libc="$sysroot/lib/rustlib/${{ matrix.target }}"
+          libc="$libc/lib/self-contained/libc.a"
+          linked=$(strings "$libc" | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$')
           pinned=$(grep -oP 'version: "\K[0-9.]+' build.rs)
 
-          if [ "$installed" != "$pinned" ]; then
-            echo "musl-tools installs $installed here, but build.rs" \
+          if [ "$linked" != "$pinned" ]; then
+            echo "the toolchain links musl $linked here, but build.rs" \
                  "pins $pinned -- refresh licences/musl/COPYRIGHT and" \
                  "build.rs together, by hand, before this can pass" >&2
             exit 1
           fi
+
+      - name: install the musl linker
+        run: sudo apt-get update && sudo apt-get install -y musl-tools
 
       - uses: taiki-e/install-action@9114bf4d891761788c546334fd37538eae1bf8b3 # v2.87.16
         with:

@@ -45,12 +45,13 @@ fn musl_copyright_line(text: &str) -> String {
 /// [`list_my_licence::build::Builder::extra`] instead.
 ///
 /// `version` below is a manual pin, not Renovate-tracked:  it must match
-/// whatever `musl-tools` the release workflow's strictly pinned runner
-/// (`ubuntu-24.04`/`ubuntu-24.04-arm`, never `-latest`) actually installs.
-/// `release.yml`'s `binaries` job checks this live against the real
-/// installed `dpkg` version and fails if the two disagree, so a runner
-/// bump must update this pin and `licences/musl/COPYRIGHT` by hand,
-/// together, before it can pass.
+/// whichever musl the `*-unknown-linux-musl` targets actually statically
+/// link, which — since Rust's self-contained linking bundles its own
+/// `musl-cross-make` build in the toolchain sysroot — is unrelated to any
+/// system `musl-tools` package.  `release.yml`'s `binaries` job checks
+/// this live against the sysroot's own `libc.a`, so a Rust-toolchain
+/// update that moves the bundled musl must update this pin and
+/// `licences/musl/COPYRIGHT` by hand, together, before it can pass.
 fn extra_packages() -> Vec<list_my_licence::build::ResolvedPackage> {
     let manifest_dir =
         std::path::PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());
@@ -60,7 +61,7 @@ fn extra_packages() -> Vec<list_my_licence::build::ResolvedPackage> {
 
     vec![list_my_licence::build::ResolvedPackage {
         name: "musl".into(),
-        version: "1.2.4".into(),
+        version: "1.2.5".into(),
         manifest_dir: musl_dir,
         licence: Some("MIT".into()),
         licence_file: None,

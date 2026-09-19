@@ -86,6 +86,9 @@ jobs:
         with:
           tool: cargo-deb@3.8.0
 
+      - name: stand in for release.yml's corresponding-source pointer
+        run: touch SOURCE.txt
+
       - run: cargo deb
 
   man-page:

@@ -68,6 +68,18 @@
         "cargo-semver-checks@(?<currentValue>\\d+\\.\\d+\\.\\d+)"
       ],
       "packageNameTemplate": "cargo-semver-checks"
+    },
+    {
+      "customType": "regex",
+      "datasourceTemplate": "crate",
+      "depNameTemplate": "cargo-deb",
+      "managerFilePatterns": [
+        "/^\\.github/workflows/ci\\.yml$/"
+      ],
+      "matchStrings": [
+        "cargo-deb@(?<currentValue>\\d+\\.\\d+\\.\\d+)"
+      ],
+      "packageNameTemplate": "cargo-deb"
     }
   ],
   "dependencyDashboard": true,
@@ -132,6 +144,7 @@
         "rust"
       ],
       "matchDepNames": [
+        "cargo-deb",
         "cargo-deny",
         "cargo-semver-checks"
       ],

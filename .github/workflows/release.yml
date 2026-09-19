@@ -217,6 +217,10 @@ jobs:
       - name: install the musl linker
         run: sudo apt-get update && sudo apt-get install -y musl-tools
 
+      - uses: taiki-e/install-action@9114bf4d891761788c546334fd37538eae1bf8b3 # v2.87.16
+        with:
+          tool: cargo-deb@3.8.0
+
       - name: build the release binary
         run: cargo build --release --locked --target ${{ matrix.target }}
 
@@ -227,10 +231,15 @@ jobs:
           tar -cz -C "target/${{ matrix.target }}/release" git-harvest \
             > "git-harvest-${{ matrix.target }}.tar.gz"
 
+      - name: package the .deb
+        run: cargo deb --no-build --locked --target ${{ matrix.target }}
+
       - uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
         with:
           tag_name: v${{ needs.decide.outputs.version }}
-          files: git-harvest-${{ matrix.target }}.tar.gz
+          files: |
+            git-harvest-${{ matrix.target }}.tar.gz
+            target/${{ matrix.target }}/debian/*.deb
 
   bookkeep:
     needs: [decide, release]

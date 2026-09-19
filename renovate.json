@@ -93,6 +93,18 @@
         "cargo-release@(?<currentValue>\\d+\\.\\d+\\.\\d+)"
       ],
       "packageNameTemplate": "cargo-release"
+    },
+    {
+      "customType": "regex",
+      "datasourceTemplate": "git-tags",
+      "depNameTemplate": "musl",
+      "managerFilePatterns": [
+        "/^build\\.rs$/"
+      ],
+      "matchStrings": [
+        "name: \"musl\"\\.into\\(\\),\\s*version: \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\"\\.into\\(\\),"
+      ],
+      "packageNameTemplate": "https://git.musl-libc.org/git/musl"
     }
   ],
   "dependencyDashboard": true,
@@ -160,7 +172,8 @@
         "cargo-deb",
         "cargo-deny",
         "cargo-release",
-        "cargo-semver-checks"
+        "cargo-semver-checks",
+        "musl"
       ],
       "matchManagers": [
         "custom.regex"

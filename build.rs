@@ -28,20 +28,36 @@
 //! [`list_my_licence::build::Emitter::check`] is markdown-specific — there
 //! is no DEP-5 equivalent to call instead.
 
+/// The copyright line a musl `COPYRIGHT` file states for itself.
+///
+/// Read from the file rather than pinned separately, so the year range
+/// can never drift from whichever version's text `renovate-licences` last
+/// fetched.
+fn musl_copyright_line(text: &str) -> String {
+    text.lines()
+        .find_map(|line| line.strip_prefix("Copyright © "))
+        .expect("licences/musl/COPYRIGHT must state its own copyright line")
+        .trim()
+        .to_owned()
+}
+
 /// Every distributed binary artefact statically links musl — a system C
 /// library `cargo metadata` never sees, reproduced here via
 /// [`list_my_licence::build::Builder::extra`] instead.
 fn extra_packages() -> Vec<list_my_licence::build::ResolvedPackage> {
     let manifest_dir =
         std::path::PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());
+    let musl_dir = manifest_dir.join("licences/musl");
+    let musl_copyright = std::fs::read_to_string(musl_dir.join("COPYRIGHT"))
+        .expect("licences/musl/COPYRIGHT must exist");
 
     vec![list_my_licence::build::ResolvedPackage {
         name: "musl".into(),
         version: "1.2.4".into(),
-        manifest_dir: manifest_dir.join("licences/musl"),
+        manifest_dir: musl_dir,
         licence: Some("MIT".into()),
         licence_file: None,
-        authors: vec!["2005-2020 Rich Felker, et al.".into()],
+        authors: vec![musl_copyright_line(&musl_copyright)],
         repository: Some("https://git.musl-libc.org/cgit/musl".into()),
     }]
 }

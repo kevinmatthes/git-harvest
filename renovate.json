@@ -81,6 +81,18 @@
         "cargo-deb@(?<currentValue>\\d+\\.\\d+\\.\\d+)"
       ],
       "packageNameTemplate": "cargo-deb"
+    },
+    {
+      "customType": "regex",
+      "datasourceTemplate": "crate",
+      "depNameTemplate": "cargo-release",
+      "managerFilePatterns": [
+        "/^\\.github/workflows/ci\\.yml$/"
+      ],
+      "matchStrings": [
+        "cargo-release@(?<currentValue>\\d+\\.\\d+\\.\\d+)"
+      ],
+      "packageNameTemplate": "cargo-release"
     }
   ],
   "dependencyDashboard": true,
@@ -147,6 +159,7 @@
       "matchDepNames": [
         "cargo-deb",
         "cargo-deny",
+        "cargo-release",
         "cargo-semver-checks"
       ],
       "matchManagers": [

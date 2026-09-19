@@ -240,6 +240,10 @@ jobs:
           git-harvest's own source for this exact release:
           $repo/archive/refs/tags/v$VERSION.tar.gz
 
+          This binary is a Larger Work under MPL-2.0 section 3.3,
+          incorporating uluru as Covered Software; see THIRDPARTY.md for
+          its full notice.
+
           If fetching either of these separately is impractical for you,
           please submit a brief issue at
           $repo/issues and another option to provide the source will be

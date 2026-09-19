@@ -99,6 +99,31 @@ fn refresh_or_check_copyright(
     }
 }
 
+/// Whether this build's own target statically links musl.
+fn targets_musl() -> bool {
+    std::env::var("TARGET").is_ok_and(|target| target.ends_with("-musl"))
+}
+
+/// Re-runs the embedding pass alone, without musl, for every target but
+/// the ones that actually link it.
+///
+/// `THIRDPARTY.md`/`debian/copyright` describe every platform this crate
+/// could be built for, musl included; the embedded `git harvest licences`
+/// output describes only this one binary, so a non-musl build must not
+/// claim it.
+fn strip_musl_from_embedding(checking: bool) {
+    if targets_musl() {
+        return;
+    }
+
+    if let Err(error) = list_my_licence::build::Builder::new()
+        .checking(checking)
+        .run()
+    {
+        panic!("{error}");
+    }
+}
+
 fn main() {
     let checking = std::env::var_os("CI").is_some();
 
@@ -115,6 +140,8 @@ fn main() {
     if let Err(error) = refresh_or_check_copyright(&outcome, checking) {
         panic!("{error}");
     }
+
+    strip_musl_from_embedding(checking);
 }
 
 /******************************************************************************/

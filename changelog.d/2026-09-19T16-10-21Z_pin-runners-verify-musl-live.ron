@@ -1,0 +1,45 @@
+(
+  contributors: {
+    "92332892+kevinmatthes@users.noreply.github.com": (
+      alias: "92332892+kevinmatthes@users.noreply.github.com",
+      names: [
+        "Kevin Matthes",
+      ],
+      emails: [
+        "92332892+kevinmatthes@users.noreply.github.com",
+      ],
+      urls: [],
+    ),
+    "noreply@anthropic.com": (
+      alias: "noreply@anthropic.com",
+      names: [
+        "Claude Sonnet 5",
+      ],
+      emails: [
+        "noreply@anthropic.com",
+      ],
+      urls: [],
+    ),
+  },
+  references: {},
+  changes: {
+    "Fixed": [
+      (
+        text: "stop tracking musl\'s version via Renovate\'s upstream tags",
+        commit: Some("47cef5e"),
+        aliases: [
+          "92332892+kevinmatthes@users.noreply.github.com",
+          "noreply@anthropic.com",
+        ],
+      ),
+      (
+        text: "pin the musl runner and verify its version live at build time",
+        commit: Some("0b918e6"),
+        aliases: [
+          "92332892+kevinmatthes@users.noreply.github.com",
+          "noreply@anthropic.com",
+        ],
+      ),
+    ],
+  },
+)

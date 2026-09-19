@@ -386,7 +386,7 @@ jobs:
 
       - uses: fregante/setup-git-user@024bc0b8e177d7e77203b48dab6fb45666854b35 # v2.0.2
 
-      - name: refresh the shipped licence notices on a lock or musl-pin move
+      - name: refresh the shipped licence notices when the lock file moved
         env:
           BASE: ${{ github.base_ref }}
         run: |
@@ -397,25 +397,14 @@ jobs:
                   grep -F " $marker" | head -n1 | cut -d' ' -f1 || true)
           since="${since:-origin/$BASE}"
 
-          musl_before=$(git show "$since:build.rs" |
-                        grep -oP 'version: "\K[0-9.]+' || true)
-          musl_after=$(grep -oP 'version: "\K[0-9.]+' build.rs)
-
-          if git diff --quiet "$since" HEAD -- Cargo.lock &&
-             [ "$musl_before" = "$musl_after" ]; then
-            echo "the lock file and the musl pin are both unchanged"
+          if git diff --quiet "$since" HEAD -- Cargo.lock; then
+            echo "the lock file is unchanged since the last refresh"
             exit 0
-          fi
-
-          if [ "$musl_before" != "$musl_after" ]; then
-            url="https://git.musl-libc.org/cgit/musl/plain/COPYRIGHT"
-            curl -sf --max-time 30 --retry 3 --retry-delay 5 \
-              "$url?h=v$musl_after" -o licences/musl/COPYRIGHT
           fi
 
           env -u CI cargo check --locked
 
-          git add THIRDPARTY.md debian/copyright licences/musl/COPYRIGHT
+          git add THIRDPARTY.md debian/copyright
           if git diff --cached --quiet; then
             echo "the notices already match the graph"
             exit 0

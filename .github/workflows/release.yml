@@ -230,17 +230,19 @@ jobs:
         run: |
           set -euo pipefail
 
+          repo="https://github.com/kevinmatthes/git-harvest"
+
           cat > SOURCE.txt <<EOF
           Corresponding Source for the dependency graph compiled into this
-          artefact:  https://github.com/kevinmatthes/git-harvest/releases/download/v$VERSION/vendor-source.tar.xz
+          artefact:  $repo/releases/download/v$VERSION/vendor-source.tar.xz
 
           git-harvest's own source for this exact release:
-          https://github.com/kevinmatthes/git-harvest/archive/refs/tags/v$VERSION.tar.gz
+          $repo/archive/refs/tags/v$VERSION.tar.gz
 
           If fetching either of these separately is impractical for you,
           please submit a brief issue at
-          https://github.com/kevinmatthes/git-harvest/issues and another
-          option to provide the source will be added eventually.
+          $repo/issues and another option to provide the source will be
+          added eventually.
           EOF
 
       - name: package the binary

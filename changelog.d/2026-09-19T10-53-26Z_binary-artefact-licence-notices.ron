@@ -35,6 +35,14 @@
     ],
     "Fixed": [
       (
+        text: "stand in a placeholder SOURCE.txt for the CI cargo-deb smoke test",
+        commit: Some("8ec79c7"),
+        aliases: [
+          "92332892+kevinmatthes@users.noreply.github.com",
+          "noreply@anthropic.com",
+        ],
+      ),
+      (
         text: "keep the SOURCE.txt heredoc within the eighty-column rule",
         commit: Some("0eeb70f"),
         aliases: [

@@ -12303,7 +12303,7 @@ License: MIT and Apache-2.0
  See the License for the specific language governing permissions and
  limitations under the License.
 
-Files: git-harvest-0.3.3/*
+Files: git-harvest-0.3.4/*
 Copyright: Kevin Matthes <aeruginous.rs@gmail.com>
 License: GPL-3.0-or-later
  .

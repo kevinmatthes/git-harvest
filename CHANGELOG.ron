@@ -68,6 +68,308 @@
   references: {},
   sections: [
     (
+      version: (0, 3, 3),
+      released: Some("2026-09-19T21:11:17.399372856Z"),
+      introduction: None,
+      references: {},
+      changes: {
+        "Added": [
+          (
+            text: "a new xtask crate generates and checks man/",
+            commit: Some("c630198"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "a standalone release asset bundles the man pages for a manual install",
+            commit: Some("26bda5c"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "attach a musl release binary for amd64 and arm64 to every release",
+            commit: Some("816ebab"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "attach a self-published .deb to every release",
+            commit: Some("b2e008f"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "attach the dependency graph\'s corresponding source to every tagged release",
+            commit: Some("b74a0f8"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "bundle licence notices and a corresponding-source pointer into every compiled-binary artefact",
+            commit: Some("44af216"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "debian/copyright is generated and checked alongside THIRDPARTY.md",
+            commit: Some("f2d576b"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "document the man-page install path and invite platform requests",
+            commit: Some("c6798b9"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "install cargo-deb in CI and track it via Renovate",
+            commit: Some("cab93b5"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "refetch musl\'s own licence text when its pin moves",
+            commit: Some("21561b6"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "reproduce musl\'s own MIT notice via list-my-licence\'s extra()",
+            commit: Some("43c176b"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "state the MPL-2.0 Larger Work incorporation in SOURCE.txt",
+            commit: Some("988176a"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "track cargo-release\'s version via Renovate",
+            commit: Some("41dbd37"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "track musl\'s own upstream version via Renovate",
+            commit: Some("1d3e506"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "write the package.metadata.deb table for a self-published .deb",
+            commit: Some("f9d1f33"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+        ],
+        "Changed": [
+          (
+            text: "expand each subcommand\'s help text for the man page",
+            commit: Some("46b5473"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "lock file maintenance",
+            commit: None,
+            aliases: [
+              "renovate",
+              "github-actions",
+            ],
+          ),
+          (
+            text: "rework the platform-request wording to avoid overpromising",
+            commit: Some("8d9561e"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "update Rust crate clap to 4.6.7",
+            commit: None,
+            aliases: [
+              "renovate",
+              "github-actions",
+            ],
+          ),
+          (
+            text: "update Rust crate clap_mangen to 0.3.3",
+            commit: None,
+            aliases: [
+              "renovate",
+              "github-actions",
+            ],
+          ),
+          (
+            text: "update Rust crate list-my-licence to 0.3.1",
+            commit: None,
+            aliases: [
+              "renovate",
+              "github-actions",
+            ],
+          ),
+          (
+            text: "update taiki-e/install-action action to v2.87.16",
+            commit: None,
+            aliases: [
+              "renovate",
+              "github-actions",
+            ],
+          ),
+        ],
+        "Fixed": [
+          (
+            text: "a self-version bump no longer strands THIRDPARTY.md out of date",
+            commit: Some("a25ee1c"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "derive musl\'s copyright line from its own bundled text",
+            commit: Some("e4b1071"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "drop two licence-allowances deny.toml\'s own graph no longer uses",
+            commit: Some("508a738"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "keep cargo vendor\'s [source] replacement stanza, not discard it",
+            commit: Some("59a53e8"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "keep the SOURCE.txt heredoc within the eighty-column rule",
+            commit: Some("0eeb70f"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "only embed musl\'s notice for a target that actually links it",
+            commit: Some("39b77c9"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "package licences/musl/COPYRIGHT so cargo publish can verify the built crate",
+            commit: Some("bb3348f"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "pin the musl runner and verify its version live at build time",
+            commit: Some("0b918e6"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "renovate-licences never falls back to origin/$BASE on a fresh branch",
+            commit: Some("f15d553"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "scope cargo-deny\'s licence check to the shipped musl targets",
+            commit: Some("3e78bff"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "stand in a placeholder SOURCE.txt for the CI cargo-deb smoke test",
+            commit: Some("8ec79c7"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "stop tracking musl\'s version via Renovate\'s upstream tags",
+            commit: Some("47cef5e"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "track cargo-deb\'s version in release.yml too",
+            commit: Some("6965882"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "verify the actually-linked musl, not the unused apt package",
+            commit: Some("845d217"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+        ],
+      },
+    ),
+    (
       version: (0, 3, 2),
       released: Some("2026-09-14T02:47:42Z"),
       introduction: None,

@@ -1,0 +1,55 @@
+(
+  contributors: {
+    "92332892+kevinmatthes@users.noreply.github.com": (
+      alias: "92332892+kevinmatthes@users.noreply.github.com",
+      names: [
+        "Kevin Matthes",
+      ],
+      emails: [
+        "92332892+kevinmatthes@users.noreply.github.com",
+      ],
+      urls: [],
+    ),
+    "noreply@anthropic.com": (
+      alias: "noreply@anthropic.com",
+      names: [
+        "Claude Sonnet 5",
+      ],
+      emails: [
+        "noreply@anthropic.com",
+      ],
+      urls: [],
+    ),
+  },
+  references: {},
+  changes: {
+    "Added": [
+      (
+        text: "refetch musl\'s own licence text when its pin moves",
+        commit: Some("21561b6"),
+        aliases: [
+          "92332892+kevinmatthes@users.noreply.github.com",
+          "noreply@anthropic.com",
+        ],
+      ),
+      (
+        text: "track musl\'s own upstream version via Renovate",
+        commit: Some("1d3e506"),
+        aliases: [
+          "92332892+kevinmatthes@users.noreply.github.com",
+          "noreply@anthropic.com",
+        ],
+      ),
+    ],
+    "Fixed": [
+      (
+        text: "derive musl\'s copyright line from its own bundled text",
+        commit: Some("e4b1071"),
+        aliases: [
+          "92332892+kevinmatthes@users.noreply.github.com",
+          "noreply@anthropic.com",
+        ],
+      ),
+    ],
+  },
+)

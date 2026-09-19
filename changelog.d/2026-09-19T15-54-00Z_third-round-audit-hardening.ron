@@ -25,14 +25,6 @@
   changes: {
     "Fixed": [
       (
-        text: "strip musl\'s upstream v-prefix before it reaches build.rs",
-        commit: Some("a304ab1"),
-        aliases: [
-          "92332892+kevinmatthes@users.noreply.github.com",
-          "noreply@anthropic.com",
-        ],
-      ),
-      (
         text: "scope cargo-deny\'s licence check to the shipped musl targets",
         commit: Some("3e78bff"),
         aliases: [

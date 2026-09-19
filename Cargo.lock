@@ -1707,9 +1707,9 @@ checksum = "3eaf3ede3fee6db1a4c2ee091bf8a8b4dccdc6d17f656fb07896ee72867612f2"
 
 [[package]]
 name = "license"
-version = "3.8.0+3.28.0"
+version = "3.9.0+3.29.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5829b45ee447c45e83bc4081e584f8251d7dbfcbfaeb3f153824e03f76d5cf0e"
+checksum = "a6cf4fbb34524ab9d20724673c635e1b65f45f6745f469ac7192abece1a8f745"
 dependencies = [
  "reword",
  "serde",
@@ -1724,9 +1724,9 @@ checksum = "32a66949e030da00e8c7d4434b251670a91556f4144941d37452769c25d58a53"
 
 [[package]]
 name = "list-my-licence"
-version = "0.3.0"
+version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ff777d8c1d7b16d3653383ba663d5406d8b2fd2fbc2ec5bc24e64d15c739c8b6"
+checksum = "089ccccdb6a7fffb144369ef4e573a5bcab81670f35da924c5e75f6143dee5dd"
 dependencies = [
  "cargo_metadata",
  "clap",

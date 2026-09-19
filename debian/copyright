@@ -31376,7 +31376,7 @@ License: Apache-2.0 and MIT
  IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  DEALINGS IN THE SOFTWARE.
 
-Files: musl-1.2.4/*
+Files: musl-1.2.6/*
 Copyright: 2005-2020 Rich Felker, et al.
 License: MIT
  .
@@ -31458,6 +31458,7 @@ License: MIT
  Leah Neukirchen
  Luca Barbato
  Luka Perkov
+ Lynn Ochs
  M Farkas-Dyck (Strake)
  Mahesh Bodapati
  Markus Wichmann
@@ -31487,7 +31488,6 @@ License: MIT
  Szabolcs Nagy
  Timo Teräs
  Trutz Behn
- Valentin Ochs
  Will Dietz
  William Haddon
  William Pitcock
@@ -31527,7 +31527,7 @@ License: MIT
  in jurisdictions that may not recognize the public domain.
  .
  The smoothsort implementation (src/stdlib/qsort.c) is Copyright © 2011
- Valentin Ochs and is licensed under an MIT-style license.
+ Lynn Ochs and is licensed under an MIT-style license.
  .
  The x86_64 port was written by Nicholas J. Kain and is licensed under
  the standard MIT terms.

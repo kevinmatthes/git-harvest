@@ -31634,7 +31634,7 @@ IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 ```
 
-## musl 1.2.4
+## musl 1.2.6
 
 ### MIT (as distributed, in COPYRIGHT)
 
@@ -31715,6 +31715,7 @@ Kylie McClain
 Leah Neukirchen
 Luca Barbato
 Luka Perkov
+Lynn Ochs
 M Farkas-Dyck (Strake)
 Mahesh Bodapati
 Markus Wichmann
@@ -31744,7 +31745,6 @@ Stefan O'Rear
 Szabolcs Nagy
 Timo Teräs
 Trutz Behn
-Valentin Ochs
 Will Dietz
 William Haddon
 William Pitcock
@@ -31784,7 +31784,7 @@ domain. The code also comes with a fallback permissive license for use
 in jurisdictions that may not recognize the public domain.
 
 The smoothsort implementation (src/stdlib/qsort.c) is Copyright © 2011
-Valentin Ochs and is licensed under an MIT-style license.
+Lynn Ochs and is licensed under an MIT-style license.
 
 The x86_64 port was written by Nicholas J. Kain and is licensed under
 the standard MIT terms.

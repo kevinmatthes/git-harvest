@@ -25,8 +25,16 @@
   changes: {
     "Fixed": [
       (
-        text: "scope cargo-deny\'s licence check to the shipped musl targets",
-        commit: Some("3e78bff"),
+        text: "stop tracking musl\'s version via Renovate\'s upstream tags",
+        commit: Some("47cef5e"),
+        aliases: [
+          "92332892+kevinmatthes@users.noreply.github.com",
+          "noreply@anthropic.com",
+        ],
+      ),
+      (
+        text: "pin the musl runner and verify its version live at build time",
+        commit: Some("0b918e6"),
         aliases: [
           "92332892+kevinmatthes@users.noreply.github.com",
           "noreply@anthropic.com",

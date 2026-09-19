@@ -30,9 +30,8 @@
 
 /// The copyright line a musl `COPYRIGHT` file states for itself.
 ///
-/// Read from the file rather than pinned separately, so the year range
-/// can never drift from whichever version's text `renovate-licences` last
-/// fetched.
+/// Read from the file rather than pinned separately, so the year range can
+/// never drift from whichever version's text is actually bundled.
 fn musl_copyright_line(text: &str) -> String {
     text.lines()
         .find_map(|line| line.strip_prefix("Copyright © "))
@@ -44,6 +43,14 @@ fn musl_copyright_line(text: &str) -> String {
 /// Every distributed binary artefact statically links musl — a system C
 /// library `cargo metadata` never sees, reproduced here via
 /// [`list_my_licence::build::Builder::extra`] instead.
+///
+/// `version` below is a manual pin, not Renovate-tracked:  it must match
+/// whatever `musl-tools` the release workflow's strictly pinned runner
+/// (`ubuntu-24.04`/`ubuntu-24.04-arm`, never `-latest`) actually installs.
+/// `release.yml`'s `binaries` job checks this live against the real
+/// installed `dpkg` version and fails if the two disagree, so a runner
+/// bump must update this pin and `licences/musl/COPYRIGHT` by hand,
+/// together, before it can pass.
 fn extra_packages() -> Vec<list_my_licence::build::ResolvedPackage> {
     let manifest_dir =
         std::path::PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());

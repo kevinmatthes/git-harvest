@@ -199,7 +199,7 @@ jobs:
       matrix:
         include:
           - target: x86_64-unknown-linux-musl
-            runs-on: ubuntu-latest
+            runs-on: ubuntu-24.04
           - target: aarch64-unknown-linux-musl
             runs-on: ubuntu-24.04-arm
     runs-on: ${{ matrix.runs-on }}
@@ -217,6 +217,21 @@ jobs:
 
       - name: install the musl linker
         run: sudo apt-get update && sudo apt-get install -y musl-tools
+
+      - name: confirm the installed musl matches the pinned notice
+        run: |
+          set -euo pipefail
+
+          installed=$(dpkg-query -W -f='${Version}' musl-tools |
+                      grep -oP '^\K[0-9]+\.[0-9]+\.[0-9]+')
+          pinned=$(grep -oP 'version: "\K[0-9.]+' build.rs)
+
+          if [ "$installed" != "$pinned" ]; then
+            echo "musl-tools installs $installed here, but build.rs" \
+                 "pins $pinned -- refresh licences/musl/COPYRIGHT and" \
+                 "build.rs together, by hand, before this can pass" >&2
+            exit 1
+          fi
 
       - uses: taiki-e/install-action@9114bf4d891761788c546334fd37538eae1bf8b3 # v2.87.16
         with:

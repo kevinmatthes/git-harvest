@@ -53,7 +53,7 @@ fn extra_packages() -> Vec<list_my_licence::build::ResolvedPackage> {
 
     vec![list_my_licence::build::ResolvedPackage {
         name: "musl".into(),
-        version: "1.2.4".into(),
+        version: "1.2.6".into(),
         manifest_dir: musl_dir,
         licence: Some("MIT".into()),
         licence_file: None,

@@ -98,6 +98,7 @@
       "customType": "regex",
       "datasourceTemplate": "git-tags",
       "depNameTemplate": "musl",
+      "extractVersionTemplate": "^v(?<version>.*)$",
       "managerFilePatterns": [
         "/^build\\.rs$/"
       ],

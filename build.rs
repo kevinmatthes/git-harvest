@@ -28,6 +28,24 @@
 //! [`list_my_licence::build::Emitter::check`] is markdown-specific — there
 //! is no DEP-5 equivalent to call instead.
 
+/// Every distributed binary artefact statically links musl — a system C
+/// library `cargo metadata` never sees, reproduced here via
+/// [`list_my_licence::build::Builder::extra`] instead.
+fn extra_packages() -> Vec<list_my_licence::build::ResolvedPackage> {
+    let manifest_dir =
+        std::path::PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());
+
+    vec![list_my_licence::build::ResolvedPackage {
+        name: "musl".into(),
+        version: "1.2.4".into(),
+        manifest_dir: manifest_dir.join("licences/musl"),
+        licence: Some("MIT".into()),
+        licence_file: None,
+        authors: vec!["2005-2020 Rich Felker, et al.".into()],
+        repository: Some("https://git.musl-libc.org/cgit/musl".into()),
+    }]
+}
+
 fn refresh_or_check_copyright(
     outcome: &list_my_licence::build::Outcome,
     checking: bool,
@@ -63,6 +81,7 @@ fn main() {
     let outcome = match list_my_licence::build::Builder::new()
         .publish("THIRDPARTY.md")
         .checking(checking)
+        .extra(extra_packages())
         .run()
     {
         Ok(outcome) => outcome,

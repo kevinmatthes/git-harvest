@@ -90,8 +90,10 @@ const HASH_COMMENTED: [&str; 7] = [
 /// that format's own rule, not this project's eighty columns.
 /// `renovate.json` is machine configuration with no comment syntax to wrap
 /// or word within, the same standing exception it already holds from the
-/// closing rule.
-const UNCHECKED: [&str; 5] = [
+/// closing rule.  `licences/musl/COPYRIGHT` is the same kind of quotation as
+/// `LICENCE`, just for a dependency outside Cargo's own graph.
+const UNCHECKED: [&str; 6] = [
+    "COPYRIGHT",
     "Cargo.lock",
     "LICENCE",
     "THIRDPARTY.md",

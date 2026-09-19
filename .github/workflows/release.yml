@@ -169,9 +169,10 @@ jobs:
         run: |
           set -euo pipefail
 
-          cargo vendor --locked vendor > /dev/null
-          tar -cf - vendor | xz -9e > vendor-source.tar.xz
-          rm -rf vendor
+          cargo vendor --locked vendor > cargo-vendor-config.toml
+          tar -cf - vendor cargo-vendor-config.toml | xz -9e \
+            > vendor-source.tar.xz
+          rm -rf vendor cargo-vendor-config.toml
 
       - name: bundle the man pages for a manual install
         run: tar -cf - man | gzip -9 > man-pages.tar.gz
@@ -238,6 +239,10 @@ jobs:
 
           git-harvest's own source for this exact release:
           $repo/archive/refs/tags/v$VERSION.tar.gz
+
+          This binary is a Larger Work under MPL-2.0 section 3.3,
+          incorporating uluru as Covered Software; see THIRDPARTY.md for
+          its full notice.
 
           If fetching either of these separately is impractical for you,
           please submit a brief issue at

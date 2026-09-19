@@ -28787,7 +28787,7 @@ License: MIT and Apache-2.0
  .
  END OF TERMS AND CONDITIONS
 
-Files: license-3.8.0+3.28.0/*
+Files: license-3.9.0+3.29.0/*
 Copyright: evenorog <evenorog@gmail.com>
 License: MIT and Apache-2.0
  .
@@ -29253,7 +29253,7 @@ License: Apache-2.0 and MIT
  IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  DEALINGS IN THE SOFTWARE.
 
-Files: list-my-licence-0.3.0/*
+Files: list-my-licence-0.3.1/*
 Copyright: Kevin Matthes <aeruginous.rs@gmail.com>
 License: GPL-3.0-or-later
  .

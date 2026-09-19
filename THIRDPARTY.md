@@ -29030,7 +29030,7 @@ TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 END OF TERMS AND CONDITIONS
 ```
 
-## license 3.8.0+3.28.0
+## license 3.9.0+3.29.0
 
 ### MIT (as distributed, in LICENSE-MIT)
 
@@ -29500,7 +29500,7 @@ IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 ```
 
-## list-my-licence 0.3.0
+## list-my-licence 0.3.1
 
 ### GPL-3.0-or-later (as distributed, in LICENCE)
 

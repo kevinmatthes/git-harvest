@@ -74,7 +74,8 @@
       "datasourceTemplate": "crate",
       "depNameTemplate": "cargo-deb",
       "managerFilePatterns": [
-        "/^\\.github/workflows/ci\\.yml$/"
+        "/^\\.github/workflows/ci\\.yml$/",
+        "/^\\.github/workflows/release\\.yml$/"
       ],
       "matchStrings": [
         "cargo-deb@(?<currentValue>\\d+\\.\\d+\\.\\d+)"

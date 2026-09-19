@@ -75,6 +75,7 @@ assets = [
     ["target/release/git-harvest", "usr/bin/", "755"],
     ["debian/copyright", "usr/share/doc/git-harvest/copyright", "644"],
     ["man/*.1", "usr/share/man/man1/", "644"],
+    ["SOURCE.txt", "usr/share/doc/git-harvest/", "644"],
 ]
 
 [dependencies]

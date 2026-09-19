@@ -224,12 +224,35 @@ jobs:
       - name: build the release binary
         run: cargo build --release --locked --target ${{ matrix.target }}
 
+      - name: write the corresponding-source pointer
+        env:
+          VERSION: ${{ needs.decide.outputs.version }}
+        run: |
+          set -euo pipefail
+
+          cat > SOURCE.txt <<EOF
+          Corresponding Source for the dependency graph compiled into this
+          artefact:  https://github.com/kevinmatthes/git-harvest/releases/download/v$VERSION/vendor-source.tar.xz
+
+          git-harvest's own source for this exact release:
+          https://github.com/kevinmatthes/git-harvest/archive/refs/tags/v$VERSION.tar.gz
+
+          If fetching either of these separately is impractical for you,
+          please submit a brief issue at
+          https://github.com/kevinmatthes/git-harvest/issues and another
+          option to provide the source will be added eventually.
+          EOF
+
       - name: package the binary
         run: |
           set -euo pipefail
 
-          tar -cz -C "target/${{ matrix.target }}/release" git-harvest \
-            > "git-harvest-${{ matrix.target }}.tar.gz"
+          dist="git-harvest-${{ matrix.target }}"
+          mkdir -p "$dist"
+          cp "target/${{ matrix.target }}/release/git-harvest" \
+             LICENCE THIRDPARTY.md SOURCE.txt "$dist/"
+
+          tar -cz "$dist" > "$dist.tar.gz"
 
       - name: package the .deb
         run: cargo deb --no-build --locked --target ${{ matrix.target }}

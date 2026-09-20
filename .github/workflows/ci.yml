@@ -73,6 +73,17 @@ jobs:
 
       - run: cargo deny check advisories licenses
 
+  cargo-package:
+    runs-on: ubuntu-latest
+    steps:
+      - run: rustup update
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - run: cargo package --locked
+
   cargo-deb:
     runs-on: ubuntu-latest
     steps:
@@ -419,6 +430,7 @@ jobs:
       - cargo
       - cargo-deb
       - cargo-deny
+      - cargo-package
       - changelog-fragment
       - cffconvert
       - formatting

@@ -67,7 +67,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - uses: taiki-e/install-action@9114bf4d891761788c546334fd37538eae1bf8b3 # v2.87.16
+      - uses: taiki-e/install-action@94c31af3204a9f15ab40b35ad084410b905bbc73 # v2.87.17
         with:
           tool: cargo-deny@0.20.2
 
@@ -93,7 +93,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - uses: taiki-e/install-action@9114bf4d891761788c546334fd37538eae1bf8b3 # v2.87.16
+      - uses: taiki-e/install-action@94c31af3204a9f15ab40b35ad084410b905bbc73 # v2.87.17
         with:
           tool: cargo-deb@3.8.0
 
@@ -178,7 +178,7 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.head_ref || github.ref }}
 
-      - uses: taiki-e/install-action@9114bf4d891761788c546334fd37538eae1bf8b3 # v2.87.16
+      - uses: taiki-e/install-action@94c31af3204a9f15ab40b35ad084410b905bbc73 # v2.87.17
         with:
           tool: cargo-semver-checks@0.50.0
 
@@ -295,7 +295,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
       - if: steps.level.outputs.mismatch == 'yes'
-        uses: taiki-e/install-action@9114bf4d891761788c546334fd37538eae1bf8b3 # v2.87.16
+        uses: taiki-e/install-action@94c31af3204a9f15ab40b35ad084410b905bbc73 # v2.87.17
         with:
           tool: cargo-release@1.1.5
 

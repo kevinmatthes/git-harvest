@@ -110,7 +110,7 @@ fn credited_entries_link_through_a_contributors_block() {
 
     let mut kevin = Contributor::new("kevinmatthes");
     kevin.add_name("Kevin Matthes");
-    kevin.add_email("kevin@example.com");
+    kevin.add_email("92332892+kevinmatthes@users.noreply.github.com");
     kevin.add_url("https://github.com/kevinmatthes");
     changelog
         .contributors
@@ -154,18 +154,18 @@ fn render_writes_the_markdown_beside_the_ron() {
     let markdown = directory.path().join("CHANGELOG.md");
 
     git_harvest::run(Cli {
-        command: Command::Init(InitArguments {
+        command: Some(Command::Init(InitArguments {
             output: ron.clone(),
             force: false,
-        }),
+        })),
     })
     .unwrap();
 
     git_harvest::run(Cli {
-        command: Command::Render(RenderArguments {
+        command: Some(Command::Render(RenderArguments {
             changelog: ron,
             output: markdown.clone(),
-        }),
+        })),
     })
     .unwrap();
 

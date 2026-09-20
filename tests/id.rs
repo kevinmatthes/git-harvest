@@ -37,10 +37,10 @@ impl Bench {
         let changelog = directory.path().join("CHANGELOG.ron");
 
         git_harvest::run(Cli {
-            command: Command::Init(git_harvest::InitArguments {
+            command: Some(Command::Init(git_harvest::InitArguments {
                 output: changelog.clone(),
                 force: false,
-            }),
+            })),
         })
         .unwrap();
 
@@ -53,10 +53,10 @@ impl Bench {
     /// Run one `id` operation against this bench's CHANGELOG.
     fn id(&self, command: IdCommand) -> sysexits::Result<()> {
         git_harvest::run(Cli {
-            command: Command::Id(IdArguments {
+            command: Some(Command::Id(IdArguments {
                 changelog: self.changelog.clone(),
                 command,
-            }),
+            })),
         })
     }
 

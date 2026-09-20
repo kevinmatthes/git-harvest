@@ -29,13 +29,14 @@
 /// consumes.  `render` exports the released history as Markdown, `id`
 /// registers and maintains the contributor registry both passes
 /// consult, and `licences` reproduces the licence notices of
-/// `git-harvest` and its own dependencies.
+/// `git-harvest` and its own dependencies.  With no task given, `scan`
+/// runs with its own defaults.
 #[derive(clap::Parser, Debug)]
 #[command(about, version)]
 pub struct Cli {
-    /// The task to run.
+    /// The task to run; `scan` with its defaults when none is given.
     #[command(subcommand)]
-    pub command: Command,
+    pub command: Option<Command>,
 }
 
 /// The tasks `git-harvest` can perform.
@@ -284,6 +285,18 @@ pub struct ScanArguments {
     /// The directory to write the fragment into.
     #[arg(default_value = "changelog.d", long, short)]
     pub output: std::path::PathBuf,
+}
+
+impl Default for ScanArguments {
+    /// The same defaults `clap` gives an explicit `git harvest scan`.
+    fn default() -> Self {
+        Self {
+            base: "main".to_owned(),
+            changelog: "CHANGELOG.ron".into(),
+            force: false,
+            output: "changelog.d".into(),
+        }
+    }
 }
 
 /******************************************************************************/

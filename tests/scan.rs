@@ -58,6 +58,15 @@ fn scan(directory: &Path, extra: &[&str]) -> bool {
         .success()
 }
 
+/// Run bare `git-harvest`, no subcommand, and return its exit success.
+fn bare(directory: &Path) -> bool {
+    Command::new(env!("CARGO_BIN_EXE_git-harvest"))
+        .current_dir(directory)
+        .status()
+        .expect("the binary must build")
+        .success()
+}
+
 /// The single fragment written under `changelog.d/`, parsed.
 fn fragment(directory: &Path) -> Fragment {
     let entries: Vec<_> = std::fs::read_dir(directory.join("changelog.d"))
@@ -83,7 +92,8 @@ fn the_author_and_co_authors_are_registered_and_credit_the_entry() {
             "commit",
             "--allow-empty",
             "-m",
-            "Added ::= a joint effort\n\nCo-authored-by: Claude <c@ai.test>",
+            "Added ::= a joint effort\n\n\
+             Co-authored-by: Claude <noreply@anthropic.com>",
         ],
     );
 
@@ -97,7 +107,7 @@ fn the_author_and_co_authors_are_registered_and_credit_the_entry() {
         Some("Test")
     );
     assert_eq!(
-        fragment.contributors["c@ai.test"].primary_name(),
+        fragment.contributors["noreply@anthropic.com"].primary_name(),
         Some("Claude")
     );
 
@@ -106,7 +116,7 @@ fn the_author_and_co_authors_are_registered_and_credit_the_entry() {
         .iter()
         .map(String::as_str)
         .collect();
-    assert_eq!(aliases, ["test@example.com", "c@ai.test"]);
+    assert_eq!(aliases, ["test@example.com", "noreply@anthropic.com"]);
 }
 
 #[test]
@@ -175,6 +185,24 @@ fn harvested_entries_are_bucketed_with_their_commit() {
     assert_eq!(fragment.changes["Added"][0].text(), "a first thing");
     assert_eq!(fragment.changes["Fixed"][0].text(), "a second thing");
     assert_eq!(fragment.changes["Added"][0].commit().unwrap().len(), 7);
+}
+
+#[test]
+fn a_bare_invocation_defaults_to_scan() {
+    let repository = repository();
+    let path = repository.path();
+
+    git(path, &["checkout", "-b", "enhancement/thing"]);
+    git(
+        path,
+        &["commit", "--allow-empty", "-m", "Added ::= a bare default"],
+    );
+
+    assert!(bare(path));
+
+    let fragment = fragment(path);
+
+    assert_eq!(fragment.changes["Added"][0].text(), "a bare default");
 }
 
 #[test]

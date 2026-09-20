@@ -23,10 +23,10 @@ use git_harvest::{Changelog, Cli, Command, InitArguments, Section};
 
 fn init(path: std::path::PathBuf, force: bool) -> sysexits::Result<()> {
     git_harvest::run(Cli {
-        command: Command::Init(InitArguments {
+        command: Some(Command::Init(InitArguments {
             output: path,
             force,
-        }),
+        })),
     })
 }
 

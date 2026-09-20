@@ -4,11 +4,11 @@
 .SH NAME
 git\-harvest \- Harvest a CHANGELOG from your Git history.
 .SH SYNOPSIS
-\fBgit\-harvest\fR [\fB\-h\fR|\fB\-\-help\fR] [\fB\-V\fR|\fB\-\-version\fR] <\fIsubcommands\fR>
+\fBgit\-harvest\fR [\fB\-h\fR|\fB\-\-help\fR] [\fB\-V\fR|\fB\-\-version\fR] [\fIsubcommands\fR]
 .SH DESCRIPTION
 Harvest a CHANGELOG from a repository\*(Aqs Git history.
 .PP
-`git\-harvest` produces a Keep a Changelog\-style CHANGELOG from a Git repository\*(Aqs commit history in two passes.  `scan` harvests the structured commits on the current branch into a fragment file under `changelog.d/`; `assemble` later folds every pending fragment into a new released section of the CHANGELOG, deleting the fragments it consumes.  `render` exports the released history as Markdown, `id` registers and maintains the contributor registry both passes consult, and `licences` reproduces the licence notices of `git\-harvest` and its own dependencies.
+`git\-harvest` produces a Keep a Changelog\-style CHANGELOG from a Git repository\*(Aqs commit history in two passes.  `scan` harvests the structured commits on the current branch into a fragment file under `changelog.d/`; `assemble` later folds every pending fragment into a new released section of the CHANGELOG, deleting the fragments it consumes.  `render` exports the released history as Markdown, `id` registers and maintains the contributor registry both passes consult, and `licences` reproduces the licence notices of `git\-harvest` and its own dependencies.  With no task given, `scan` runs with its own defaults.
 .SH OPTIONS
 .TP
 \fB\-h\fR, \fB\-\-help\fR

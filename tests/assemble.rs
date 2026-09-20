@@ -35,12 +35,12 @@ impl Bench {
     /// Merge the current fragments for `version`, released at a fixed moment.
     fn assemble(&self, version: &str) -> sysexits::Result<()> {
         git_harvest::run(Cli {
-            command: Command::Assemble(AssembleArguments {
+            command: Some(Command::Assemble(AssembleArguments {
                 changelog: self.changelog.clone(),
                 input: self.input.clone(),
                 released: Some("2026-09-01T00:00:00Z".to_owned()),
                 version: version.to_owned(),
-            }),
+            })),
         })
     }
 
@@ -57,10 +57,10 @@ impl Bench {
         let input = directory.path().join("changelog.d");
 
         git_harvest::run(Cli {
-            command: Command::Init(InitArguments {
+            command: Some(Command::Init(InitArguments {
                 output: changelog.clone(),
                 force: false,
-            }),
+            })),
         })
         .unwrap();
         std::fs::create_dir(&input).unwrap();
@@ -202,26 +202,29 @@ fn a_harvested_contributor_folds_into_a_curated_one_by_shared_e_mail() {
     let bench = Bench::new();
 
     git_harvest::run(Cli {
-        command: Command::Id(IdArguments {
+        command: Some(Command::Id(IdArguments {
             changelog: bench.changelog.clone(),
             command: IdCommand::Register(RegisterArguments {
                 alias: "kevinmatthes".to_owned(),
                 name: "Kevin Matthes".to_owned(),
-                email: "kevin@example.com".to_owned(),
+                email: "92332892+kevinmatthes@users.noreply.github.com"
+                    .to_owned(),
             }),
-        }),
+        })),
     })
     .unwrap();
 
     let mut fragment = Fragment::default();
-    let mut harvested = Contributor::new("kevin@example.com");
+    let mut harvested =
+        Contributor::new("92332892+kevinmatthes@users.noreply.github.com");
     harvested.add_name("kevin");
-    harvested.add_email("kevin@example.com");
-    fragment
-        .contributors
-        .insert("kevin@example.com".to_owned(), harvested);
+    harvested.add_email("92332892+kevinmatthes@users.noreply.github.com");
+    fragment.contributors.insert(
+        "92332892+kevinmatthes@users.noreply.github.com".to_owned(),
+        harvested,
+    );
     let mut entry = Entry::harvested("a change", "aaaa111");
-    entry.credit("kevin@example.com");
+    entry.credit("92332892+kevinmatthes@users.noreply.github.com");
     fragment.record("Added", entry);
     std::fs::write(bench.input.join("harvest.ron"), fragment.to_ron().unwrap())
         .unwrap();

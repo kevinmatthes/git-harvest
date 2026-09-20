@@ -51,15 +51,16 @@ pub use crate::{
 /// reason is printed to standard error at the point of failure.
 pub fn run(cli: Cli) -> sysexits::Result<()> {
     match cli.command {
-        Command::Assemble(arguments) => assemble(&arguments),
-        Command::Id(arguments) => id(&arguments),
-        Command::Init(arguments) => init(&arguments),
-        Command::Licences(command) => {
+        Some(Command::Assemble(arguments)) => assemble(&arguments),
+        Some(Command::Id(arguments)) => id(&arguments),
+        Some(Command::Init(arguments)) => init(&arguments),
+        Some(Command::Licences(command)) => {
             licences(&command);
             Ok(())
         }
-        Command::Render(arguments) => render(&arguments),
-        Command::Scan(arguments) => scan(&arguments),
+        Some(Command::Render(arguments)) => render(&arguments),
+        Some(Command::Scan(arguments)) => scan(&arguments),
+        None => scan(&cli::ScanArguments::default()),
     }
 }
 

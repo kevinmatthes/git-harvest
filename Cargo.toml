@@ -57,12 +57,6 @@ shared-version = true
 pre-release-hook = ["env", "-u", "CI", "cargo", "run", "-p", "xtask"]
 pre-release-commit-message = "Skip ::= pre-bump the manifest to {{version}}"
 
-[[package.metadata.release.pre-release-replacements]]
-file = "CITATION.cff"
-search = "^version: .*"
-replace = "version: {{version}}"
-exactly = 1
-
 [package.metadata.deb]
 depends = []
 extended-description = """\

@@ -68,6 +68,42 @@
   references: {},
   sections: [
     (
+      version: (0, 3, 4),
+      released: Some("2026-09-21T02:47:17.773915771Z"),
+      introduction: None,
+      references: {},
+      changes: {
+        "Added": [
+          (
+            text: "a cargo package --locked check to CI",
+            commit: Some("52c5e09"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+          (
+            text: "default a bare `git harvest` invocation to `scan`",
+            commit: Some("2f3eba8"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+        ],
+        "Changed": [
+          (
+            text: "update taiki-e/install-action action to v2.87.17",
+            commit: None,
+            aliases: [
+              "renovate",
+              "github-actions",
+            ],
+          ),
+        ],
+      },
+    ),
+    (
       version: (0, 3, 3),
       released: Some("2026-09-19T21:11:17.399372856Z"),
       introduction: None,

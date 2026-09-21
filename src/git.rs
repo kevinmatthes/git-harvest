@@ -20,9 +20,8 @@
 //! The one place `git-harvest` touches Git.
 //!
 //! Everything here goes through `gix`'s high-level API, so a later change
-//! of library stays contained to this file (`git-harvest.md` D27).  Every
-//! function is read-only except [`stage`], the one write this crate makes
-//! (`git-harvest.md` D48).
+//! of library stays contained to this file.  Every function is read-only
+//! except [`stage`], the one write this crate makes.
 
 /// A name and e-mail pair, as Git records an author or a co-author.
 #[derive(Clone, Debug, Eq, PartialEq)]

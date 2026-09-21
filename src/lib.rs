@@ -440,7 +440,7 @@ fn assemble(arguments: &AssembleArguments) -> sysexits::Result<()> {
     Ok(())
 }
 
-/// Register or maintain the contributor registry (`git-harvest.md` D57).
+/// Register or maintain the contributor registry.
 fn id(arguments: &IdArguments) -> sysexits::Result<()> {
     let mut changelog = read_changelog(&arguments.changelog)?;
 
@@ -490,7 +490,7 @@ fn requests_change(arguments: &UpdateArguments) -> bool {
         .any(|list| !list.is_empty())
 }
 
-/// Apply one validated `id update` request (`git-harvest.md` D58).
+/// Apply one validated `id update` request.
 fn id_update(
     changelog: &mut Changelog,
     arguments: &UpdateArguments,
@@ -602,7 +602,7 @@ fn id_update(
     Ok(())
 }
 
-/// Fold several registered contributors into one (`git-harvest.md` D59).
+/// Fold several registered contributors into one.
 fn id_merge(
     changelog: &mut Changelog,
     arguments: &MergeArguments,

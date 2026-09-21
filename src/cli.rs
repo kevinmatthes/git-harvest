@@ -288,8 +288,8 @@ pub struct ScanArguments {
 
     /// Stage the written fragment, as the bare `git harvest` form does.
     ///
-    /// Not exposed as a flag on `git harvest scan` itself (D48); only the
-    /// bare, no-subcommand invocation sets it.
+    /// Not exposed as a flag on `git harvest scan` itself; only the bare,
+    /// no-subcommand invocation sets it.
     #[arg(skip)]
     pub stage: bool,
 }

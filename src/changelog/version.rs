@@ -20,9 +20,9 @@
 //! Carrying a [`semver::Version`] as a bare RON triple.
 //!
 //! A section's version is a `(major, minor, patch)` tuple in the RON, not a
-//! string (`git-harvest.md` D19.1).  A pre-release or build field has no
-//! room in the triple, and this crate's release family never ships one, so
-//! serialising one is an error rather than a silent loss.
+//! string.  A pre-release or build field has no room in the triple, and
+//! this crate's release family never ships one, so serialising one is an
+//! error rather than a silent loss.
 
 /// Read a `(major, minor, patch)` triple into a [`semver::Version`].
 ///

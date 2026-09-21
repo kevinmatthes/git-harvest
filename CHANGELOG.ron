@@ -68,6 +68,44 @@
   references: {},
   sections: [
     (
+      version: (0, 4, 0),
+      released: Some("2026-09-21T18:08:04.202594645Z"),
+      introduction: None,
+      references: {},
+      changes: {
+        "Added": [
+          (
+            text: "stage the bare invocation\'s harvested fragment via gix",
+            commit: Some("313d488"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+        ],
+        "Changed": [
+          (
+            text: "lock file maintenance",
+            commit: None,
+            aliases: [
+              "renovate",
+              "github-actions",
+            ],
+          ),
+        ],
+        "Fixed": [
+          (
+            text: "stop cargo-release from bumping CITATION.cff\'s version ahead of publication",
+            commit: Some("7eaf26f"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+        ],
+      },
+    ),
+    (
       version: (0, 3, 4),
       released: Some("2026-09-21T02:47:17.773915771Z"),
       introduction: None,

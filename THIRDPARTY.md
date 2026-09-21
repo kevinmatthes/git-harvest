@@ -12400,7 +12400,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ```
 
-## git-harvest 0.4.0
+## git-harvest 0.4.1
 
 ### GPL-3.0-or-later (as distributed, in LICENCE)
 

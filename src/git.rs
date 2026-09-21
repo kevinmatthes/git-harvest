@@ -19,9 +19,9 @@
 
 //! The one place `git-harvest` touches Git.
 //!
-//! Everything here is read-only and goes through `gix`'s high-level API, so
-//! a later change of library stays contained to this file (`git-harvest.md`
-//! D27).
+//! Everything here goes through `gix`'s high-level API, so a later change
+//! of library stays contained to this file.  Every function is read-only
+//! except [`stage`], the one write this crate makes.
 
 /// A name and e-mail pair, as Git records an author or a co-author.
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -210,6 +210,127 @@ pub fn open() -> sysexits::Result<gix::Repository> {
         eprintln!("git-harvest:  not inside a Git repository:  {reason}");
         sysexits::ExitCode::Usage
     })
+}
+
+/// Stage `path` into the index, as `git add path` would.
+///
+/// `path` may be relative to the current working directory; it is resolved
+/// against the repository's worktree root before staging.  Only `path`
+/// itself is touched — any other entry already in the index is left
+/// exactly as it was.  The index's tree-cache extension is dropped before
+/// writing, since it would otherwise be persisted stale and could leave a
+/// later `git status` or commit reading it instead of the entry just
+/// written (gitoxide issue #2421).
+///
+/// # Errors
+///
+/// [`sysexits::ExitCode::Usage`] when the repository has no worktree or
+/// `path` lies outside it, [`sysexits::ExitCode::IoErr`] when `path` cannot
+/// be read or resolved, and [`sysexits::ExitCode::Software`] when the blob
+/// or the index cannot be written.
+pub fn stage(
+    repository: &gix::Repository,
+    path: &std::path::Path,
+) -> sysexits::Result<()> {
+    let worktree = repository.workdir().ok_or_else(|| {
+        eprintln!(
+            "git-harvest:  cannot stage {}:  the repository has no \
+             worktree",
+            path.display()
+        );
+        sysexits::ExitCode::Usage
+    })?;
+
+    let resolve = |unresolved: &std::path::Path| {
+        std::path::absolute(unresolved)
+            .and_then(std::fs::canonicalize)
+            .map_err(|reason| {
+                eprintln!(
+                    "git-harvest:  cannot resolve {}:  {reason}",
+                    unresolved.display()
+                );
+                sysexits::ExitCode::IoErr
+            })
+    };
+
+    let absolute = resolve(path)?;
+    let worktree = resolve(worktree)?;
+
+    let relative = absolute.strip_prefix(&worktree).map_err(|_| {
+        eprintln!(
+            "git-harvest:  {} is outside the repository worktree",
+            path.display()
+        );
+        sysexits::ExitCode::Usage
+    })?;
+    let relative =
+        gix::path::to_unix_separators(gix::path::into_bstr(relative))
+            .into_owned();
+
+    let content = std::fs::read(&absolute).map_err(|reason| {
+        eprintln!("git-harvest:  cannot read {}:  {reason}", path.display());
+        sysexits::ExitCode::IoErr
+    })?;
+
+    let blob = repository.write_blob(&content).map_err(|reason| {
+        eprintln!(
+            "git-harvest:  cannot write the blob for {}:  {reason}",
+            path.display()
+        );
+        sysexits::ExitCode::Software
+    })?;
+
+    let metadata = gix::index::fs::Metadata::from_path_no_follow(&absolute)
+        .map_err(|reason| {
+            eprintln!(
+                "git-harvest:  cannot stat {}:  {reason}",
+                path.display()
+            );
+            sysexits::ExitCode::IoErr
+        })?;
+    let stat =
+        gix::index::entry::Stat::from_fs(&metadata).map_err(|reason| {
+            eprintln!(
+                "git-harvest:  cannot record the modification time of {}:  \
+                 {reason}",
+                path.display()
+            );
+            sysexits::ExitCode::Software
+        })?;
+
+    let mut index = repository.open_index().map_err(|reason| {
+        eprintln!("git-harvest:  cannot open the index:  {reason}");
+        sysexits::ExitCode::Software
+    })?;
+
+    if let Some(entry) = index.entry_mut_by_path_and_stage(
+        relative.as_ref(),
+        gix::index::entry::Stage::Unconflicted,
+    ) {
+        entry.stat = stat;
+        entry.id = blob.detach();
+        entry.mode = gix::index::entry::Mode::FILE;
+    } else {
+        index.dangerously_push_entry(
+            stat,
+            blob.detach(),
+            gix::index::entry::Flags::empty(),
+            gix::index::entry::Mode::FILE,
+            relative.as_ref(),
+        );
+        index.sort_entries();
+    }
+
+    index.remove_tree();
+
+    index
+        .write(gix::index::write::Options::default())
+        .map_err(|reason| {
+            eprintln!("git-harvest:  cannot write the index:  {reason}");
+            sysexits::ExitCode::Software
+        })?;
+
+    Ok(())
 }
 
 /******************************************************************************/

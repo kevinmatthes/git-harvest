@@ -21,7 +21,7 @@
 //!
 //! A registry is the `contributors` map of a [`crate::Fragment`] or a
 //! [`crate::Changelog`], keyed by alias.  A freshly harvested entry is keyed
-//! by a raw e-mail until someone curates it (`git-harvest.md` D54).
+//! by a raw e-mail until someone curates it.
 
 use crate::Contributor;
 use std::collections::BTreeMap;
@@ -64,7 +64,7 @@ pub fn promote(set: &mut indexmap::IndexSet<String>, value: &str) {
 /// now lives under.
 ///
 /// A known e-mail folds the name into that entry; an unknown e-mail opens a
-/// fresh entry keyed by the e-mail itself (`git-harvest.md` D54).
+/// fresh entry keyed by the e-mail itself.
 pub fn register(registry: &mut Registry, name: &str, email: &str) -> String {
     if let Some(contributor) = registry
         .values_mut()
@@ -125,9 +125,8 @@ pub fn register_curated(
 /// Merge `incoming` into `registry`, returning the map from each incoming
 /// alias to the alias it ended up under.
 ///
-/// Two contributors that share an e-mail are one person (`git-harvest.md`
-/// D54):  they are folded, a curated alias winning over an e-mail-default
-/// one.
+/// Two contributors that share an e-mail are one person:  they are folded,
+/// a curated alias winning over an e-mail-default one.
 ///
 /// # Errors
 ///

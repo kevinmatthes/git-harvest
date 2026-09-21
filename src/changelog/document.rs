@@ -78,8 +78,8 @@ impl Changelog {
     /// Render the document as a *Keep a Changelog* Markdown file.
     ///
     /// Only released sections appear:  the loose fragments are the pending
-    /// state and are not shown (`git-harvest.md` D21).  Buckets render in the
-    /// configuration's order, then any others alphabetically.  An entry's
+    /// state and are not shown.  Buckets render in the configuration's
+    /// order, then any others alphabetically.  An entry's
     /// commit is provenance for the RON, not for readers, so it is left out;
     /// its credited contributors are shown inline and gathered into a
     /// `### Contributors` block, linked through the trailing reference list.

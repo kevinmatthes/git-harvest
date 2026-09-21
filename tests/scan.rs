@@ -67,6 +67,26 @@ fn bare(directory: &Path) -> bool {
         .success()
 }
 
+/// The `--porcelain` status of the fragment `scan`/bare `git-harvest` wrote.
+fn fragment_status(directory: &Path) -> String {
+    let entries: Vec<_> = std::fs::read_dir(directory.join("changelog.d"))
+        .expect("changelog.d must exist")
+        .map(|entry| entry.unwrap().path())
+        .filter(|path| path.extension().is_some_and(|end| end == "ron"))
+        .collect();
+
+    assert_eq!(entries.len(), 1, "exactly one fragment expected");
+
+    let output = Command::new("git")
+        .current_dir(directory)
+        .args(["status", "--porcelain", "--"])
+        .arg(&entries[0])
+        .output()
+        .expect("git must be on PATH");
+
+    String::from_utf8(output.stdout).unwrap()
+}
+
 /// The single fragment written under `changelog.d/`, parsed.
 fn fragment(directory: &Path) -> Fragment {
     let entries: Vec<_> = std::fs::read_dir(directory.join("changelog.d"))
@@ -203,6 +223,78 @@ fn a_bare_invocation_defaults_to_scan() {
     let fragment = fragment(path);
 
     assert_eq!(fragment.changes["Added"][0].text(), "a bare default");
+}
+
+#[test]
+fn a_bare_invocation_stages_the_fragment_it_wrote() {
+    let repository = repository();
+    let path = repository.path();
+
+    git(path, &["checkout", "-b", "enhancement/thing"]);
+    git(
+        path,
+        &[
+            "commit",
+            "--allow-empty",
+            "-m",
+            "Added ::= a staged default",
+        ],
+    );
+
+    assert!(bare(path));
+
+    assert!(fragment_status(path).starts_with("A  "));
+}
+
+#[test]
+fn an_explicit_scan_does_not_stage_the_fragment() {
+    let repository = repository();
+    let path = repository.path();
+
+    git(path, &["checkout", "-b", "enhancement/thing"]);
+    git(
+        path,
+        &[
+            "commit",
+            "--allow-empty",
+            "-m",
+            "Added ::= an unstaged fragment",
+        ],
+    );
+
+    assert!(scan(path, &[]));
+
+    assert!(fragment_status(path).starts_with("??"));
+}
+
+#[test]
+fn a_bare_invocation_leaves_other_staged_content_untouched() {
+    let repository = repository();
+    let path = repository.path();
+
+    git(path, &["checkout", "-b", "enhancement/thing"]);
+    git(
+        path,
+        &[
+            "commit",
+            "--allow-empty",
+            "-m",
+            "Added ::= a fragment beside other staged work",
+        ],
+    );
+
+    std::fs::write(path.join("other.txt"), "unrelated\n").unwrap();
+    git(path, &["add", "other.txt"]);
+
+    assert!(bare(path));
+
+    let status = Command::new("git")
+        .current_dir(path)
+        .args(["status", "--porcelain", "--", "other.txt"])
+        .output()
+        .expect("git must be on PATH");
+
+    assert_eq!(String::from_utf8(status.stdout).unwrap(), "A  other.txt\n");
 }
 
 #[test]

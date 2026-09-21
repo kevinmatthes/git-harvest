@@ -60,7 +60,10 @@ pub fn run(cli: Cli) -> sysexits::Result<()> {
         }
         Some(Command::Render(arguments)) => render(&arguments),
         Some(Command::Scan(arguments)) => scan(&arguments),
-        None => scan(&cli::ScanArguments::default()),
+        None => scan(&cli::ScanArguments {
+            stage: true,
+            ..cli::ScanArguments::default()
+        }),
     }
 }
 
@@ -182,6 +185,10 @@ fn scan(arguments: &ScanArguments) -> sysexits::Result<()> {
         eprintln!("git-harvest:  cannot write {}:  {reason}", path.display());
         sysexits::ExitCode::IoErr
     })?;
+
+    if arguments.stage {
+        git::stage(&repository, &path)?;
+    }
 
     eprintln!("git-harvest:  {count} {noun} -> {}", path.display());
     Ok(())

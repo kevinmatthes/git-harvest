@@ -285,6 +285,13 @@ pub struct ScanArguments {
     /// The directory to write the fragment into.
     #[arg(default_value = "changelog.d", long, short)]
     pub output: std::path::PathBuf,
+
+    /// Stage the written fragment, as the bare `git harvest` form does.
+    ///
+    /// Not exposed as a flag on `git harvest scan` itself (D48); only the
+    /// bare, no-subcommand invocation sets it.
+    #[arg(skip)]
+    pub stage: bool,
 }
 
 impl Default for ScanArguments {
@@ -295,6 +302,7 @@ impl Default for ScanArguments {
             changelog: "CHANGELOG.ron".into(),
             force: false,
             output: "changelog.d".into(),
+            stage: false,
         }
     }
 }

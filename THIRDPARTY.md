@@ -3670,7 +3670,7 @@ DEALINGS IN THE SOFTWARE.
    limitations under the License.
 ```
 
-## camino 1.2.5
+## camino 1.2.6
 
 ### MIT (as distributed, in LICENSE-MIT)
 
@@ -4172,7 +4172,7 @@ IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 ```
 
-## cc 1.4.6
+## cc 1.4.7
 
 ### MIT (as distributed, in LICENSE-MIT)
 
@@ -4410,7 +4410,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ```
 
-## cfg-if 1.0.4
+## cfg-if 1.0.5
 
 ### MIT (as distributed, in LICENSE-MIT)
 
@@ -5834,7 +5834,7 @@ SOFTWARE.
    limitations under the License.
 ```
 
-## clap_lex 1.1.0
+## clap_lex 1.1.1
 
 ### MIT (as distributed, in LICENSE-MIT)
 
@@ -6051,7 +6051,7 @@ SOFTWARE.
       same "printed page" as the copyright notice for easier
       identification within third-party archives.
 
-   Copyright {yyyy} {name of copyright owner}
+   Copyright Individual contributors
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -10911,7 +10911,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ```
 
-## find-msvc-tools 0.1.12
+## find-msvc-tools 0.1.13
 
 ### MIT (as distributed, in LICENSE-MIT)
 
@@ -35846,7 +35846,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ```
 
-## rustix 1.1.4
+## rustix 1.1.5
 
 ### Apache-2.0 (as distributed, in LICENSE-APACHE)
 
@@ -39808,7 +39808,7 @@ TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 END OF TERMS AND CONDITIONS
 ```
 
-## syn 3.0.5
+## syn 3.0.6
 
 ### MIT (as distributed, in LICENSE-MIT)
 
@@ -42181,7 +42181,7 @@ Apache License
    limitations under the License.
 ```
 
-## unicode-ident 1.0.24
+## unicode-ident 1.0.26
 
 ### MIT (as distributed, in LICENSE-MIT)
 
@@ -46453,7 +46453,7 @@ limitations under the License.
    limitations under the License.
 ```
 
-## zlib-rs 0.6.7
+## zlib-rs 0.6.8
 
 ### Zlib (as distributed, in LICENSE)
 

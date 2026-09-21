@@ -40,6 +40,6 @@ repository-artifact: https://crates.io/crates/git-harvest
 repository-code: https://github.com/kevinmatthes/git-harvest
 title: git-harvest
 url: https://github.com/kevinmatthes/git-harvest
-version: 0.4.0
+version: 0.3.4
 
 ################################################################################

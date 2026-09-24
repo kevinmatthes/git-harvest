@@ -23,6 +23,7 @@ mod configuration;
 mod contributor;
 mod document;
 mod entry;
+mod format;
 mod fragment;
 pub mod registry;
 mod section;
@@ -33,6 +34,7 @@ pub use crate::changelog::{
     contributor::Contributor,
     document::Changelog,
     entry::Entry,
+    format::Format,
     fragment::Fragment,
     section::Section,
 };

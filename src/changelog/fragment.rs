@@ -62,17 +62,18 @@ impl Fragment {
     /// represented as RON — which should not happen for a value built by this
     /// crate — after printing the reason to standard error.
     pub fn to_ron(&self) -> sysexits::Result<String> {
-        let pretty = ron::ser::PrettyConfig::new().indentor("  ".to_owned());
+        crate::Format::Ron.serialised(self, "fragment")
+    }
 
-        match ron::ser::to_string_pretty(self, pretty) {
-            Ok(body) => Ok(format!("{body}\n")),
-            Err(reason) => {
-                eprintln!(
-                    "git-harvest:  cannot serialise the fragment:  {reason}"
-                );
-                Err(sysexits::ExitCode::Software)
-            }
-        }
+    /// Serialise the fragment to YAML.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`sysexits::ExitCode::Software`] if the fragment cannot be
+    /// represented as YAML — which should not happen for a value built by
+    /// this crate — after printing the reason to standard error.
+    pub fn to_yaml(&self) -> sysexits::Result<String> {
+        crate::Format::Yaml.serialised(self, "fragment")
     }
 }
 

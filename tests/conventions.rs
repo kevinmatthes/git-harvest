@@ -101,14 +101,24 @@ const UNCHECKED: [&str; 6] = [
     "renovate.json",
 ];
 
-/// Whether the file is a changelog RON document rather than prose.
+/// Whether the file is a changelog document rather than prose.
 ///
-/// `CHANGELOG.ron` and the `changelog.d/` fragments hold entries and RON
-/// syntax `git-harvest` writes — one item to a line, `key: value` with a
-/// single space — not text a person wrapped and spaced by hand.  The width
-/// and language rules step over them the way they step over `Cargo.lock`.
-fn changelog_ron(name: &str) -> bool {
-    Path::new(name).extension().is_some_and(|end| end == "ron")
+/// `CHANGELOG.ron`, `CHANGELOG.yaml` and the `changelog.d/` fragments hold
+/// entries in the syntax `git-harvest` writes — one item to a line, `key:
+/// value` with a single space — not text a person wrapped and spaced by hand.
+/// The width and language rules step over them the way they step over
+/// `Cargo.lock`.  A YAML file elsewhere, a workflow say, is still prose.
+fn changelog_document(name: &str) -> bool {
+    let path = Path::new(name);
+
+    match path.extension().and_then(std::ffi::OsStr::to_str) {
+        Some("ron") => true,
+        Some("yaml" | "yml") => {
+            path.starts_with("changelog.d")
+                || path.file_stem().is_some_and(|stem| stem == "CHANGELOG")
+        }
+        _ => false,
+    }
 }
 
 /// Whether the file is a generated `man/` page rather than prose.
@@ -775,7 +785,7 @@ fn language_findings() -> Vec<String> {
 
         if UNCHECKED.contains(&base.as_str())
             || name.starts_with(FIXTURES)
-            || changelog_ron(&name)
+            || changelog_document(&name)
             || man_page(&name)
         {
             continue;
@@ -848,7 +858,7 @@ fn every_file_holds_its_lines_within_eighty_characters() {
         let base = name.rsplit('/').next().unwrap_or(&name).to_owned();
 
         if UNCHECKED.contains(&base.as_str())
-            || changelog_ron(&name)
+            || changelog_document(&name)
             || man_page(&name)
         {
             continue;
@@ -988,11 +998,19 @@ fn the_spacing_check_does_not_panic_on_a_multibyte_character_before_it() {
 }
 
 #[test]
-fn the_width_and_language_rules_skip_changelog_ron() {
-    assert!(changelog_ron("CHANGELOG.ron"));
-    assert!(changelog_ron("changelog.d/2026-01-02T03-04-05Z_branch.ron"));
-    assert!(!changelog_ron("src/changelog/document.rs"));
-    assert!(!changelog_ron("Cargo.toml"));
+fn the_width_and_language_rules_skip_changelog_documents() {
+    assert!(changelog_document("CHANGELOG.ron"));
+    assert!(changelog_document("CHANGELOG.yaml"));
+    assert!(changelog_document("CHANGELOG.yml"));
+    assert!(changelog_document(
+        "changelog.d/2026-01-02T03-04-05Z_branch.ron"
+    ));
+    assert!(changelog_document(
+        "changelog.d/2026-01-02T03-04-05Z_x.yaml"
+    ));
+    assert!(!changelog_document(".github/workflows/ci.yml"));
+    assert!(!changelog_document("src/changelog/document.rs"));
+    assert!(!changelog_document("Cargo.toml"));
 }
 
 /// The squashed commit subjects on `main` since the most recent tag, or

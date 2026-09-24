@@ -13,11 +13,11 @@ Harvest a CHANGELOG from your Git history.
 ## Status
 
 Early, but working end to end.  Four subcommands cover both passes:  `init`,
-`scan`, `assemble` and `render`.  RON is the only fragment and CHANGELOG
-format so far, the release version and date are supplied on the command
-line, and there is no forge integration yet.  The repository holds the full
-project scaffold — manifest, licence, continuous integration and the
-conventions harness.
+`scan`, `assemble` and `render`.  Fragments and the CHANGELOG are written in
+RON or in YAML, told apart by the file extension; the release version and
+date are supplied on the command line, and there is no forge integration
+yet.  The repository holds the full project scaffold — manifest, licence,
+continuous integration and the conventions harness.
 
 ## How it works
 
@@ -26,12 +26,14 @@ Two passes, four subcommands.
 `git harvest init` writes a starter `CHANGELOG.ron` carrying the default
 configuration:  the commit-subject delimiter, the grammar, the bucket
 vocabulary and the renderer.  It refuses to overwrite an existing file
-without `--force`.
+without `--force`.  A `--output` ending in `.yaml` or `.yml` writes a YAML
+document instead.
 
 `git harvest scan`, run on a feature branch, reads that branch's structured
 commit subjects — by default `Bucket ::= entry`, for example
-`Added ::= a new option` — and writes them to a RON fragment under
-`changelog.d/`, one file per branch.  Only commits absent from `main` are
+`Added ::= a new option` — and writes them to a fragment under
+`changelog.d/`, one file per branch, in the format of the CHANGELOG that
+`--changelog` names.  Only commits absent from `main` are
 read, and merges are skipped.  The grammar is configurable.
 
 `git harvest assemble <version>` folds every fragment into a new section of

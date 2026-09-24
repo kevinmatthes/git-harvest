@@ -19,7 +19,7 @@
 
 //! `git-harvest scan` reads a branch's structured commits into a fragment.
 
-use git_harvest::{Entry, Fragment};
+use git_harvest::{Entry, Format, Fragment};
 use std::path::Path;
 use std::process::Command;
 
@@ -372,6 +372,57 @@ fn the_bracket_grammar_is_read_from_the_changelog() {
         fragment(path).changes["Added"][0].text(),
         "a bracketed thing"
     );
+}
+
+#[test]
+fn a_yaml_changelog_configures_the_scan_and_gets_a_yaml_fragment() {
+    let repository = repository();
+    let path = repository.path();
+
+    std::fs::write(
+        path.join("CHANGELOG.yaml"),
+        "configuration:\n  delimiter: '::='\n  grammar: bracketed\n  buckets: \
+         [Added]\n  fallback_bucket: null\n  renderer: markdown\n\
+         introduction: null\nreferences: {}\nsections: []\n",
+    )
+    .unwrap();
+
+    git(path, &["checkout", "-b", "enhancement/thing"]);
+    git(
+        path,
+        &["commit", "--allow-empty", "-m", "[Added] a bracketed thing"],
+    );
+
+    assert!(scan(path, &["--changelog", "CHANGELOG.yaml"]));
+
+    let written: Vec<_> = std::fs::read_dir(path.join("changelog.d"))
+        .unwrap()
+        .map(|entry| entry.unwrap().path())
+        .collect();
+
+    assert_eq!(written.len(), 1);
+    assert_eq!(Format::of(&written[0]), Some(Format::Yaml));
+
+    let fragment: Fragment = Format::Yaml
+        .parse(&std::fs::read_to_string(&written[0]).unwrap())
+        .unwrap();
+
+    assert_eq!(fragment.changes["Added"][0].text(), "a bracketed thing");
+}
+
+#[test]
+fn an_unsupported_changelog_extension_is_refused_before_anything_is_written() {
+    let repository = repository();
+    let path = repository.path();
+
+    git(path, &["checkout", "-b", "enhancement/thing"]);
+    git(
+        path,
+        &["commit", "--allow-empty", "-m", "Added ::= a thing"],
+    );
+
+    assert!(!scan(path, &["--changelog", "CHANGELOG.json"]));
+    assert!(!path.join("changelog.d").exists());
 }
 
 /******************************************************************************/

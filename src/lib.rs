@@ -20,10 +20,11 @@
 //! Harvest a CHANGELOG from a repository's Git history.
 //!
 //! Two passes:  `git harvest scan` harvests a branch's structured commits
-//! into a RON fragment, and `git harvest assemble` merges the fragments into
-//! a new section of the RON CHANGELOG.  `git harvest init` writes a fresh
-//! CHANGELOG to start from, `git harvest render` exports it as Markdown, and
-//! `git harvest licences` reproduces the dependency licence notices.
+//! into a fragment, and `git harvest assemble` merges the fragments into a
+//! new section of the CHANGELOG.  `git harvest init` writes a fresh CHANGELOG
+//! to start from, `git harvest render` exports it as Markdown, and `git
+//! harvest licences` reproduces the dependency licence notices.  Fragments
+//! and the CHANGELOG are RON or YAML, told apart by the file extension.
 
 mod changelog;
 mod cli;
@@ -33,8 +34,8 @@ use crate::changelog::registry;
 
 pub use crate::{
     changelog::{
-        Changelog, Configuration, Contributor, Entry, Fragment, Grammar,
-        Renderer, Section,
+        Changelog, Configuration, Contributor, Entry, Format, Fragment,
+        Grammar, Renderer, Section,
     },
     cli::{
         AssembleArguments, Cli, Command, IdArguments, IdCommand, InitArguments,
@@ -88,7 +89,8 @@ fn init(arguments: &InitArguments) -> sysexits::Result<()> {
         return Err(sysexits::ExitCode::CantCreat);
     }
 
-    let document = Changelog::default().to_ron()?;
+    let format = format_of(&arguments.output)?;
+    let document = format.serialised(&Changelog::default(), "CHANGELOG")?;
 
     std::fs::write(&arguments.output, document).map_err(|reason| {
         eprintln!(
@@ -99,21 +101,34 @@ fn init(arguments: &InitArguments) -> sysexits::Result<()> {
     })
 }
 
-/// The harvest configuration to scan with:  the CHANGELOG's, or the default.
+/// The format `path` is written in, or a usage error naming the choices.
+fn format_of(path: &std::path::Path) -> sysexits::Result<Format> {
+    Format::of(path).ok_or_else(|| {
+        eprintln!(
+            "git-harvest:  {} is neither a .ron, a .yaml nor a .yml file",
+            path.display()
+        );
+        sysexits::ExitCode::Usage
+    })
+}
+
+/// The harvest configuration to scan with, the CHANGELOG's or the default,
+/// and the format the CHANGELOG is written in.
 fn configuration(
     changelog: &std::path::Path,
-) -> sysexits::Result<Configuration> {
+) -> sysexits::Result<(Configuration, Format)> {
+    let format = format_of(changelog)?;
     let Ok(source) = std::fs::read_to_string(changelog) else {
         eprintln!(
             "git-harvest:  {} not found; scanning with the default \
              configuration",
             changelog.display()
         );
-        return Ok(Configuration::default());
+        return Ok((Configuration::default(), format));
     };
 
-    match ron::from_str::<Changelog>(&source) {
-        Ok(document) => Ok(document.configuration),
+    match format.parse::<Changelog>(&source) {
+        Ok(document) => Ok((document.configuration, format)),
         Err(reason) => {
             eprintln!(
                 "git-harvest:  cannot parse {}:  {reason}",
@@ -126,7 +141,7 @@ fn configuration(
 
 /// Harvest this branch's structured commits into a `changelog.d/` fragment.
 fn scan(arguments: &ScanArguments) -> sysexits::Result<()> {
-    let configuration = configuration(&arguments.changelog)?;
+    let (configuration, format) = configuration(&arguments.changelog)?;
     let repository = git::open()?;
     let commits = git::commits_since(&repository, &arguments.base)?;
 
@@ -159,7 +174,8 @@ fn scan(arguments: &ScanArguments) -> sysexits::Result<()> {
 
     let stamp = chrono::Utc::now().format("%Y-%m-%dT%H-%M-%SZ");
     let leaf = git::branch_leaf(&repository);
-    let path = arguments.output.join(format!("{stamp}_{leaf}.ron"));
+    let name = format!("{stamp}_{leaf}.{}", format.extension());
+    let path = arguments.output.join(name);
 
     std::fs::create_dir_all(&arguments.output).map_err(|reason| {
         eprintln!(
@@ -179,7 +195,7 @@ fn scan(arguments: &ScanArguments) -> sysexits::Result<()> {
 
     let count: usize = fragment.changes.values().map(Vec::len).sum();
     let noun = if count == 1 { "entry" } else { "entries" };
-    let document = fragment.to_ron()?;
+    let document = format.serialised(&fragment, "fragment")?;
 
     std::fs::write(&path, document).map_err(|reason| {
         eprintln!("git-harvest:  cannot write {}:  {reason}", path.display());
@@ -223,6 +239,7 @@ fn render(arguments: &RenderArguments) -> sysexits::Result<()> {
 
 /// Read and parse a whole CHANGELOG document.
 fn read_changelog(path: &std::path::Path) -> sysexits::Result<Changelog> {
+    let format = format_of(path)?;
     let source = std::fs::read_to_string(path).map_err(|reason| {
         eprintln!(
             "git-harvest:  cannot read {}:  {reason}; run `git harvest init` \
@@ -232,13 +249,13 @@ fn read_changelog(path: &std::path::Path) -> sysexits::Result<Changelog> {
         sysexits::ExitCode::NoInput
     })?;
 
-    ron::from_str(&source).map_err(|reason| {
+    format.parse(&source).map_err(|reason| {
         eprintln!("git-harvest:  cannot parse {}:  {reason}", path.display());
         sysexits::ExitCode::DataErr
     })
 }
 
-/// Every `*.ron` fragment in `directory`, sorted by name.
+/// Every fragment in `directory` in a supported format, sorted by name.
 fn fragment_paths(directory: &std::path::Path) -> Vec<std::path::PathBuf> {
     let Ok(entries) = std::fs::read_dir(directory) else {
         return Vec::new();
@@ -247,7 +264,7 @@ fn fragment_paths(directory: &std::path::Path) -> Vec<std::path::PathBuf> {
     let mut paths: Vec<_> = entries
         .filter_map(Result::ok)
         .map(|entry| entry.path())
-        .filter(|path| path.extension().is_some_and(|end| end == "ron"))
+        .filter(|path| Format::of(path).is_some())
         .collect();
 
     paths.sort();
@@ -298,13 +315,14 @@ fn harvested_section(
             );
             sysexits::ExitCode::NoInput
         })?;
-        let fragment: Fragment = ron::from_str(&source).map_err(|reason| {
-            eprintln!(
-                "git-harvest:  cannot parse {}:  {reason}",
-                path.display()
-            );
-            sysexits::ExitCode::DataErr
-        })?;
+        let fragment: Fragment =
+            format_of(path)?.parse(&source).map_err(|reason| {
+                eprintln!(
+                    "git-harvest:  cannot parse {}:  {reason}",
+                    path.display()
+                );
+                sysexits::ExitCode::DataErr
+            })?;
 
         section.references.extend(fragment.references);
         for (bucket, entries) in fragment.changes {
@@ -338,12 +356,14 @@ fn remap_credits(
     }
 }
 
-/// Serialise `changelog` back to its RON file.
+/// Serialise `changelog` back to its file, in the format that file is in.
 fn write_changelog(
     path: &std::path::Path,
     changelog: &Changelog,
 ) -> sysexits::Result<()> {
-    std::fs::write(path, changelog.to_ron()?).map_err(|reason| {
+    let document = format_of(path)?.serialised(changelog, "CHANGELOG")?;
+
+    std::fs::write(path, document).map_err(|reason| {
         eprintln!("git-harvest:  cannot write {}:  {reason}", path.display());
         sysexits::ExitCode::IoErr
     })

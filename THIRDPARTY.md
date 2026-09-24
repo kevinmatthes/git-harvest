@@ -29500,7 +29500,7 @@ IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 ```
 
-## list-my-licence 0.3.1
+## list-my-licence 0.3.2
 
 ### GPL-3.0-or-later (as distributed, in LICENCE)
 

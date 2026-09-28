@@ -68,6 +68,50 @@
   references: {},
   sections: [
     (
+      version: (0, 4, 1),
+      released: Some("2026-09-28T03:01:31.219230252Z"),
+      introduction: None,
+      references: {},
+      changes: {
+        "Added": [
+          (
+            text: "YAML as a second format for fragments and the CHANGELOG",
+            commit: Some("94f25dd"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+        ],
+        "Changed": [
+          (
+            text: "update Rust crate gix to 0.88.0",
+            commit: None,
+            aliases: [
+              "renovate",
+              "github-actions",
+            ],
+          ),
+          (
+            text: "update Rust crate list-my-licence to 0.3.2",
+            commit: None,
+            aliases: [
+              "renovate",
+              "github-actions",
+            ],
+          ),
+          (
+            text: "update taiki-e/install-action action to v2.87.21",
+            commit: None,
+            aliases: [
+              "renovate",
+              "github-actions",
+            ],
+          ),
+        ],
+      },
+    ),
+    (
       version: (0, 4, 0),
       released: Some("2026-09-21T18:08:04.202594645Z"),
       introduction: None,

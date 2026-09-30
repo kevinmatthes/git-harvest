@@ -297,7 +297,7 @@ jobs:
       - if: steps.level.outputs.mismatch == 'yes'
         uses: taiki-e/install-action@83ac0ad63c0167e6f06796fab0fce28db1bf3db0 # v2.87.22
         with:
-          tool: cargo-release@1.1.5
+          tool: cargo-release@1.1.6
 
       - if: steps.level.outputs.mismatch == 'yes'
         uses: fregante/setup-git-user@024bc0b8e177d7e77203b48dab6fb45666854b35 # v2.0.2

@@ -55,7 +55,8 @@
       "matchStrings": [
         "cargo-deny@(?<currentValue>\\d+\\.\\d+\\.\\d+)"
       ],
-      "packageNameTemplate": "cargo-deny"
+      "packageNameTemplate": "cargo-deny",
+      "versioningTemplate": "semver"
     },
     {
       "customType": "regex",
@@ -67,7 +68,8 @@
       "matchStrings": [
         "cargo-semver-checks@(?<currentValue>\\d+\\.\\d+\\.\\d+)"
       ],
-      "packageNameTemplate": "cargo-semver-checks"
+      "packageNameTemplate": "cargo-semver-checks",
+      "versioningTemplate": "semver"
     },
     {
       "customType": "regex",
@@ -80,7 +82,8 @@
       "matchStrings": [
         "cargo-deb@(?<currentValue>\\d+\\.\\d+\\.\\d+)"
       ],
-      "packageNameTemplate": "cargo-deb"
+      "packageNameTemplate": "cargo-deb",
+      "versioningTemplate": "semver"
     },
     {
       "customType": "regex",
@@ -92,7 +95,8 @@
       "matchStrings": [
         "cargo-release@(?<currentValue>\\d+\\.\\d+\\.\\d+)"
       ],
-      "packageNameTemplate": "cargo-release"
+      "packageNameTemplate": "cargo-release",
+      "versioningTemplate": "semver"
     }
   ],
   "dependencyDashboard": true,

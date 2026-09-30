@@ -36,7 +36,7 @@
       "datasourceTemplate": "github-releases",
       "depNameTemplate": "rust",
       "managerFilePatterns": [
-        "/^\\.clippy\\.toml$/",
+        "/^clippy\\.toml$/",
         "/^Cargo\\.toml$/"
       ],
       "matchStrings": [

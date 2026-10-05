@@ -19,6 +19,7 @@
       names: [
         "Claude",
         "Claude Sonnet 5",
+        "Claude Sonnet 5.5",
       ],
       emails: [
         "noreply@anthropic.com",
@@ -67,6 +68,65 @@
   introduction: None,
   references: {},
   sections: [
+    (
+      version: (0, 4, 2),
+      released: Some("2026-10-05T03:29:28.956471744Z"),
+      introduction: None,
+      references: {},
+      changes: {
+        "Changed": [
+          (
+            text: "have Renovate raise an update PR for every pinned CI tool",
+            commit: Some("b59e6fe"),
+            aliases: [
+              "kevinmatthes",
+            ],
+          ),
+          (
+            text: "lock file maintenance",
+            commit: None,
+            aliases: [
+              "renovate",
+              "github-actions",
+            ],
+          ),
+          (
+            text: "update dependency cargo-release to v1.1.6",
+            commit: None,
+            aliases: [
+              "renovate",
+              "github-actions",
+            ],
+          ),
+          (
+            text: "update dependency rust to v1.99.0",
+            commit: None,
+            aliases: [
+              "renovate",
+              "github-actions",
+            ],
+          ),
+          (
+            text: "update taiki-e/install-action action to v2.87.22",
+            commit: None,
+            aliases: [
+              "renovate",
+              "github-actions",
+            ],
+          ),
+        ],
+        "Fixed": [
+          (
+            text: "track the renamed clippy.toml so msrv follows rust-version",
+            commit: Some("c43d7a7"),
+            aliases: [
+              "kevinmatthes",
+              "claude",
+            ],
+          ),
+        ],
+      },
+    ),
     (
       version: (0, 4, 1),
       released: Some("2026-09-28T03:01:31.219230252Z"),

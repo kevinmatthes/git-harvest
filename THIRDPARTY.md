@@ -29840,7 +29840,7 @@ IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 ```
 
-## list-my-licence 0.3.2
+## list-my-licence 0.3.3
 
 ### GPL-3.0-or-later (as distributed, in LICENCE)
 
@@ -39225,7 +39225,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ```
 
-## spdx 0.13.5
+## spdx 0.13.6
 
 ### Apache-2.0 (as distributed, in LICENSE-APACHE)
 

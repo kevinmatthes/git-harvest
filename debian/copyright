@@ -29585,7 +29585,7 @@ License: Apache-2.0 and MIT
  IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  DEALINGS IN THE SOFTWARE.
 
-Files: list-my-licence-0.3.2/*
+Files: list-my-licence-0.3.3/*
 Copyright: Kevin Matthes <aeruginous.rs@gmail.com>
 License: GPL-3.0-or-later
  .
@@ -38914,7 +38914,7 @@ License: MIT and Apache-2.0
  See the License for the specific language governing permissions and
  limitations under the License.
 
-Files: spdx-0.13.5/*
+Files: spdx-0.13.6/*
 Copyright: Embark <opensource@embark-studios.com>
  Jake Shadle <jake.shadle@embark-studios.com>
 License: Apache-2.0

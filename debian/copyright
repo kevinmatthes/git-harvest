@@ -4418,7 +4418,7 @@ License: MIT
  IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  DEALINGS IN THE SOFTWARE.
 
-Files: cc-1.5.1/*
+Files: cc-1.6.0/*
 Copyright: not stated in the package manifest
 License: MIT and Apache-2.0
  .
@@ -28908,7 +28908,7 @@ License: MIT and Apache-2.0
  See the License for the specific language governing permissions and
  limitations under the License.
 
-Files: libc-0.2.189/*
+Files: libc-0.2.190/*
 Copyright: not stated in the package manifest
 License: MIT and Apache-2.0
  .
@@ -33974,7 +33974,7 @@ License: MIT and Apache-2.0
  .
  END OF TERMS AND CONDITIONS
 
-Files: prodash-31.0.0/*
+Files: prodash-31.0.1/*
 Copyright: Sebastian Thiel <sebastian.thiel@icloud.com>
 License: MIT
  .
@@ -37678,7 +37678,7 @@ License: MIT and Apache-2.0
  .
  END OF TERMS AND CONDITIONS
 
-Files: sha1dc-0.1.4/*
+Files: sha1dc-0.1.5/*
 Copyright: not stated in the package manifest
 License: MIT and Apache-2.0
  .
@@ -37966,7 +37966,7 @@ License: MIT and Apache-2.0
  See the License for the specific language governing permissions and
  limitations under the License.
 
-Files: signal-hook-0.4.4/*
+Files: signal-hook-0.4.5/*
 Copyright: Michal 'vorner' Vaner <vorner@vorner.cz>
  Thomas Himmelstoss <thimm@posteo.de>
 License: MIT and Apache-2.0
@@ -38914,7 +38914,7 @@ License: MIT and Apache-2.0
  See the License for the specific language governing permissions and
  limitations under the License.
 
-Files: spdx-0.13.5/*
+Files: spdx-0.13.6/*
 Copyright: Embark <opensource@embark-studios.com>
  Jake Shadle <jake.shadle@embark-studios.com>
 License: Apache-2.0

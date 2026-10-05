@@ -4454,7 +4454,7 @@ IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 ```
 
-## cc 1.5.1
+## cc 1.6.0
 
 ### MIT (as distributed, in LICENSE-MIT)
 
@@ -12254,7 +12254,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ```
 
-## git-harvest 0.4.2
+## git-harvest 0.4.3
 
 ### GPL-3.0-or-later (as distributed, in LICENCE)
 
@@ -29157,7 +29157,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ```
 
-## libc 0.2.189
+## libc 0.2.190
 
 ### MIT (as distributed, in LICENSE-MIT)
 
@@ -34257,7 +34257,7 @@ TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 END OF TERMS AND CONDITIONS
 ```
 
-## prodash 31.0.0
+## prodash 31.0.1
 
 ### MIT (as distributed, in LICENSE.md)
 
@@ -37984,7 +37984,7 @@ TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 END OF TERMS AND CONDITIONS
 ```
 
-## sha1dc 0.1.4
+## sha1dc 0.1.5
 
 ### MIT (as distributed, in LICENSE-MIT)
 
@@ -38271,7 +38271,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ```
 
-## signal-hook 0.4.4
+## signal-hook 0.4.5
 
 ### MIT (as distributed, in LICENSE-MIT)
 
@@ -39225,7 +39225,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ```
 
-## spdx 0.13.5
+## spdx 0.13.6
 
 ### Apache-2.0 (as distributed, in LICENSE-APACHE)
 

@@ -4454,7 +4454,7 @@ IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 ```
 
-## cc 1.6.0
+## cc 1.8.0
 
 ### MIT (as distributed, in LICENSE-MIT)
 
@@ -17879,7 +17879,7 @@ SOFTWARE.
    END OF TERMS AND CONDITIONS
 ```
 
-## gix-imara-diff 0.3.0
+## gix-imara-diff 0.3.1
 
 ### Apache-2.0 (as distributed, in LICENSE)
 
@@ -28634,7 +28634,7 @@ TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 END OF TERMS AND CONDITIONS
 ```
 
-## jiff 0.2.37
+## jiff 0.2.38
 
 ### Unlicense (as distributed, in UNLICENSE)
 
@@ -28748,7 +28748,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ```
 
-## jiff-static 0.2.37
+## jiff-static 0.2.38
 
 ### Unlicense (as distributed, in UNLICENSE)
 
@@ -28805,7 +28805,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ```
 
-## jiff-tzdb 0.1.8
+## jiff-tzdb 0.1.9
 
 ### Unlicense (as distributed, in UNLICENSE)
 
@@ -37773,7 +37773,7 @@ TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 END OF TERMS AND CONDITIONS
 ```
 
-## serde_json 1.0.151
+## serde_json 1.0.154
 
 ### MIT (as distributed, in LICENSE-MIT)
 
@@ -38987,7 +38987,7 @@ IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 ```
 
-## smallvec 1.16.2
+## smallvec 1.16.3
 
 ### MIT (as distributed, in LICENSE-MIT)
 
@@ -39912,7 +39912,7 @@ TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 END OF TERMS AND CONDITIONS
 ```
 
-## syn 3.0.6
+## syn 3.0.8
 
 ### MIT (as distributed, in LICENSE-MIT)
 

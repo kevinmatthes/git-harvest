@@ -4418,7 +4418,7 @@ License: MIT
  IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  DEALINGS IN THE SOFTWARE.
 
-Files: cc-1.6.0/*
+Files: cc-1.8.0/*
 Copyright: not stated in the package manifest
 License: MIT and Apache-2.0
  .
@@ -17735,7 +17735,7 @@ License: MIT and Apache-2.0
  .
     END OF TERMS AND CONDITIONS
 
-Files: gix-imara-diff-0.3.0/*
+Files: gix-imara-diff-0.3.1/*
 Copyright: pascalkuthe <pascalkuthe@pm.me>
  Sebastian Thiel <sebastian.thiel@icloud.com>
 License: Apache-2.0
@@ -28397,7 +28397,7 @@ License: MIT and Apache-2.0
  .
  END OF TERMS AND CONDITIONS
 
-Files: jiff-0.2.37/*
+Files: jiff-0.2.38/*
 Copyright: Andrew Gallant <jamslam@gmail.com>
 License: Unlicense and MIT
  .
@@ -28507,7 +28507,7 @@ License: Unlicense and MIT
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
 
-Files: jiff-static-0.2.37/*
+Files: jiff-static-0.2.38/*
 Copyright: Andrew Gallant <jamslam@gmail.com>
 License: Unlicense and MIT
  .
@@ -28562,7 +28562,7 @@ License: Unlicense and MIT
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
 
-Files: jiff-tzdb-0.1.8/*
+Files: jiff-tzdb-0.1.9/*
 Copyright: Andrew Gallant <jamslam@gmail.com>
 License: Unlicense and MIT
  .
@@ -37468,9 +37468,8 @@ License: MIT and Apache-2.0
  .
  END OF TERMS AND CONDITIONS
 
-Files: serde_json-1.0.151/*
-Copyright: Erick Tryzelaar <erick.tryzelaar@gmail.com>
- David Tolnay <dtolnay@gmail.com>
+Files: serde_json-1.0.154/*
+Copyright: not stated in the package manifest
 License: MIT and Apache-2.0
  .
  MIT (as distributed, in LICENSE-MIT):
@@ -38678,7 +38677,7 @@ License: MIT
  IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  DEALINGS IN THE SOFTWARE.
 
-Files: smallvec-1.16.2/*
+Files: smallvec-1.16.3/*
 Copyright: The Servo Project Developers
 License: MIT and Apache-2.0
  .
@@ -39599,7 +39598,7 @@ License: MIT and Apache-2.0
  .
  END OF TERMS AND CONDITIONS
 
-Files: syn-3.0.6/*
+Files: syn-3.0.8/*
 Copyright: David Tolnay <dtolnay@gmail.com>
 License: MIT and Apache-2.0
  .

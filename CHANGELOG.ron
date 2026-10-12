@@ -69,6 +69,48 @@
   references: {},
   sections: [
     (
+      version: (0, 4, 3),
+      released: Some("2026-10-12T03:43:39.171487368Z"),
+      introduction: None,
+      references: {},
+      changes: {
+        "Changed": [
+          (
+            text: "lock file maintenance",
+            commit: None,
+            aliases: [
+              "renovate",
+              "github-actions",
+            ],
+          ),
+          (
+            text: "update Rust crate list-my-licence to 0.3.3",
+            commit: None,
+            aliases: [
+              "renovate",
+              "github-actions",
+            ],
+          ),
+          (
+            text: "update dependency cargo-semver-checks to v0.51.0",
+            commit: None,
+            aliases: [
+              "renovate",
+              "github-actions",
+            ],
+          ),
+          (
+            text: "update taiki-e/install-action action to v2.87.26",
+            commit: None,
+            aliases: [
+              "renovate",
+              "github-actions",
+            ],
+          ),
+        ],
+      },
+    ),
+    (
       version: (0, 4, 2),
       released: Some("2026-10-05T03:29:28.956471744Z"),
       introduction: None,

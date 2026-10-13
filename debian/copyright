@@ -25087,7 +25087,7 @@ License: MIT and Apache-2.0
  .
     END OF TERMS AND CONDITIONS
 
-Files: granit-parser-1.3.0/*
+Files: granit-parser-2.0.0/*
 Copyright: Ethiraric <ethiraric@gmail.com>
  David Aguilar <davvid@gmail.com>
  Yuheng Chen <yuhengchen@sensetime.com>
@@ -36839,7 +36839,7 @@ License: MIT and Apache-2.0
  .
  END OF TERMS AND CONDITIONS
 
-Files: serde-saphyr-1.3.0/*
+Files: serde-saphyr-2.0.0/*
 Copyright: not stated in the package manifest
 License: MIT and Apache-2.0
  .

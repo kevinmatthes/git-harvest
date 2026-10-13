@@ -25297,7 +25297,7 @@ SOFTWARE.
    END OF TERMS AND CONDITIONS
 ```
 
-## granit-parser 1.3.0
+## granit-parser 2.0.0
 
 ### MIT (as distributed, shared in LICENSE)
 
@@ -37140,7 +37140,7 @@ TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 END OF TERMS AND CONDITIONS
 ```
 
-## serde-saphyr 1.3.0
+## serde-saphyr 2.0.0
 
 ### MIT (as distributed, in LICENSE-MIT)
 
